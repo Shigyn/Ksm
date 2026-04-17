@@ -58,15 +58,81 @@
     body{background:var(--n);color:var(--b);font-family:var(--fc);overflow-x:hidden;}
 
 ```
-/* INTRO */
-#intro{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-#ic{position:absolute;width:0;height:0;border-radius:50%;background:var(--j);top:50%;left:50%;transform:translate(-50%,-50%);animation:cex 1.3s cubic-bezier(.77,0,.18,1) forwards;}
-#il{position:relative;z-index:2;text-align:center;animation:ilin .4s ease .1s both;}
-.iln{font-family:var(--ft);font-size:clamp(3rem,12vw,7rem);font-weight:900;color:var(--n);line-height:.9;text-transform:uppercase;}
-.ils{font-family:var(--fc);font-size:.85rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--n);opacity:.6;margin-top:8px;}
-@keyframes cex{0%{width:0;height:0;opacity:1;}60%{width:300vmax;height:300vmax;opacity:1;}100%{width:300vmax;height:300vmax;opacity:0;}}
-@keyframes ilin{from{opacity:0;transform:scale(.8);}to{opacity:1;transform:scale(1);}}
+/* INTRO GLITCH */
+#intro{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--n);overflow:hidden;}
 #intro.done{display:none;}
+#ic{display:none;}
+#il{position:relative;z-index:2;text-align:center;}
+.iln{font-family:var(--ft);font-size:clamp(2rem,10vw,6rem);font-weight:900;color:var(--j);line-height:1;text-transform:uppercase;position:relative;animation:glitchMain 1.6s steps(1) forwards;letter-spacing:.05em;}
+.iln::before,.iln::after{content:attr(data-text);position:absolute;inset:0;background:var(--n);}
+.iln::before{color:#0ff;animation:glitchTop 1.6s steps(1) forwards;clip-path:polygon(0 0,100% 0,100% 35%,0 35%);}
+.iln::after{color:#f0f;animation:glitchBot 1.6s steps(1) forwards;clip-path:polygon(0 65%,100% 65%,100% 100%,0 100%);}
+.ils{font-family:var(--fc);font-size:.85rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:10px;animation:glitchSub 1.6s ease forwards;}
+.intro-scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.15) 2px,rgba(0,0,0,.15) 4px);pointer-events:none;animation:scanMove 1.6s linear forwards;}
+.intro-flash{position:absolute;inset:0;background:var(--j);opacity:0;animation:flashIn 1.6s steps(1) forwards;pointer-events:none;}
+@keyframes glitchMain{
+  0%{opacity:0;transform:scale(1.08);}
+  8%{opacity:1;transform:scale(1);}
+  15%{transform:translate(-3px,0);}
+  16%{transform:translate(3px,0);}
+  17%{transform:translate(0,0);}
+  35%{transform:translate(-2px,0);}
+  36%{transform:translate(2px,0);}
+  37%{transform:translate(0,0);}
+  65%{transform:translate(-5px,1px);filter:blur(.5px);}
+  66%{transform:translate(5px,-1px);}
+  67%{transform:translate(0,0);filter:blur(0);}
+  88%{opacity:1;}
+  96%{opacity:1;}
+  100%{opacity:0;}
+}
+@keyframes glitchTop{
+  0%{transform:translate(0,0);opacity:0;}
+  5%{opacity:.8;}
+  10%{transform:translate(-8px,0);}
+  11%{transform:translate(8px,0);}
+  12%{transform:translate(0,0);}
+  30%{transform:translate(-4px,0);opacity:.6;}
+  31%{transform:translate(4px,0);}
+  32%{transform:translate(0,0);}
+  60%{transform:translate(-10px,0);opacity:.9;}
+  61%{transform:translate(10px,0);}
+  62%{transform:translate(0,0);}
+  90%{opacity:.5;}
+  100%{opacity:0;}
+}
+@keyframes glitchBot{
+  0%{transform:translate(0,0);opacity:0;}
+  5%{opacity:.8;}
+  10%{transform:translate(8px,0);}
+  11%{transform:translate(-8px,0);}
+  12%{transform:translate(0,0);}
+  30%{transform:translate(4px,0);opacity:.6;}
+  31%{transform:translate(-4px,0);}
+  32%{transform:translate(0,0);}
+  60%{transform:translate(10px,0);opacity:.9;}
+  61%{transform:translate(-10px,0);}
+  62%{transform:translate(0,0);}
+  90%{opacity:.5;}
+  100%{opacity:0;}
+}
+@keyframes glitchSub{
+  0%{opacity:0;}6%{opacity:1;}85%{opacity:1;}100%{opacity:0;}
+}
+@keyframes scanMove{
+  0%{opacity:1;transform:translateY(0);}
+  90%{opacity:.8;}
+  100%{opacity:0;}
+}
+@keyframes flashIn{
+  0%{opacity:0;}
+  88%{opacity:0;}
+  90%{opacity:.7;}
+  92%{opacity:0;}
+  94%{opacity:.4;}
+  96%{opacity:0;}
+  100%{opacity:0;}
+}
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:500;height:64px;padding:0 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(15,15,15,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--bord);}
@@ -81,11 +147,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;height:64px;padding:0 5%;dis
 .hbg span{display:block;width:22px;height:2px;background:var(--b);}
 
 /* HERO */
-#hero{position:relative;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 5% 100px;overflow:hidden;}
+#hero{position:relative;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:130px 5% 100px;overflow:hidden;}
 .hbg-img{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1400&q=80') center/cover no-repeat;filter:brightness(.22) saturate(.8);z-index:0;}
 .hov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,15,15,.2) 0%,rgba(15,15,15,.6) 60%,var(--n) 100%);z-index:1;}
 .hc{position:relative;z-index:2;}
-.hbadge{display:inline-flex;align-items:center;gap:8px;background:rgba(245,197,24,.12);border:1px solid rgba(245,197,24,.35);border-radius:100px;padding:6px 16px;margin-bottom:22px;font-family:var(--fc);font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--j);}
+.hbadge{display:inline-flex;align-items:center;gap:8px;background:rgba(245,197,24,.12);border:1px solid rgba(245,197,24,.35);border-radius:100px;padding:6px 16px;margin-bottom:22px;font-family:var(--fc);font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--j);position:relative;z-index:3;}
 .hbadge::before{content:'';width:6px;height:6px;background:var(--j);border-radius:50%;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 .htitle{font-family:var(--ft);font-size:clamp(3.5rem,12vw,9rem);font-weight:900;text-transform:uppercase;line-height:.9;letter-spacing:-.02em;margin-bottom:16px;}
@@ -265,8 +331,10 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:46px 5% 28px;backgroun
 
 <div id="intro" onclick="skipIntro()">
   <div id="ic"></div>
+  <div class="intro-scanlines"></div>
+  <div class="intro-flash"></div>
   <div id="il">
-    <div class="iln">KSM<br>Burger</div>
+    <div class="iln" data-text="KSM BURGER">KSM BURGER</div>
     <div class="ils">Fleurie &middot; Beaujolais</div>
   </div>
 </div>
@@ -501,7 +569,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:46px 5% 28px;backgroun
 <script>
   let done=false;
   function skipIntro(){if(done)return;done=true;document.getElementById('intro').classList.add('done');}
-  setTimeout(skipIntro,1450);
+  setTimeout(skipIntro,1750);
 
   function toggleNav(){
     var l=document.querySelector('.nlinks');
