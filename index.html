@@ -63,13 +63,13 @@
 #intro.done{display:none;}
 #ic{display:none;}
 #il{position:relative;z-index:2;text-align:center;}
-.iln{font-family:var(--ft);font-size:clamp(2rem,10vw,6rem);font-weight:900;color:var(--j);line-height:1;text-transform:uppercase;position:relative;animation:glitchMain 1.6s steps(1) forwards;letter-spacing:.05em;}
+.iln{font-family:var(--ft);font-size:clamp(2rem,10vw,6rem);font-weight:900;color:var(--j);line-height:1;text-transform:uppercase;position:relative;animation:glitchMain 3s steps(1) forwards;letter-spacing:.05em;}
 .iln::before,.iln::after{content:attr(data-text);position:absolute;inset:0;background:var(--n);}
-.iln::before{color:#0ff;animation:glitchTop 1.6s steps(1) forwards;clip-path:polygon(0 0,100% 0,100% 35%,0 35%);}
-.iln::after{color:#f0f;animation:glitchBot 1.6s steps(1) forwards;clip-path:polygon(0 65%,100% 65%,100% 100%,0 100%);}
-.ils{font-family:var(--fc);font-size:.85rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:10px;animation:glitchSub 1.6s ease forwards;}
-.intro-scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.15) 2px,rgba(0,0,0,.15) 4px);pointer-events:none;animation:scanMove 1.6s linear forwards;}
-.intro-flash{position:absolute;inset:0;background:var(--j);opacity:0;animation:flashIn 1.6s steps(1) forwards;pointer-events:none;}
+.iln::before{color:#0ff;animation:glitchTop 3s steps(1) forwards;clip-path:polygon(0 0,100% 0,100% 35%,0 35%);}
+.iln::after{color:#f0f;animation:glitchBot 3s steps(1) forwards;clip-path:polygon(0 65%,100% 65%,100% 100%,0 100%);}
+.ils{font-family:var(--fc);font-size:.85rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:10px;animation:glitchSub 3s ease forwards;}
+.intro-scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.15) 2px,rgba(0,0,0,.15) 4px);pointer-events:none;animation:scanMove 3s linear forwards;}
+.intro-flash{position:absolute;inset:0;background:var(--j);opacity:0;animation:flashIn 3s steps(1) forwards;pointer-events:none;}
 @keyframes glitchMain{
   0%{opacity:0;transform:scale(1.08);}
   8%{opacity:1;transform:scale(1);}
@@ -151,8 +151,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;height:64px;padding:0 5%;dis
 .hbg-img{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1400&q=80') center/cover no-repeat;filter:brightness(.22) saturate(.8);z-index:-2;}
 .hov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,15,15,.2) 0%,rgba(15,15,15,.6) 60%,var(--n) 100%);z-index:-1;}
 .hc{position:relative;z-index:5;}
-.hbadge{display:inline-flex;align-items:center;gap:8px;background:rgba(245,197,24,.12);border:1px solid rgba(245,197,24,.35);border-radius:100px;padding:6px 16px;margin-bottom:22px;font-family:var(--fc);font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--j);position:relative;z-index:3;}
-.hbadge::before{content:'';width:6px;height:6px;background:var(--j);border-radius:50%;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 .htitle{font-family:var(--ft);font-size:clamp(3.5rem,12vw,9rem);font-weight:900;text-transform:uppercase;line-height:.9;letter-spacing:-.02em;margin-bottom:16px;}
 .htitle .acc{color:var(--j);}
@@ -356,7 +354,6 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:46px 5% 28px;backgroun
   <div class="hbg-img"></div>
   <div class="hov"></div>
   <div class="hc">
-    <div class="hbadge">Ouvert mercredi au dimanche</div>
     <h1 class="htitle">Burgers<br><span class="acc it">Faits Maison</span></h1>
     <p class="hsub">Viande hachee fraiche, produits de qualite, nommes d apres les crus du Beaujolais. Le meilleur fast-food de Fleurie.</p>
     <div class="hctas">
@@ -569,7 +566,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:46px 5% 28px;backgroun
 <script>
   let done=false;
   function skipIntro(){if(done)return;done=true;document.getElementById('intro').classList.add('done');}
-  setTimeout(skipIntro,1750);
+  setTimeout(skipIntro,3300);
 
   function toggleNav(){
     var l=document.querySelector('.nlinks');
