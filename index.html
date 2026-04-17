@@ -58,9 +58,6 @@
     body{background:var(--n);color:var(--b);font-family:var(--fc);overflow-x:hidden;}
 
 ```
-/* INTRO GLITCH */
-#intro{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--n);overflow:hidden;}
-#intro.done{display:none;}
 #ic{display:none;}
 #il{position:relative;z-index:2;text-align:center;}
 .iln{font-family:var(--ft);font-size:clamp(2rem,10vw,6rem);font-weight:900;color:var(--j);line-height:1;text-transform:uppercase;position:relative;animation:glitchMain 3s steps(1) forwards;letter-spacing:.05em;}
@@ -133,6 +130,26 @@
   96%{opacity:0;}
   100%{opacity:0;}
 }
+
+/* INTRO RIDEAU */
+#intro{position:fixed;inset:0;z-index:9999;pointer-events:all;cursor:pointer;}
+#intro.done{display:none;}
+.rideau-left,.rideau-right{position:absolute;top:0;bottom:0;width:50%;background:var(--n);transition:transform 0s;}
+.rideau-left{left:0;}
+.rideau-right{right:0;}
+.rideau-logo{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2;pointer-events:none;}
+.rl-name{font-family:var(--ft);font-size:clamp(3rem,12vw,6.5rem);font-weight:900;color:var(--j);line-height:.9;text-transform:uppercase;text-align:center;opacity:0;animation:rlogoIn .5s ease .3s forwards;}
+.rl-sub{font-family:var(--fc);font-size:.85rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-top:12px;text-align:center;opacity:0;animation:rlogoIn .5s ease .5s forwards;}
+.rideau-line{position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--j);transform:translateX(-50%);opacity:0;animation:rlineIn .3s ease .2s forwards;}
+@keyframes rlogoIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes rlineIn{from{opacity:0;}to{opacity:1;}}
+.intro-open .rideau-left{animation:rideauLeft .7s cubic-bezier(.77,0,.18,1) forwards;}
+.intro-open .rideau-right{animation:rideauRight .7s cubic-bezier(.77,0,.18,1) forwards;}
+.intro-open .rideau-logo{animation:rideauLogo .4s ease forwards;}
+.intro-open .rideau-line{animation:rideauLogo .4s ease forwards;}
+@keyframes rideauLeft{from{transform:translateX(0);}to{transform:translateX(-100%);}}
+@keyframes rideauRight{from{transform:translateX(0);}to{transform:translateX(100%);}}
+@keyframes rideauLogo{from{opacity:1;}to{opacity:0;}}
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:500;height:64px;padding:0 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(15,15,15,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--bord);}
@@ -328,12 +345,12 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:46px 5% 28px;backgroun
 <body>
 
 <div id="intro" onclick="skipIntro()">
-  <div id="ic"></div>
-  <div class="intro-scanlines"></div>
-  <div class="intro-flash"></div>
-  <div id="il">
-    <div class="iln" data-text="KSM BURGER">KSM BURGER</div>
-    <div class="ils">Fleurie &middot; Beaujolais</div>
+  <div class="rideau-left"></div>
+  <div class="rideau-right"></div>
+  <div class="rideau-line"></div>
+  <div class="rideau-logo">
+    <div class="rl-name">KSM<br>Burger</div>
+    <div class="rl-sub">Fleurie &middot; Beaujolais</div>
   </div>
 </div>
 
@@ -565,8 +582,13 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:46px 5% 28px;backgroun
 
 <script>
   let done=false;
-  function skipIntro(){if(done)return;done=true;document.getElementById('intro').classList.add('done');}
-  setTimeout(skipIntro,3300);
+  function skipIntro(){
+    if(done)return;done=true;
+    var intro=document.getElementById('intro');
+    intro.classList.add('intro-open');
+    setTimeout(function(){intro.classList.add('done');},750);
+  }
+  setTimeout(skipIntro,2800);
 
   function toggleNav(){
     var l=document.querySelector('.nlinks');
