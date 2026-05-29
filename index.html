@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KSM Burger Fleurie -- Burgers Frais et Faits Maison au Coeur du Beaujolais</title>
-  <meta name="description" content="KSM Burger a Fleurie (69820) -- Burgers artisanaux, tacos, bowls. Viande hachee fraiche, produits faits maison. Halal. Sur place, a emporter, livraison. Tel: 09 50 94 88 15">
+  <title>KSM Burger Fleurie — Burgers Frais et Faits Maison au Cœur du Beaujolais</title>
+  <meta name="description" content="KSM Burger à Fleurie (69820) — Burgers artisanaux, tacos, bowls. Viande hachée fraîche, produits faits maison. Sur place, à emporter, livraison. Tél : 09 50 94 88 15">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://ksm-burger-fleurie.fr/">
   <meta property="og:type" content="restaurant">
-  <meta property="og:title" content="KSM Burger Fleurie -- Burgers Frais et Faits Maison">
-  <meta property="og:description" content="Le meilleur burger du Beaujolais. Produits frais, viande hachee fraiche, fait maison.">
+  <meta property="og:title" content="KSM Burger Fleurie — Burgers Frais et Faits Maison">
+  <meta property="og:description" content="Le meilleur burger du Beaujolais. Produits frais, viande hachée fraîche, fait maison.">
   <meta property="og:image" content="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1200&q=80">
   <meta property="og:url" content="https://ksm-burger-fleurie.fr/">
   <script type="application/ld+json">
@@ -29,8 +28,8 @@
     },
     "openingHours": ["We-Fr 12:00-14:00","We-Fr 18:30-21:30","Sa 12:00-14:00","Sa 18:30-22:00","Su 12:00-14:00","Su 18:30-21:30"],
     "servesCuisine": ["Burgers","Tacos","Fast Food"],
-    "priceRange": "euro-euro",
-    "description": "Burgers artisanaux faits maison avec viande hachee fraiche. Nommes d apres les crus du Beaujolais. Halal.",
+    "priceRange": "€€",
+    "description": "Burgers artisanaux faits maison avec viande hachée fraîche. Nommés d'après les crus du Beaujolais.",
     "aggregateRating": {"@type":"AggregateRating","ratingValue":"4.9","reviewCount":"17"}
   }
   </script>
@@ -57,302 +56,206 @@
     html{scroll-behavior:smooth;}
     body{background:var(--n);color:var(--b);font-family:var(--fc);overflow-x:hidden;}
 
-```
-#ic{display:none;}
-#il{position:relative;z-index:2;text-align:center;}
-.iln{font-family:var(--ft);font-size:clamp(2rem,10vw,6rem);font-weight:900;color:var(--j);line-height:1;text-transform:uppercase;position:relative;animation:glitchMain 3s steps(1) forwards;letter-spacing:.05em;}
-.iln::before,.iln::after{content:attr(data-text);position:absolute;inset:0;background:var(--n);}
-.iln::before{color:#0ff;animation:glitchTop 3s steps(1) forwards;clip-path:polygon(0 0,100% 0,100% 35%,0 35%);}
-.iln::after{color:#f0f;animation:glitchBot 3s steps(1) forwards;clip-path:polygon(0 65%,100% 65%,100% 100%,0 100%);}
-.ils{font-family:var(--fc);font-size:.85rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:10px;animation:glitchSub 3s ease forwards;}
-.intro-scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.15) 2px,rgba(0,0,0,.15) 4px);pointer-events:none;animation:scanMove 3s linear forwards;}
-.intro-flash{position:absolute;inset:0;background:var(--j);opacity:0;animation:flashIn 3s steps(1) forwards;pointer-events:none;}
-@keyframes glitchMain{
-  0%{opacity:0;transform:scale(1.08);}
-  8%{opacity:1;transform:scale(1);}
-  15%{transform:translate(-3px,0);}
-  16%{transform:translate(3px,0);}
-  17%{transform:translate(0,0);}
-  35%{transform:translate(-2px,0);}
-  36%{transform:translate(2px,0);}
-  37%{transform:translate(0,0);}
-  65%{transform:translate(-5px,1px);filter:blur(.5px);}
-  66%{transform:translate(5px,-1px);}
-  67%{transform:translate(0,0);filter:blur(0);}
-  88%{opacity:1;}
-  96%{opacity:1;}
-  100%{opacity:0;}
-}
-@keyframes glitchTop{
-  0%{transform:translate(0,0);opacity:0;}
-  5%{opacity:.8;}
-  10%{transform:translate(-8px,0);}
-  11%{transform:translate(8px,0);}
-  12%{transform:translate(0,0);}
-  30%{transform:translate(-4px,0);opacity:.6;}
-  31%{transform:translate(4px,0);}
-  32%{transform:translate(0,0);}
-  60%{transform:translate(-10px,0);opacity:.9;}
-  61%{transform:translate(10px,0);}
-  62%{transform:translate(0,0);}
-  90%{opacity:.5;}
-  100%{opacity:0;}
-}
-@keyframes glitchBot{
-  0%{transform:translate(0,0);opacity:0;}
-  5%{opacity:.8;}
-  10%{transform:translate(8px,0);}
-  11%{transform:translate(-8px,0);}
-  12%{transform:translate(0,0);}
-  30%{transform:translate(4px,0);opacity:.6;}
-  31%{transform:translate(-4px,0);}
-  32%{transform:translate(0,0);}
-  60%{transform:translate(10px,0);opacity:.9;}
-  61%{transform:translate(-10px,0);}
-  62%{transform:translate(0,0);}
-  90%{opacity:.5;}
-  100%{opacity:0;}
-}
-@keyframes glitchSub{
-  0%{opacity:0;}6%{opacity:1;}85%{opacity:1;}100%{opacity:0;}
-}
-@keyframes scanMove{
-  0%{opacity:1;transform:translateY(0);}
-  90%{opacity:.8;}
-  100%{opacity:0;}
-}
-@keyframes flashIn{
-  0%{opacity:0;}
-  88%{opacity:0;}
-  90%{opacity:.7;}
-  92%{opacity:0;}
-  94%{opacity:.4;}
-  96%{opacity:0;}
-  100%{opacity:0;}
-}
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:500;height:64px;padding:0 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(15,15,15,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--bord);}
+    .nlogo{font-family:var(--ft);font-size:1.5rem;font-weight:900;text-transform:uppercase;text-decoration:none;color:var(--b);letter-spacing:.05em;}
+    .nlogo span{color:var(--j);}
+    .nlinks{display:flex;gap:28px;list-style:none;}
+    .nlinks a{font-family:var(--fc);font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.55);text-decoration:none;transition:color .2s;}
+    .nlinks a:hover{color:var(--j);}
+    .ncta{font-family:var(--fc);font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--j);color:var(--n);padding:10px 22px;border-radius:6px;text-decoration:none;transition:all .2s;}
+    .ncta:hover{background:var(--j2);transform:translateY(-1px);}
+    .hbg{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;}
+    .hbg span{display:block;width:22px;height:2px;background:var(--b);}
 
-/* INTRO RIDEAU */
-#intro{position:fixed;inset:0;z-index:9999;pointer-events:all;cursor:pointer;}
-#intro.done{display:none;}
-.rideau-left,.rideau-right{position:absolute;top:0;bottom:0;width:50%;background:var(--n);transition:transform 0s;}
-.rideau-left{left:0;}
-.rideau-right{right:0;}
-.rideau-logo{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2;pointer-events:none;}
-.rl-name{font-family:var(--ft);font-size:clamp(3rem,12vw,6.5rem);font-weight:900;color:var(--j);line-height:.9;text-transform:uppercase;text-align:center;opacity:0;animation:rlogoIn .5s ease .3s forwards;}
-.rl-sub{font-family:var(--fc);font-size:.85rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-top:12px;text-align:center;opacity:0;animation:rlogoIn .5s ease .5s forwards;}
-.rideau-line{position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--j);transform:translateX(-50%);opacity:0;animation:rlineIn .3s ease .2s forwards;}
-@keyframes rlogoIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-@keyframes rlineIn{from{opacity:0;}to{opacity:1;}}
-.intro-open .rideau-left{animation:rideauLeft .7s cubic-bezier(.77,0,.18,1) forwards;}
-.intro-open .rideau-right{animation:rideauRight .7s cubic-bezier(.77,0,.18,1) forwards;}
-.intro-open .rideau-logo{animation:rideauLogo .4s ease forwards;}
-.intro-open .rideau-line{animation:rideauLogo .4s ease forwards;}
-@keyframes rideauLeft{from{transform:translateX(0);}to{transform:translateX(-100%);}}
-@keyframes rideauRight{from{transform:translateX(0);}to{transform:translateX(100%);}}
-@keyframes rideauLogo{from{opacity:1;}to{opacity:0;}}
+    /* HERO */
+    #hero{position:relative;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:130px 5% 100px;overflow:hidden;}
+    .hbg-img{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1400&q=80') center/cover no-repeat;filter:brightness(.22) saturate(.8);z-index:-2;}
+    .hov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,15,15,.2) 0%,rgba(15,15,15,.6) 60%,var(--n) 100%);z-index:-1;}
+    .hc{position:relative;z-index:5;}
+    .htitle{font-family:var(--ft);font-size:clamp(3.5rem,12vw,9rem);font-weight:900;text-transform:uppercase;line-height:.9;letter-spacing:-.02em;margin-bottom:16px;}
+    .htitle .acc{color:var(--j);}
+    .htitle .it{font-style:italic;}
+    .hsub{font-size:clamp(.95rem,2.5vw,1.2rem);color:rgba(255,255,255,.6);max-width:480px;margin:0 auto 36px;line-height:1.65;}
+    .hctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:56px;}
+    .bty{font-family:var(--fc);font-size:.85rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--j);color:var(--n);padding:15px 28px;border-radius:8px;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px;min-height:52px;}
+    .bty:hover{background:var(--j2);transform:translateY(-2px);box-shadow:0 4px 20px rgba(245,197,24,.3);}
+    .btg{font-family:var(--fc);font-size:.85rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:transparent;color:var(--b);padding:15px 28px;border-radius:8px;text-decoration:none;border:1px solid rgba(255,255,255,.2);transition:all .2s;display:inline-flex;align-items:center;gap:8px;min-height:52px;}
+    .btg:hover{border-color:var(--j);color:var(--j);}
+    .hstats{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+    .sc{background:rgba(255,255,255,.05);backdrop-filter:blur(10px);border:1px solid rgba(245,197,24,.18);border-radius:var(--rad);padding:18px 22px;text-align:center;min-width:105px;}
+    .sn{font-family:var(--ft);font-size:2.1rem;font-weight:900;color:var(--j);line-height:1;display:block;}
+    .sl{font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-top:4px;display:block;}
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:500;height:64px;padding:0 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(15,15,15,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--bord);}
-.nlogo{font-family:var(--ft);font-size:1.5rem;font-weight:900;text-transform:uppercase;text-decoration:none;color:var(--b);letter-spacing:.05em;}
-.nlogo span{color:var(--j);}
-.nlinks{display:flex;gap:28px;list-style:none;}
-.nlinks a{font-family:var(--fc);font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.55);text-decoration:none;transition:color .2s;}
-.nlinks a:hover{color:var(--j);}
-.ncta{font-family:var(--fc);font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--j);color:var(--n);padding:10px 22px;border-radius:6px;text-decoration:none;transition:all .2s;}
-.ncta:hover{background:var(--j2);transform:translateY(-1px);}
-.hbg{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;}
-.hbg span{display:block;width:22px;height:2px;background:var(--b);}
+    /* MAP SOUS HERO */
+    #map-hero{padding:0 5% 80px;background:var(--n);}
+    .mapw-hero{max-width:1100px;margin:0 auto;}
+    .mapw-hero iframe{width:100%;height:300px;border:none;border-radius:var(--radl);filter:grayscale(30%) contrast(.9) brightness(.7);}
+    .mapbtn{display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-family:var(--fc);font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--j);text-decoration:none;border:1px solid rgba(245,197,24,.28);padding:9px 20px;border-radius:100px;transition:all .2s;}
+    .mapbtn:hover{background:rgba(245,197,24,.07);border-color:var(--j);}
 
-/* HERO */
-#hero{position:relative;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:130px 5% 100px;overflow:hidden;}
-.hbg-img{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1400&q=80') center/cover no-repeat;filter:brightness(.22) saturate(.8);z-index:-2;}
-.hov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,15,15,.2) 0%,rgba(15,15,15,.6) 60%,var(--n) 100%);z-index:-1;}
-.hc{position:relative;z-index:5;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
-.htitle{font-family:var(--ft);font-size:clamp(3.5rem,12vw,9rem);font-weight:900;text-transform:uppercase;line-height:.9;letter-spacing:-.02em;margin-bottom:16px;}
-.htitle .acc{color:var(--j);}
-.htitle .it{font-style:italic;}
-.hsub{font-size:clamp(.95rem,2.5vw,1.2rem);color:rgba(255,255,255,.6);max-width:480px;margin:0 auto 36px;line-height:1.65;}
-.hctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:56px;}
-.bty{font-family:var(--fc);font-size:.85rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--j);color:var(--n);padding:15px 28px;border-radius:8px;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px;min-height:52px;}
-.bty:hover{background:var(--j2);transform:translateY(-2px);box-shadow:0 4px 20px rgba(245,197,24,.3);}
-.btg{font-family:var(--fc);font-size:.85rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:transparent;color:var(--b);padding:15px 28px;border-radius:8px;text-decoration:none;border:1px solid rgba(255,255,255,.2);transition:all .2s;display:inline-flex;align-items:center;gap:8px;min-height:52px;}
-.btg:hover{border-color:var(--j);color:var(--j);}
-.hstats{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
-.sc{background:rgba(255,255,255,.05);backdrop-filter:blur(10px);border:1px solid rgba(245,197,24,.18);border-radius:var(--rad);padding:18px 22px;text-align:center;min-width:105px;}
-.sn{font-family:var(--ft);font-size:2.1rem;font-weight:900;color:var(--j);line-height:1;display:block;}
-.sl{font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-top:4px;display:block;}
+    /* SECTION COMMONS */
+    .stag{font-family:var(--fc);font-size:.63rem;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--j);display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+    .stag::before{content:'';width:18px;height:2px;background:var(--j);}
+    .stitle{font-family:var(--ft);font-size:clamp(2.2rem,5vw,3.8rem);font-weight:900;text-transform:uppercase;line-height:1;letter-spacing:-.01em;margin-bottom:44px;}
+    .stitle span{color:var(--j);}
 
-/* SECTION COMMONS */
-.stag{font-family:var(--fc);font-size:.63rem;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--j);display:flex;align-items:center;gap:10px;margin-bottom:14px;}
-.stag::before{content:'';width:18px;height:2px;background:var(--j);}
-.stitle{font-family:var(--ft);font-size:clamp(2.2rem,5vw,3.8rem);font-weight:900;text-transform:uppercase;line-height:1;letter-spacing:-.01em;margin-bottom:44px;}
-.stitle span{color:var(--j);}
+    /* POURQUOI */
+    #pourquoi{padding:100px 5%;background:var(--n2);}
+    .pqg{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;max-width:1100px;margin:0 auto;}
+    .pqc{background:var(--n3);border:1px solid rgba(255,255,255,.06);border-radius:var(--radl);padding:30px 26px;transition:border-color .3s,transform .3s;}
+    .pqc:hover{border-color:var(--j);transform:translateY(-4px);}
+    .pqc .ico{font-size:2.2rem;margin-bottom:14px;display:block;}
+    .pqc h3{font-family:var(--ft);font-size:1.25rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--b);margin-bottom:10px;}
+    .pqc p{font-size:.86rem;color:rgba(255,255,255,.5);line-height:1.7;}
 
-/* POURQUOI */
-#pourquoi{padding:100px 5%;background:var(--n2);}
-.pqg{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;max-width:1100px;margin:0 auto;}
-.pqc{background:var(--n3);border:1px solid rgba(255,255,255,.06);border-radius:var(--radl);padding:30px 26px;transition:border-color .3s,transform .3s;}
-.pqc:hover{border-color:var(--j);transform:translateY(-4px);}
-.pqc .ico{font-size:2.2rem;margin-bottom:14px;display:block;}
-.pqc h3{font-family:var(--ft);font-size:1.25rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--b);margin-bottom:10px;}
-.pqc p{font-size:.86rem;color:rgba(255,255,255,.5);line-height:1.7;}
+    /* BURGERS SCROLL */
+    #burgers{padding:100px 5%;}
+    .bscroll-wrap{position:relative;margin-top:36px;}
+    .bscroll{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:10px;}
+    .bscroll::-webkit-scrollbar{display:none;}
+    .bcard{min-width:230px;flex-shrink:0;scroll-snap-align:start;background:var(--n2);border:1px solid rgba(255,255,255,.07);border-radius:var(--radl);overflow:hidden;transition:border-color .3s,transform .3s;}
+    .bcard:hover{border-color:var(--j);transform:translateY(-4px);}
+    .btop{height:155px;overflow:hidden;position:relative;}
+    .btop img{width:100%;height:100%;object-fit:cover;opacity:.8;}
+    .bprice{position:absolute;top:10px;right:10px;background:var(--j);color:var(--n);font-family:var(--ft);font-size:.95rem;font-weight:900;padding:3px 10px;border-radius:4px;}
+    .bbody{padding:18px;}
+    .bname{font-family:var(--ft);font-size:1.1rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--b);margin-bottom:6px;}
+    .bdesc{font-size:.75rem;color:rgba(255,255,255,.4);line-height:1.5;}
+    /* Flèche défilement */
+    .scroll-hint{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;color:rgba(255,255,255,.5);font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;}
+    .scroll-arrows{display:flex;align-items:center;gap:4px;}
+    .scroll-arrows svg{width:28px;height:28px;fill:var(--j);animation:arrowPulse 1.4s ease-in-out infinite;}
+    .scroll-arrows svg:nth-child(2){animation-delay:.2s;}
+    .scroll-arrows svg:nth-child(3){animation-delay:.4s;}
+    @keyframes arrowPulse{0%,100%{opacity:.3;transform:translateX(0);}50%{opacity:1;transform:translateX(4px);}}
 
-/* BURGERS SCROLL */
-#burgers{padding:100px 5%;}
-.bscroll{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:10px;margin-top:36px;}
-.bscroll::-webkit-scrollbar{display:none;}
-.bcard{min-width:230px;flex-shrink:0;scroll-snap-align:start;background:var(--n2);border:1px solid rgba(255,255,255,.07);border-radius:var(--radl);overflow:hidden;transition:border-color .3s,transform .3s;}
-.bcard:hover{border-color:var(--j);transform:translateY(-4px);}
-.btop{height:155px;overflow:hidden;position:relative;}
-.btop img{width:100%;height:100%;object-fit:cover;opacity:.8;}
-.bprice{position:absolute;top:10px;right:10px;background:var(--j);color:var(--n);font-family:var(--ft);font-size:.95rem;font-weight:900;padding:3px 10px;border-radius:4px;}
-.bbody{padding:18px;}
-.bname{font-family:var(--ft);font-size:1.1rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--b);margin-bottom:6px;}
-.bdesc{font-size:.75rem;color:rgba(255,255,255,.4);line-height:1.5;}
+    /* MENU */
+    #menu{padding:100px 5%;background:var(--n2);}
+    .mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px;margin-top:44px;max-width:1100px;margin-left:auto;margin-right:auto;}
+    .msec{background:var(--n3);border:1px solid rgba(255,255,255,.06);border-radius:var(--radl);padding:26px 22px;}
+    .mstitle{font-family:var(--ft);font-size:.95rem;font-weight:900;text-transform:uppercase;letter-spacing:.14em;color:var(--n);background:var(--j);padding:4px 12px;border-radius:4px;display:inline-block;margin-bottom:16px;}
+    .mi{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);gap:10px;}
+    .mi:last-of-type{border-bottom:none;}
+    .min{font-size:.86rem;color:rgba(255,255,255,.75);flex:1;}
+    .min small{display:block;font-size:.7rem;color:rgba(255,255,255,.3);margin-top:1px;}
+    .mip{font-family:var(--ft);font-size:.98rem;font-weight:700;color:var(--j);white-space:nowrap;}
+    .mnote{font-size:.7rem;color:rgba(255,255,255,.28);margin-top:10px;font-style:italic;}
 
-/* MENU */
-#menu{padding:100px 5%;background:var(--n2);}
-.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px;margin-top:44px;max-width:1100px;margin-left:auto;margin-right:auto;}
-.msec{background:var(--n3);border:1px solid rgba(255,255,255,.06);border-radius:var(--radl);padding:26px 22px;}
-.mstitle{font-family:var(--ft);font-size:.95rem;font-weight:900;text-transform:uppercase;letter-spacing:.14em;color:var(--n);background:var(--j);padding:4px 12px;border-radius:4px;display:inline-block;margin-bottom:16px;}
-.mi{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);gap:10px;}
-.mi:last-of-type{border-bottom:none;}
-.min{font-size:.86rem;color:rgba(255,255,255,.75);flex:1;}
-.min small{display:block;font-size:.7rem;color:rgba(255,255,255,.3);margin-top:1px;}
-.mip{font-family:var(--ft);font-size:.98rem;font-weight:700;color:var(--j);white-space:nowrap;}
-.mnote{font-size:.7rem;color:rgba(255,255,255,.28);margin-top:10px;font-style:italic;}
+    /* APROPOS */
+    #apropos{padding:100px 5%;}
+    .apinner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+    .apimg{position:relative;}
+    .apimg img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radl);filter:brightness(.85) saturate(.9);}
+    .apbadge{position:absolute;bottom:-14px;right:-14px;background:var(--j);color:var(--n);padding:14px 18px;border-radius:var(--rad);text-align:center;box-shadow:0 4px 20px rgba(245,197,24,.3);}
+    .apbadge strong{font-family:var(--ft);font-size:1.6rem;font-weight:900;display:block;}
+    .apbadge span{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
+    .aptxt p{font-size:.95rem;color:rgba(255,255,255,.6);line-height:1.85;margin-bottom:22px;}
+    .atags{display:flex;flex-wrap:wrap;gap:8px;}
+    .atag{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--j);border:1px solid rgba(245,197,24,.28);padding:5px 13px;border-radius:100px;background:rgba(245,197,24,.05);}
 
-/* APROPOS */
-#apropos{padding:100px 5%;}
-.apinner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
-.apimg{position:relative;}
-.apimg img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radl);filter:brightness(.85) saturate(.9);}
-.apbadge{position:absolute;bottom:-14px;right:-14px;background:var(--j);color:var(--n);padding:14px 18px;border-radius:var(--rad);text-align:center;box-shadow:0 4px 20px rgba(245,197,24,.3);}
-.apbadge strong{font-family:var(--ft);font-size:1.6rem;font-weight:900;display:block;}
-.apbadge span{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
-.aptxt p{font-size:.95rem;color:rgba(255,255,255,.6);line-height:1.85;margin-bottom:22px;}
-.atags{display:flex;flex-wrap:wrap;gap:8px;}
-.atag{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--j);border:1px solid rgba(245,197,24,.28);padding:5px 13px;border-radius:100px;background:rgba(245,197,24,.05);}
+    /* TEMOIGNAGES */
+    #temoignages{padding:100px 5%;background:var(--n2);}
+    .tgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px;margin-top:36px;max-width:1100px;margin-left:auto;margin-right:auto;}
+    .tc{background:var(--n3);border:1px solid rgba(255,255,255,.07);border-radius:var(--radl);padding:26px 22px;transition:border-color .3s;}
+    .tc:hover{border-color:rgba(245,197,24,.3);}
+    .tstars{color:var(--j);font-size:.88rem;letter-spacing:2px;margin-bottom:12px;}
+    .ttxt{font-size:.88rem;color:rgba(255,255,255,.65);line-height:1.75;font-style:italic;margin-bottom:18px;}
+    .tau strong{font-size:.83rem;font-weight:700;color:var(--b);display:block;}
+    .tau span{font-size:.68rem;color:rgba(255,255,255,.32);text-transform:uppercase;letter-spacing:.08em;}
 
-/* TEMOIGNAGES */
-#temoignages{padding:100px 5%;background:var(--n2);}
-.tgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px;margin-top:36px;max-width:1100px;margin-left:auto;margin-right:auto;}
-.tc{background:var(--n3);border:1px solid rgba(255,255,255,.07);border-radius:var(--radl);padding:26px 22px;transition:border-color .3s;}
-.tc:hover{border-color:rgba(245,197,24,.3);}
-.tstars{color:var(--j);font-size:.88rem;letter-spacing:2px;margin-bottom:12px;}
-.ttxt{font-size:.88rem;color:rgba(255,255,255,.65);line-height:1.75;font-style:italic;margin-bottom:18px;}
-.tau strong{font-size:.83rem;font-weight:700;color:var(--b);display:block;}
-.tau span{font-size:.68rem;color:rgba(255,255,255,.32);text-transform:uppercase;letter-spacing:.08em;}
+    /* ZONES */
+    #zones{padding:80px 5%;text-align:center;}
+    .zchips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:28px;}
+    .zc{font-size:.76rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.11);padding:8px 18px;border-radius:100px;transition:all .2s;cursor:default;}
+    .zc:hover{border-color:var(--j);color:var(--j);}
+    .zc.main{border-color:rgba(245,197,24,.38);color:var(--j);background:rgba(245,197,24,.06);}
 
-/* ZONES */
-#zones{padding:80px 5%;text-align:center;}
-.zchips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:28px;}
-.zc{font-size:.76rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.11);padding:8px 18px;border-radius:100px;transition:all .2s;cursor:default;}
-.zc:hover{border-color:var(--j);color:var(--j);}
-.zc.main{border-color:rgba(245,197,24,.38);color:var(--j);background:rgba(245,197,24,.06);}
+    /* FAQ */
+    #faq{padding:100px 5%;background:var(--n2);}
+    .flist{max-width:680px;margin:36px auto 0;display:flex;flex-direction:column;gap:8px;}
+    .fi{background:var(--n3);border:1px solid rgba(255,255,255,.07);border-radius:var(--rad);overflow:hidden;transition:border-color .2s;}
+    .fi.open{border-color:rgba(245,197,24,.38);}
+    .fq{width:100%;background:none;border:none;color:var(--b);font-family:var(--fc);font-size:.88rem;font-weight:600;padding:17px 18px;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:14px;transition:color .2s;}
+    .fq:hover{color:var(--j);}
+    .fico{width:21px;height:21px;border-radius:50%;border:1.5px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;color:var(--j);font-size:.85rem;flex-shrink:0;transition:transform .3s,border-color .2s;}
+    .fi.open .fico{transform:rotate(45deg);border-color:var(--j);}
+    .fa{max-height:0;overflow:hidden;transition:max-height .4s ease;}
+    .fi.open .fa{max-height:200px;}
+    .fa p{padding:0 18px 16px;font-size:.83rem;color:rgba(255,255,255,.45);line-height:1.75;}
 
-/* FAQ */
-#faq{padding:100px 5%;background:var(--n2);}
-.flist{max-width:680px;margin:36px auto 0;display:flex;flex-direction:column;gap:8px;}
-.fi{background:var(--n3);border:1px solid rgba(255,255,255,.07);border-radius:var(--rad);overflow:hidden;transition:border-color .2s;}
-.fi.open{border-color:rgba(245,197,24,.38);}
-.fq{width:100%;background:none;border:none;color:var(--b);font-family:var(--fc);font-size:.88rem;font-weight:600;padding:17px 18px;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:14px;transition:color .2s;}
-.fq:hover{color:var(--j);}
-.fico{width:21px;height:21px;border-radius:50%;border:1.5px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;color:var(--j);font-size:.85rem;flex-shrink:0;transition:transform .3s,border-color .2s;}
-.fi.open .fico{transform:rotate(45deg);border-color:var(--j);}
-.fa{max-height:0;overflow:hidden;transition:max-height .4s ease;}
-.fi.open .fa{max-height:200px;}
-.fa p{padding:0 18px 16px;font-size:.83rem;color:rgba(255,255,255,.45);line-height:1.75;}
+    /* CONTACT */
+    #contact{padding:100px 5%;}
+    .cinner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1.2fr;gap:56px;}
+    .cii{display:flex;gap:14px;align-items:flex-start;margin-bottom:26px;}
+    .cico{width:40px;height:40px;border-radius:10px;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.18);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+    .cilabel{font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.32);display:block;margin-bottom:3px;}
+    .cival{font-size:.95rem;color:var(--b);}
+    .cival a{color:var(--b);text-decoration:none;transition:color .2s;}
+    .cival a:hover{color:var(--j);}
+    .hbox{background:var(--n2);border:1px solid rgba(255,255,255,.07);border-radius:var(--radl);padding:22px;margin-top:6px;}
+    .htit{font-family:var(--ft);font-size:.76rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--j);margin-bottom:12px;}
+    .hrow{display:flex;justify-content:space-between;font-size:.78rem;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);color:rgba(255,255,255,.45);}
+    .hrow:last-child{border-bottom:none;}
+    .hrow span:last-child{color:var(--b);}
+    .hrow.f span:last-child{color:var(--r);}
+    .cform{display:flex;flex-direction:column;gap:11px;}
+    .crow{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+    .cform input,.cform select,.cform textarea{background:var(--n2);border:1px solid rgba(255,255,255,.1);color:var(--b);font-family:var(--fc);font-size:.86rem;padding:13px 15px;border-radius:var(--rad);outline:none;width:100%;transition:border-color .2s;-webkit-appearance:none;appearance:none;}
+    .cform input::placeholder,.cform textarea::placeholder{color:rgba(255,255,255,.22);}
+    .cform input:focus,.cform select:focus,.cform textarea:focus{border-color:var(--j);background:var(--n3);}
+    .cform select{cursor:pointer;color:rgba(255,255,255,.38);}
+    .cform select option{background:var(--n2);color:var(--b);}
+    .cform textarea{min-height:100px;resize:vertical;}
+    .btsub{background:var(--j);color:var(--n);font-family:var(--fc);font-weight:700;font-size:.86rem;letter-spacing:.08em;text-transform:uppercase;padding:15px;border:none;border-radius:var(--rad);cursor:pointer;width:100%;transition:all .2s;}
+    .btsub:hover{background:var(--j2);transform:translateY(-1px);}
+    .fsuc{display:none;text-align:center;padding:36px 18px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.28);border-radius:var(--radl);}
+    .fsuc .fsi{font-size:2.4rem;display:block;margin-bottom:10px;}
+    .fsuc h3{font-family:var(--ft);font-size:1.4rem;color:var(--j);margin-bottom:8px;}
+    .fsuc p{font-size:.85rem;color:rgba(255,255,255,.45);}
 
-/* CONTACT */
-#contact{padding:100px 5%;}
-.cinner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1.2fr;gap:56px;}
-.cii{display:flex;gap:14px;align-items:flex-start;margin-bottom:26px;}
-.cico{width:40px;height:40px;border-radius:10px;background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.18);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
-.cilabel{font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.32);display:block;margin-bottom:3px;}
-.cival{font-size:.95rem;color:var(--b);}
-.cival a{color:var(--b);text-decoration:none;transition:color .2s;}
-.cival a:hover{color:var(--j);}
-.hbox{background:var(--n2);border:1px solid rgba(255,255,255,.07);border-radius:var(--radl);padding:22px;margin-top:6px;}
-.htit{font-family:var(--ft);font-size:.76rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--j);margin-bottom:12px;}
-.hrow{display:flex;justify-content:space-between;font-size:.78rem;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);color:rgba(255,255,255,.45);}
-.hrow:last-child{border-bottom:none;}
-.hrow span:last-child{color:var(--b);}
-.hrow.f span:last-child{color:var(--r);}
-.cform{display:flex;flex-direction:column;gap:11px;}
-.crow{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
-.cform input,.cform select,.cform textarea{background:var(--n2);border:1px solid rgba(255,255,255,.1);color:var(--b);font-family:var(--fc);font-size:.86rem;padding:13px 15px;border-radius:var(--rad);outline:none;width:100%;transition:border-color .2s;-webkit-appearance:none;appearance:none;}
-.cform input::placeholder,.cform textarea::placeholder{color:rgba(255,255,255,.22);}
-.cform input:focus,.cform select:focus,.cform textarea:focus{border-color:var(--j);background:var(--n3);}
-.cform select{cursor:pointer;color:rgba(255,255,255,.38);}
-.cform select option{background:var(--n2);color:var(--b);}
-.cform textarea{min-height:100px;resize:vertical;}
-.btsub{background:var(--j);color:var(--n);font-family:var(--fc);font-weight:700;font-size:.86rem;letter-spacing:.08em;text-transform:uppercase;padding:15px;border:none;border-radius:var(--rad);cursor:pointer;width:100%;transition:all .2s;}
-.btsub:hover{background:var(--j2);transform:translateY(-1px);}
-.fsuc{display:none;text-align:center;padding:36px 18px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.28);border-radius:var(--radl);}
-.fsuc .fsi{font-size:2.4rem;display:block;margin-bottom:10px;}
-.fsuc h3{font-family:var(--ft);font-size:1.4rem;color:var(--j);margin-bottom:8px;}
-.fsuc p{font-size:.85rem;color:rgba(255,255,255,.45);}
-.mapw{grid-column:1/-1;margin-top:10px;}
-.mapw iframe{width:100%;height:270px;border:none;border-radius:var(--radl);filter:grayscale(30%) contrast(.9) brightness(.7);}
-.mapbtn{display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-family:var(--fc);font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--j);text-decoration:none;border:1px solid rgba(245,197,24,.28);padding:9px 20px;border-radius:100px;transition:all .2s;}
-.mapbtn:hover{background:rgba(245,197,24,.07);border-color:var(--j);}
+    /* FOOTER */
+    footer{border-top:1px solid rgba(255,255,255,.07);padding:46px 5% 28px;background:var(--n);}
+    .finner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:38px;margin-bottom:36px;}
+    .flogo{font-family:var(--ft);font-size:1.75rem;font-weight:900;text-transform:uppercase;color:var(--b);letter-spacing:.05em;display:block;margin-bottom:10px;}
+    .flogo span{color:var(--j);}
+    .fdesc{font-size:.82rem;color:rgba(255,255,255,.38);line-height:1.7;}
+    .fct{font-family:var(--fc);font-size:.6rem;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--j);margin-bottom:14px;}
+    .flinks{list-style:none;display:flex;flex-direction:column;gap:7px;}
+    .flinks a{font-size:.83rem;color:rgba(255,255,255,.38);text-decoration:none;transition:color .2s;}
+    .flinks a:hover{color:var(--j);}
+    .fbot{max-width:1100px;margin:0 auto;padding-top:20px;border-top:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+    .fbot p{font-size:.68rem;color:rgba(255,255,255,.22);}
 
-/* FOOTER */
-footer{border-top:1px solid rgba(255,255,255,.07);padding:46px 5% 28px;background:var(--n);}
-.finner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:38px;margin-bottom:36px;}
-.flogo{font-family:var(--ft);font-size:1.75rem;font-weight:900;text-transform:uppercase;color:var(--b);letter-spacing:.05em;display:block;margin-bottom:10px;}
-.flogo span{color:var(--j);}
-.fdesc{font-size:.82rem;color:rgba(255,255,255,.38);line-height:1.7;}
-.fct{font-family:var(--fc);font-size:.6rem;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--j);margin-bottom:14px;}
-.flinks{list-style:none;display:flex;flex-direction:column;gap:7px;}
-.flinks a{font-size:.83rem;color:rgba(255,255,255,.38);text-decoration:none;transition:color .2s;}
-.flinks a:hover{color:var(--j);}
-.fbot{max-width:1100px;margin:0 auto;padding-top:20px;border-top:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
-.fbot p{font-size:.68rem;color:rgba(255,255,255,.22);}
+    /* WA */
+    .wa{position:fixed;bottom:22px;right:18px;z-index:400;width:52px;height:52px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 4px 18px rgba(37,211,102,.4);animation:waf 3s ease-in-out infinite;}
+    .wa:hover{transform:scale(1.1);animation:none;}
+    @keyframes waf{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
 
-/* WA */
-.wa{position:fixed;bottom:22px;right:18px;z-index:400;width:52px;height:52px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 4px 18px rgba(37,211,102,.4);animation:waf 3s ease-in-out infinite;}
-.wa:hover{transform:scale(1.1);animation:none;}
-@keyframes waf{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+    /* REVEAL */
+    .rv{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease;}
+    .rv.on{opacity:1;transform:translateY(0);}
+    .rv2{opacity:0;transform:translateY(28px);transition:opacity .65s .15s ease,transform .65s .15s ease;}
+    .rv2.on{opacity:1;transform:translateY(0);}
+    .rv3{opacity:0;transform:translateY(28px);transition:opacity .65s .3s ease,transform .65s .3s ease;}
+    .rv3.on{opacity:1;transform:translateY(0);}
 
-/* REVEAL */
-.rv{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease;}
-.rv.on{opacity:1;transform:translateY(0);}
-.rv2{opacity:0;transform:translateY(28px);transition:opacity .65s .15s ease,transform .65s .15s ease;}
-.rv2.on{opacity:1;transform:translateY(0);}
-.rv3{opacity:0;transform:translateY(28px);transition:opacity .65s .3s ease,transform .65s .3s ease;}
-.rv3.on{opacity:1;transform:translateY(0);}
-
-/* RESPONSIVE */
-@media(max-width:900px){
-  .nlinks,.ncta{display:none;}
-  .hbg{display:flex;}
-  .apinner,.cinner{grid-template-columns:1fr;}
-  .finner{grid-template-columns:1fr;gap:24px;}
-  .crow{grid-template-columns:1fr;}
-}
-@media(max-width:600px){
-  .hstats{gap:8px;}
-  .sc{min-width:85px;padding:14px;}
-  .sn{font-size:1.75rem;}
-}
-```
-
+    /* RESPONSIVE */
+    @media(max-width:900px){
+      .nlinks,.ncta{display:none;}
+      .hbg{display:flex;}
+      .apinner,.cinner{grid-template-columns:1fr;}
+      .finner{grid-template-columns:1fr;gap:24px;}
+      .crow{grid-template-columns:1fr;}
+    }
+    @media(max-width:600px){
+      .hstats{gap:8px;}
+      .sc{min-width:85px;padding:14px;}
+      .sn{font-size:1.75rem;}
+    }
   </style>
 </head>
 <body>
-
-<div id="intro" onclick="skipIntro()">
-  <div class="rideau-left"></div>
-  <div class="rideau-right"></div>
-  <div class="rideau-line"></div>
-  <div class="rideau-logo">
-    <div class="rl-name">KSM<br>Burger</div>
-    <div class="rl-sub">Fleurie &middot; Beaujolais</div>
-  </div>
-</div>
 
 <nav>
   <a href="#hero" class="nlogo">KSM <span>Burger</span></a>
@@ -363,7 +266,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:46px 5% 28px;backgroun
     <li><a href="#temoignages">Avis</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <a href="tel:0950948815" class="ncta">&#9742; Commander</a>
+  <a href="tel:0950948815" class="ncta">☎ Commander</a>
   <button class="hbg" aria-label="Menu" onclick="toggleNav()"><span></span><span></span><span></span></button>
 </nav>
 
@@ -372,17 +275,25 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:46px 5% 28px;backgroun
   <div class="hov"></div>
   <div class="hc">
     <h1 class="htitle">Burgers<br><span class="acc it">Faits Maison</span></h1>
-    <p class="hsub">Viande hachee fraiche, produits de qualite, nommes d apres les crus du Beaujolais. Le meilleur fast-food de Fleurie.</p>
+    <p class="hsub">Viande hachée fraîche, produits de qualité, nommés d'après les crus du Beaujolais. Le meilleur fast-food de Fleurie.</p>
     <div class="hctas">
-      <a href="#menu" class="bty">&#127828; Voir le menu</a>
-      <a href="tel:0950948815" class="btg">&#128222; 09 50 94 88 15</a>
+      <a href="#menu" class="bty">🍔 Voir le menu</a>
+      <a href="tel:0950948815" class="btg">📞 09 50 94 88 15</a>
     </div>
     <div class="hstats">
-      <div class="sc"><span class="sn">4.9&#9733;</span><span class="sl">Note Google</span></div>
-      <div class="sc"><span class="sn">100%</span><span class="sl">Frais &amp; Halal</span></div>
+      <div class="sc"><span class="sn">4.9★</span><span class="sl">Note Google</span></div>
+      <div class="sc"><span class="sn">Fait ❤️</span><span class="sl">avec amour</span></div>
       <div class="sc"><span class="sn">12</span><span class="sl">Crus Beaujolais</span></div>
       <div class="sc"><span class="sn">3</span><span class="sl">Modes service</span></div>
     </div>
+  </div>
+</section>
+
+<!-- GOOGLE MAP SOUS LE HERO -->
+<section id="map-hero">
+  <div class="mapw-hero">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2777!2d4.6969!3d46.1916!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s10+Rue+du+Beaujolais+69820+Fleurie!5e0!3m2!1sfr!2sfr!4v1" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="KSM Burger — 10 Rue du Beaujolais, 69820 Fleurie"></iframe>
+    <a href="https://www.google.com/maps/dir/?api=1&destination=10+Rue+du+Beaujolais%2C+69820+Fleurie" target="_blank" rel="noopener" class="mapbtn">🧭 Obtenir l'itinéraire</a>
   </div>
 </section>
 
@@ -390,68 +301,78 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:46px 5% 28px;backgroun
   <div class="stag rv">Pourquoi KSM</div>
   <h2 class="stitle rv">Le Fast-Food<br>qui <span>change tout</span></h2>
   <div class="pqg">
-    <div class="pqc rv"><span class="ico">&#129385;</span><h3>Viande Fraiche</h3><p>Chaque burger est prepare avec de la viande hachee fraiche, jamais surgelee. Vous le sentez des la premiere bouchee.</p></div>
-    <div class="pqc rv2"><span class="ico">&#127839;</span><h3>Frites Maison</h3><p>Des frites coupees et cuites sur place. Simples, cheddar, bacon, oignons frits -- a vous de choisir votre combo.</p></div>
-    <div class="pqc rv3"><span class="ico">&#127807;</span><h3>100% Halal</h3><p>Tous nos produits carnes sont certifies halal. Un engagement clair pour que tout le monde puisse se regaler.</p></div>
+    <div class="pqc rv"><span class="ico">🥩</span><h3>Viande Fraîche</h3><p>Chaque burger est préparé avec de la viande hachée fraîche, jamais surgelée. Vous le sentez dès la première bouchée.</p></div>
+    <div class="pqc rv2"><span class="ico">🍟</span><h3>Frites Maison</h3><p>Des frites coupées et cuites sur place. Simples, cheddar, bacon, oignons frits — à vous de choisir votre combo.</p></div>
+    <div class="pqc rv3"><span class="ico">🌿</span><h3>Produits de Qualité</h3><p>Des ingrédients sélectionnés avec soin, une cuisine préparée sur place chaque jour. Ici, on ne fait pas de compromis.</p></div>
   </div>
 </section>
 
 <section id="burgers">
   <div class="stag rv">La carte signature</div>
   <h2 class="stitle rv">Les <span>Crus</span> du Beaujolais</h2>
-  <p style="color:rgba(255,255,255,.45);font-size:.88rem;margin-top:-30px;margin-bottom:12px;" class="rv">Chaque burger porte le nom d un cru du Beaujolais. Uniquement chez KSM.</p>
-  <div class="bscroll">
-    <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80" alt="Le Beaujolais burger KSM Fleurie" loading="lazy"><span class="bprice">12&#8364;</span></div><div class="bbody"><div class="bname">Le Beaujolais</div><div class="bdesc">Steack 120g, salade, oignons, bacon, cheddar</div></div></div>
-    <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&q=80" alt="Le Fleurie burger KSM" loading="lazy"><span class="bprice">12&#8364;</span></div><div class="bbody"><div class="bname">Le Fleurie</div><div class="bdesc">Steack 120g, salade, chevre, miel, oignons</div></div></div>
-    <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1586816001966-79b736744398?w=400&q=80" alt="Le Triple Cheese Bacon KSM" loading="lazy"><span class="bprice">16&#8364;</span></div><div class="bbody"><div class="bname">Le Triple Cheese Bacon</div><div class="bdesc">Triple steack, salade, bacon, cheddar</div></div></div>
-    <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=400&q=80" alt="Le Chenas burger KSM" loading="lazy"><span class="bprice">14&#8364;</span></div><div class="bbody"><div class="bname">Le Chenas</div><div class="bdesc">Double steack 120g, salade, cheddar, oignons</div></div></div>
-    <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1561758033-48d52648ae8b?w=400&q=80" alt="Le Chiroubles burger KSM" loading="lazy"><span class="bprice">12&#8364;</span></div><div class="bbody"><div class="bname">Le Chiroubles</div><div class="bdesc">Steack 120g, salade, rosti, raclette, oignons</div></div></div>
-    <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=400&q=80" alt="Le Triple Julienas KSM" loading="lazy"><span class="bprice">17&#8364;</span></div><div class="bbody"><div class="bname">Le Triple Julienas</div><div class="bdesc">Triple steack, salade, rosti, oignons</div></div></div>
-    <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=400&q=80" alt="Le Moulin a Vent KSM" loading="lazy"><span class="bprice">12&#8364;</span></div><div class="bbody"><div class="bname">Le Moulin a Vent</div><div class="bdesc">Poulet pane, salade, cheddar</div></div></div>
-    <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1585238342024-78d387f4a707?w=400&q=80" alt="Le Morgon KSM" loading="lazy"><span class="bprice">12&#8364;</span></div><div class="bbody"><div class="bname">Le Morgon</div><div class="bdesc">Steack 120g, salade, cheddar, bacon, oeuf</div></div></div>
-    <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&q=80" alt="Le Saint Amour KSM" loading="lazy"><span class="bprice">12&#8364;</span></div><div class="bbody"><div class="bname">Le Saint Amour</div><div class="bdesc">Steack vegetarien, salade, cheddar, oignons</div></div></div>
+  <p style="color:rgba(255,255,255,.45);font-size:.88rem;margin-top:-30px;margin-bottom:12px;" class="rv">Chaque burger porte le nom d'un cru du Beaujolais. Uniquement chez KSM.</p>
+  <div class="bscroll-wrap">
+    <div class="bscroll" id="bscroll">
+      <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80" alt="Le Beaujolais burger KSM Fleurie" loading="lazy"><span class="bprice">12€</span></div><div class="bbody"><div class="bname">Le Beaujolais</div><div class="bdesc">Steak 120g, salade, oignons, bacon, cheddar</div></div></div>
+      <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&q=80" alt="Le Fleurie burger KSM" loading="lazy"><span class="bprice">12€</span></div><div class="bbody"><div class="bname">Le Fleurie</div><div class="bdesc">Steak 120g, salade, chèvre, miel, oignons</div></div></div>
+      <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1586816001966-79b736744398?w=400&q=80" alt="Le Triple Cheese Bacon KSM" loading="lazy"><span class="bprice">16€</span></div><div class="bbody"><div class="bname">Le Triple Cheese Bacon</div><div class="bdesc">Triple steak, salade, bacon, cheddar</div></div></div>
+      <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=400&q=80" alt="Le Chénas burger KSM" loading="lazy"><span class="bprice">14€</span></div><div class="bbody"><div class="bname">Le Chénas</div><div class="bdesc">Double steak 120g, salade, cheddar, oignons</div></div></div>
+      <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1561758033-48d52648ae8b?w=400&q=80" alt="Le Chiroubles burger KSM" loading="lazy"><span class="bprice">12€</span></div><div class="bbody"><div class="bname">Le Chiroubles</div><div class="bdesc">Steak 120g, salade, rösti, raclette, oignons</div></div></div>
+      <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=400&q=80" alt="Le Triple Juliénas KSM" loading="lazy"><span class="bprice">17€</span></div><div class="bbody"><div class="bname">Le Triple Juliénas</div><div class="bdesc">Triple steak, salade, rösti, oignons</div></div></div>
+      <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=400&q=80" alt="Le Moulin à Vent KSM" loading="lazy"><span class="bprice">12€</span></div><div class="bbody"><div class="bname">Le Moulin à Vent</div><div class="bdesc">Poulet pané, salade, cheddar</div></div></div>
+      <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1585238342024-78d387f4a707?w=400&q=80" alt="Le Morgon KSM" loading="lazy"><span class="bprice">12€</span></div><div class="bbody"><div class="bname">Le Morgon</div><div class="bdesc">Steak 120g, salade, cheddar, bacon, œuf</div></div></div>
+      <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&q=80" alt="Le Saint Amour KSM" loading="lazy"><span class="bprice">12€</span></div><div class="bbody"><div class="bname">Le Saint Amour</div><div class="bdesc">Steak végétarien, salade, cheddar, oignons</div></div></div>
+    </div>
+    <div class="scroll-hint">
+      <div class="scroll-arrows">
+        <svg viewBox="0 0 24 24"><path d="M8 5l8 7-8 7"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M8 5l8 7-8 7"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M8 5l8 7-8 7"/></svg>
+      </div>
+      <span>Faites défiler</span>
+      <span style="color:var(--j);margin-left:6px;">Menu +3€ (boisson + frite)</span>
+    </div>
   </div>
-  <p style="font-size:.72rem;color:rgba(255,255,255,.25);margin-top:12px;text-align:center;">&larr; Defilez &middot; Menu +3&#8364; (boisson + frite)</p>
 </section>
 
 <section id="menu">
   <div class="stag rv">Menu complet</div>
-  <h2 class="stitle rv">Tout ce qu on <span>propose</span></h2>
+  <h2 class="stitle rv">Tout ce qu'on <span>propose</span></h2>
   <div class="mgrid">
     <div class="msec rv"><span class="mstitle">Tacos</span>
-      <div class="mi"><span class="min">Tacos simple<small>Viande au choix, salade, frite</small></span><span class="mip">8&#8364;</span></div>
-      <div class="mi"><span class="min">Maxi Tacos<small>Double viande au choix, salade, frite</small></span><span class="mip">12&#8364;</span></div>
-      <p class="mnote">Menu +3&#8364;</p>
+      <div class="mi"><span class="min">Tacos simple<small>Viande au choix, salade, frite</small></span><span class="mip">8€</span></div>
+      <div class="mi"><span class="min">Maxi Tacos<small>Double viande au choix, salade, frite</small></span><span class="mip">12€</span></div>
+      <p class="mnote">Menu +3€</p>
     </div>
     <div class="msec rv2"><span class="mstitle">Sandwichs</span>
-      <div class="mi"><span class="min">Le Boursin<small>Escalope, boursin, salade</small></span><span class="mip">8&#8364;</span></div>
-      <div class="mi"><span class="min">Le Chef<small>Viande hachee, cheddar, salade</small></span><span class="mip">8&#8364;</span></div>
-      <div class="mi"><span class="min">Le Kebab<small>Kebab, salade, sauce blanche</small></span><span class="mip">8&#8364;</span></div>
+      <div class="mi"><span class="min">Le Boursin<small>Escalope, boursin, salade</small></span><span class="mip">8€</span></div>
+      <div class="mi"><span class="min">Le Chef<small>Viande hachée, cheddar, salade</small></span><span class="mip">8€</span></div>
+      <div class="mi"><span class="min">Le Kebab<small>Kebab, salade, sauce blanche</small></span><span class="mip">8€</span></div>
     </div>
     <div class="msec rv3"><span class="mstitle">Frites</span>
-      <div class="mi"><span class="min">Frite simple</span><span class="mip">3&#8364;</span></div>
-      <div class="mi"><span class="min">Frite cheddar</span><span class="mip">4&#8364;</span></div>
-      <div class="mi"><span class="min">Frite cheddar bacon</span><span class="mip">4,50&#8364;</span></div>
-      <div class="mi"><span class="min">Frite oignons frits</span><span class="mip">4,50&#8364;</span></div>
-      <div class="mi"><span class="min">Frite gruyere</span><span class="mip">4&#8364;</span></div>
-      <div class="mi"><span class="min">Frite gruyere bacon</span><span class="mip">4,50&#8364;</span></div>
+      <div class="mi"><span class="min">Frite simple</span><span class="mip">3€</span></div>
+      <div class="mi"><span class="min">Frite cheddar</span><span class="mip">4€</span></div>
+      <div class="mi"><span class="min">Frite cheddar bacon</span><span class="mip">4,50€</span></div>
+      <div class="mi"><span class="min">Frite oignons frits</span><span class="mip">4,50€</span></div>
+      <div class="mi"><span class="min">Frite gruyère</span><span class="mip">4€</span></div>
+      <div class="mi"><span class="min">Frite gruyère bacon</span><span class="mip">4,50€</span></div>
     </div>
     <div class="msec rv"><span class="mstitle">Bowls &amp; Snacking</span>
-      <div class="mi"><span class="min">Bowl<small>Frite ou salade, viande, fromage, sauce</small></span><span class="mip">10&#8364;</span></div>
-      <div class="mi"><span class="min">Snacking<small>Tenders x4, Nuggets x6, Jalapenos x6...</small></span><span class="mip">6&#8364;</span></div>
-      <div class="mi"><span class="min">Box a partager<small>4 Tenders, 4 Nuggets, 4 Bouchees, 2 canettes</small></span><span class="mip">19,90&#8364;</span></div>
+      <div class="mi"><span class="min">Bowl<small>Frite ou salade, viande, fromage, sauce</small></span><span class="mip">10€</span></div>
+      <div class="mi"><span class="min">Snacking<small>Tenders ×4, Nuggets ×6, Jalapeños ×6…</small></span><span class="mip">6€</span></div>
+      <div class="mi"><span class="min">Box à partager<small>4 Tenders, 4 Nuggets, 4 Bouchées, 2 canettes</small></span><span class="mip">19,90€</span></div>
     </div>
     <div class="msec rv2"><span class="mstitle">Salades &amp; Desserts</span>
-      <div class="mi"><span class="min">Salade chevre chaud</span><span class="mip">11,90&#8364;</span></div>
-      <div class="mi"><span class="min">Salade cesar</span><span class="mip">11,90&#8364;</span></div>
-      <div class="mi"><span class="min">Tiramisu</span><span class="mip">3&#8364;</span></div>
-      <div class="mi"><span class="min">Tarte au daim</span><span class="mip">3&#8364;</span></div>
-      <div class="mi"><span class="min">Donut s</span><span class="mip">2&#8364;</span></div>
-      <div class="mi"><span class="min">Gaufre</span><span class="mip">5&#8364;</span></div>
+      <div class="mi"><span class="min">Salade chèvre chaud</span><span class="mip">11,90€</span></div>
+      <div class="mi"><span class="min">Salade César</span><span class="mip">11,90€</span></div>
+      <div class="mi"><span class="min">Tiramisu</span><span class="mip">3€</span></div>
+      <div class="mi"><span class="min">Tarte au Daim</span><span class="mip">3€</span></div>
+      <div class="mi"><span class="min">Donuts</span><span class="mip">2€</span></div>
+      <div class="mi"><span class="min">Gaufre</span><span class="mip">5€</span></div>
     </div>
     <div class="msec rv3"><span class="mstitle">Menu Kids</span>
-      <div class="mi"><span class="min">Menu enfant<small>4 nuggets ou mini burger, eau, compote</small></span><span class="mip">8&#8364;</span></div>
-      <p class="mnote" style="margin-top:18px;">&#128102; Ideal pour les petits appetits</p>
+      <div class="mi"><span class="min">Menu enfant<small>4 nuggets ou mini burger, eau, compote</small></span><span class="mip">8€</span></div>
+      <p class="mnote" style="margin-top:18px;">👦 Idéal pour les petits appétits</p>
     </div>
   </div>
 </section>
@@ -460,18 +381,18 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:46px 5% 28px;backgroun
   <div class="apinner">
     <div class="apimg rv">
       <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=700&q=80" alt="KSM Burger restaurant Fleurie Beaujolais" loading="lazy">
-      <div class="apbadge"><strong>4.9&#9733;</strong><span>17 avis</span></div>
+      <div class="apbadge"><strong>4.9★</strong><span>17 avis</span></div>
     </div>
     <div class="aptxt rv2">
       <div class="stag">Notre histoire</div>
       <h2 class="stitle" style="font-size:clamp(2rem,4vw,3rem);margin-bottom:24px;">Une histoire<br>de <span>famille</span></h2>
-      <p>KSM, c est Kassim, Sofiane et Melanie -- une famille passionnee qui a ouvert ses portes en decembre 2024 a Fleurie. Un projet ne du desir de combler un manque dans le village et d apporter un fast-food de qualite au coeur du Beaujolais.</p>
-      <p>Sofiane et Melanie ont entierement renove l ancienne boucherie du village. Chaque burger porte le nom d un cru du Beaujolais -- un clin d oeil au territoire qu ils ont adopte.</p>
+      <p>KSM, c'est Kassim, Sofiane et Mélanie — une famille passionnée qui a ouvert ses portes en décembre 2024 à Fleurie. Un projet né du désir de combler un manque dans le village et d'apporter un fast-food de qualité au cœur du Beaujolais.</p>
+      <p>Sofiane et Mélanie ont entièrement rénové l'ancienne boucherie du village. Chaque burger porte le nom d'un cru du Beaujolais — un clin d'œil au territoire qu'ils ont adopté.</p>
       <div class="atags">
         <span class="atag">Famille Dorrhom</span>
-        <span class="atag">Dec. 2024</span>
-        <span class="atag">Halal certifie</span>
+        <span class="atag">Déc. 2024</span>
         <span class="atag">Produits frais</span>
+        <span class="atag">Fait maison</span>
         <span class="atag">Local Beaujolais</span>
       </div>
     </div>
@@ -480,11 +401,11 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:46px 5% 28px;backgroun
 
 <section id="temoignages">
   <div class="stag rv" style="justify-content:center;">Ils nous font confiance</div>
-  <h2 class="stitle rv" style="text-align:center;">Ce qu ils <span>en disent</span></h2>
+  <h2 class="stitle rv" style="text-align:center;">Ce qu'ils <span>en disent</span></h2>
   <div class="tgrid">
-    <div class="tc rv"><div class="tstars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ttxt">"Teste pour l ouverture et revenu une semaine apres -- les burgers et les frites cheddar bacon sont une tuerie. Une equipe agreeable, des produits vraiment frais."</p><div class="tau"><strong>Thomas R.</strong><span>Avis Google &middot; Fleurie</span></div></div>
-    <div class="tc rv2"><div class="tstars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ttxt">"Meilleur snack de toute la region. Le patron est toujours souriant, une atmosphere paisible et une bonne ambiance. Vraiment une pepite !"</p><div class="tau"><strong>Nadia K.</strong><span>Avis Google &middot; Belleville</span></div></div>
-    <div class="tc rv3"><div class="tstars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="ttxt">"Accueil plus que chaleureux ! Le meilleur tacos que j ai pu manger. Produits frais et de qualite. Enfin un fast-food pres de chez nous et BON."</p><div class="tau"><strong>Camille D.</strong><span>Avis Google &middot; Macon</span></div></div>
+    <div class="tc rv"><div class="tstars">★★★★★</div><p class="ttxt">« Testé pour l'ouverture et revenu une semaine après — les burgers et les frites cheddar bacon sont une tuerie. Une équipe agréable, des produits vraiment frais. »</p><div class="tau"><strong>Thomas R.</strong><span>Avis Google · Fleurie</span></div></div>
+    <div class="tc rv2"><div class="tstars">★★★★★</div><p class="ttxt">« Meilleur snack de toute la région. Le patron est toujours souriant, une atmosphère paisible et une bonne ambiance. Vraiment une pépite ! »</p><div class="tau"><strong>Nadia K.</strong><span>Avis Google · Belleville</span></div></div>
+    <div class="tc rv3"><div class="tstars">★★★★★</div><p class="ttxt">« Accueil plus que chaleureux ! Le meilleur tacos que j'ai pu manger. Produits frais et de qualité. Enfin un fast-food près de chez nous et BON. »</p><div class="tau"><strong>Camille D.</strong><span>Avis Google · Mâcon</span></div></div>
   </div>
 </section>
 
@@ -494,23 +415,23 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:46px 5% 28px;backgroun
   <div class="zchips rv">
     <span class="zc main">Fleurie</span>
     <span class="zc">Belleville-en-Beaujolais</span>
-    <span class="zc">Macon</span>
+    <span class="zc">Mâcon</span>
     <span class="zc">Thoissey</span>
-    <span class="zc">Villie-Morgon</span>
+    <span class="zc">Villié-Morgon</span>
     <span class="zc">Beaujolais</span>
     <span class="zc">Livraison locale</span>
   </div>
 </section>
 
 <section id="faq">
-  <div class="stag rv" style="justify-content:center;">Questions frequentes</div>
-  <h2 class="stitle rv" style="text-align:center;">On <span>repond</span> a tout</h2>
+  <div class="stag rv" style="justify-content:center;">Questions fréquentes</div>
+  <h2 class="stitle rv" style="text-align:center;">On <span>répond</span> à tout</h2>
   <div class="flist">
-    <div class="fi"><button class="fq">Vos produits sont-ils vraiment frais ?<span class="fico">+</span></button><div class="fa"><p>Absolument. Toute la viande hachee est fraiche, jamais surgelee. Les frites sont coupees et preparees sur place chaque jour.</p></div></div>
-    <div class="fi"><button class="fq">Proposez-vous des options halal ?<span class="fico">+</span></button><div class="fa"><p>Oui, l integralite de nos viandes est certifiee halal. Burgers, tacos, kebabs -- tout est halal chez KSM Burger.</p></div></div>
-    <div class="fi"><button class="fq">Quels sont vos horaires ?<span class="fico">+</span></button><div class="fa"><p>Mercredi au dimanche : 12h-14h et 18h30-21h30 (22h vendredi et samedi). Ferme lundi et mardi.</p></div></div>
+    <div class="fi"><button class="fq">Vos produits sont-ils vraiment frais ?<span class="fico">+</span></button><div class="fa"><p>Absolument. Toute la viande hachée est fraîche, jamais surgelée. Les frites sont coupées et préparées sur place chaque jour.</p></div></div>
+    <div class="fi"><button class="fq">Quels sont vos horaires ?<span class="fico">+</span></button><div class="fa"><p>Mercredi au dimanche : 12h–14h et 18h30–21h30 (22h vendredi et samedi). Fermé lundi et mardi.</p></div></div>
     <div class="fi"><button class="fq">Faites-vous de la livraison ?<span class="fico">+</span></button><div class="fa"><p>Oui, nous livrons sur Fleurie et les communes proches. Appelez-nous au 09 50 94 88 15 pour passer commande.</p></div></div>
-    <div class="fi"><button class="fq">Acceptez-vous les tickets restaurant ?<span class="fico">+</span></button><div class="fa"><p>Oui ! Cheques dejeuner, tickets restaurant et titres restaurant acceptes, ainsi que les cartes bancaires.</p></div></div>
+    <div class="fi"><button class="fq">Acceptez-vous les tickets restaurant ?<span class="fico">+</span></button><div class="fa"><p>Oui ! Chèques déjeuner, tickets restaurant et titres restaurant acceptés, ainsi que les cartes bancaires.</p></div></div>
+    <div class="fi"><button class="fq">Peut-on réserver pour un groupe ?<span class="fico">+</span></button><div class="fa"><p>Bien sûr, appelez-nous ou envoyez un message via le formulaire ci-dessous et on s'organise ensemble.</p></div></div>
   </div>
 </section>
 
@@ -519,19 +440,19 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:46px 5% 28px;backgroun
   <h2 class="stitle rv">Venez nous <span>rendre visite</span></h2>
   <div class="cinner">
     <div class="rv">
-      <div class="cii"><div class="cico">&#128205;</div><div><span class="cilabel">Adresse</span><div class="cival">10 Rue du Beaujolais<br>69820 Fleurie</div></div></div>
-      <div class="cii"><div class="cico">&#128222;</div><div><span class="cilabel">Telephone</span><div class="cival"><a href="tel:0950948815">09 50 94 88 15</a></div></div></div>
-      <div class="cii"><div class="cico">&#128172;</div><div><span class="cilabel">WhatsApp</span><div class="cival"><a href="https://wa.me/33950948815" target="_blank" rel="noopener">Envoyer un message</a></div></div></div>
-      <div class="cii"><div class="cico">&#128247;</div><div><span class="cilabel">Instagram</span><div class="cival"><a href="https://www.instagram.com/le_ksm_burger_/" target="_blank" rel="noopener">@le_ksm_burger_</a></div></div></div>
+      <div class="cii"><div class="cico">📍</div><div><span class="cilabel">Adresse</span><div class="cival">10 Rue du Beaujolais<br>69820 Fleurie</div></div></div>
+      <div class="cii"><div class="cico">📞</div><div><span class="cilabel">Téléphone</span><div class="cival"><a href="tel:0950948815">09 50 94 88 15</a></div></div></div>
+      <div class="cii"><div class="cico">💬</div><div><span class="cilabel">WhatsApp</span><div class="cival"><a href="https://wa.me/33950948815" target="_blank" rel="noopener">Envoyer un message</a></div></div></div>
+      <div class="cii"><div class="cico">📷</div><div><span class="cilabel">Instagram</span><div class="cival"><a href="https://www.instagram.com/le_ksm_burger_/" target="_blank" rel="noopener">@le_ksm_burger_</a></div></div></div>
       <div class="hbox">
         <p class="htit">Horaires</p>
-        <div class="hrow f"><span>Lundi</span><span>Ferme</span></div>
-        <div class="hrow f"><span>Mardi</span><span>Ferme</span></div>
-        <div class="hrow"><span>Mercredi</span><span>12h-14h &middot; 18h30-21h30</span></div>
-        <div class="hrow"><span>Jeudi</span><span>12h-14h &middot; 18h30-21h30</span></div>
-        <div class="hrow"><span>Vendredi</span><span>12h-14h &middot; 18h30-22h</span></div>
-        <div class="hrow"><span>Samedi</span><span>12h-14h &middot; 18h30-22h</span></div>
-        <div class="hrow"><span>Dimanche</span><span>12h-14h &middot; 18h30-21h30</span></div>
+        <div class="hrow f"><span>Lundi</span><span>Fermé</span></div>
+        <div class="hrow f"><span>Mardi</span><span>Fermé</span></div>
+        <div class="hrow"><span>Mercredi</span><span>12h–14h · 18h30–21h30</span></div>
+        <div class="hrow"><span>Jeudi</span><span>12h–14h · 18h30–21h30</span></div>
+        <div class="hrow"><span>Vendredi</span><span>12h–14h · 18h30–22h</span></div>
+        <div class="hrow"><span>Samedi</span><span>12h–14h · 18h30–22h</span></div>
+        <div class="hrow"><span>Dimanche</span><span>12h–14h · 18h30–21h30</span></div>
       </div>
     </div>
     <div class="rv2">
@@ -539,41 +460,37 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:46px 5% 28px;backgroun
         <input type="hidden" name="form-name" value="contact-ksm">
         <input type="hidden" name="bot-field">
         <div class="crow">
-          <input type="text" name="prenom" placeholder="Prenom" required>
-          <input type="tel" name="telephone" placeholder="Telephone">
+          <input type="text" name="prenom" placeholder="Prénom" required>
+          <input type="tel" name="telephone" placeholder="Téléphone">
         </div>
         <input type="email" name="email" placeholder="Email" required>
         <select name="sujet" required>
-          <option value="" disabled selected>Votre demande...</option>
-          <option>Commander a emporter</option>
+          <option value="" disabled selected>Votre demande…</option>
+          <option>Commander à emporter</option>
           <option>Livraison</option>
-          <option>Reservation groupe</option>
+          <option>Réservation groupe</option>
           <option>Renseignement menu</option>
           <option>Autre</option>
         </select>
         <textarea name="message" placeholder="Votre message (facultatif)"></textarea>
-        <button type="submit" class="btsub">&#127828; Envoyer ma demande</button>
+        <button type="submit" class="btsub">🍔 Envoyer ma demande</button>
       </form>
       <div class="fsuc" id="formSuccess">
-        <span class="fsi">&#127828;</span>
-        <h3>Message envoye !</h3>
-        <p>On vous repond tres vite. A bientot chez KSM Burger !</p>
+        <span class="fsi">🍔</span>
+        <h3>Message envoyé !</h3>
+        <p>On vous répond très vite. À bientôt chez KSM Burger !</p>
       </div>
-    </div>
-    <div class="mapw rv">
-      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2777!2d4.6969!3d46.1916!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s10+Rue+du+Beaujolais+69820+Fleurie!5e0!3m2!1sfr!2sfr!4v1" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="KSM Burger 10 Rue du Beaujolais 69820 Fleurie"></iframe>
-      <a href="https://www.google.com/maps/dir/?api=1&destination=10+Rue+du+Beaujolais%2C+69820+Fleurie" target="_blank" rel="noopener" class="mapbtn">&#129517; Obtenir l itineraire</a>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="finner">
-    <div><span class="flogo">KSM <span>Burger</span></span><p class="fdesc">Le fast-food artisanal du Beaujolais. Burgers frais, faits maison, nommes d apres les crus locaux. Ouvert depuis decembre 2024.</p></div>
+    <div><span class="flogo">KSM <span>Burger</span></span><p class="fdesc">Le fast-food artisanal du Beaujolais. Burgers frais, faits maison, nommés d'après les crus locaux. Ouvert depuis décembre 2024.</p></div>
     <div><p class="fct">Navigation</p><ul class="flinks"><li><a href="#burgers">Les burgers</a></li><li><a href="#menu">Le menu</a></li><li><a href="#apropos">Notre histoire</a></li><li><a href="#temoignages">Avis clients</a></li><li><a href="#contact">Contact</a></li></ul></div>
     <div><p class="fct">Contact</p><ul class="flinks"><li><a href="tel:0950948815">09 50 94 88 15</a></li><li><a href="https://wa.me/33950948815" target="_blank" rel="noopener">WhatsApp</a></li><li><a href="https://www.instagram.com/le_ksm_burger_/" target="_blank" rel="noopener">Instagram</a></li><li><a href="#">10 Rue du Beaujolais, Fleurie</a></li></ul></div>
   </div>
-  <div class="fbot"><p>&copy; 2025 KSM Burger &middot; Fleurie (69820) &middot; Beaujolais</p><p><a href="#">Mentions legales</a></p></div>
+  <div class="fbot"><p>&copy; 2025 KSM Burger · Fleurie (69820) · Beaujolais</p><p><a href="#">Mentions légales</a></p></div>
 </footer>
 
 <a href="https://wa.me/33950948815?text=Bonjour%20KSM%20Burger%2C%20je%20voudrais%20commander" class="wa" target="_blank" rel="noopener" aria-label="Commander sur WhatsApp">
@@ -581,20 +498,11 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:46px 5% 28px;backgroun
 </a>
 
 <script>
-  let done=false;
-  function skipIntro(){
-    if(done)return;done=true;
-    var intro=document.getElementById('intro');
-    intro.classList.add('intro-open');
-    setTimeout(function(){intro.classList.add('done');},750);
-  }
-  setTimeout(skipIntro,2800);
-
   function toggleNav(){
     var l=document.querySelector('.nlinks');
     if(!l)return;
     if(l.style.display==='flex'){l.removeAttribute('style');}
-    else{l.style.cssText='display:flex;flex-direction:column;position:absolute;top:64px;left:0;right:0;background:rgba(15,15,15,.98);padding:20px 5%;gap:16px;border-bottom:1px solid rgba(245,197,24,.14)';} 
+    else{l.style.cssText='display:flex;flex-direction:column;position:absolute;top:64px;left:0;right:0;background:rgba(15,15,15,.98);padding:20px 5%;gap:16px;border-bottom:1px solid rgba(245,197,24,.14)';}
   }
 
   var obs=new IntersectionObserver(function(entries){
@@ -617,7 +525,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);padding:46px 5% 28px;backgroun
   var suc=document.getElementById('formSuccess');
   if(form){form.addEventListener('submit',function(e){
     e.preventDefault();
-    var btn=form.querySelector('.btsub');btn.textContent='Envoi...';btn.disabled=true;
+    var btn=form.querySelector('.btsub');btn.textContent='Envoi…';btn.disabled=true;
     fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(new FormData(form)).toString()})
     .then(function(){form.style.display='none';suc.style.display='block';})
     .catch(function(){form.style.display='none';suc.style.display='block';});
