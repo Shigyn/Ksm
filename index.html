@@ -271,17 +271,17 @@
   <div class="hbg-img"></div>
   <div class="hov"></div>
   <div class="hc">
-    <h1 class="htitle">Burgers<br><span class="acc it">Faits Maison</span></h1>
-    <p class="hsub">Viande hachée fraîche, produits de qualité, nommés d'après les crus du Beaujolais. Le meilleur fast-food de Fleurie.</p>
+    <h1 class="htitle"><span data-editable-zone="hero_titre_ligne1">Burgers</span><br><span class="acc it" data-editable-zone="hero_titre_accent">Faits Maison</span></h1>
+    <p class="hsub" data-editable-zone="hero_sous_titre">Viande hachée fraîche, produits de qualité, nommés d'après les crus du Beaujolais. Le meilleur fast-food de Fleurie.</p>
     <div class="hctas">
       <a href="#menu" class="bty">🍔 Voir le menu</a>
       <a href="tel:0950948815" class="btg">📞 09 50 94 88 15</a>
     </div>
     <div class="hstats">
-      <div class="sc"><span class="sn">4.9★</span><span class="sl">Note Google</span></div>
-      <div class="sc"><span class="sn">Fait ❤️</span><span class="sl">avec amour</span></div>
-      <div class="sc"><span class="sn">12</span><span class="sl">Crus Beaujolais</span></div>
-      <div class="sc"><span class="sn">3</span><span class="sl">Modes service</span></div>
+      <div class="sc"><span class="sn" data-editable-zone="stat_1_valeur">4.9★</span><span class="sl" data-editable-zone="stat_1_label">Note Google</span></div>
+      <div class="sc"><span class="sn" data-editable-zone="stat_2_valeur">Fait ❤️</span><span class="sl" data-editable-zone="stat_2_label">avec amour</span></div>
+      <div class="sc"><span class="sn" data-editable-zone="stat_3_valeur">12</span><span class="sl" data-editable-zone="stat_3_label">Crus Beaujolais</span></div>
+      <div class="sc"><span class="sn" data-editable-zone="stat_4_valeur">3</span><span class="sl" data-editable-zone="stat_4_label">Modes service</span></div>
     </div>
   </div>
 </section>
@@ -304,9 +304,9 @@
   <div class="stag rv">Pourquoi KSM</div>
   <h2 class="stitle rv">Le Fast-Food<br>qui <span>change tout</span></h2>
   <div class="pqg">
-    <div class="pqc rv"><span class="ico">🥩</span><h3>Viande Fraîche</h3><p>Chaque burger est préparé avec de la viande hachée fraîche, jamais surgelée. Vous le sentez dès la première bouchée.</p></div>
-    <div class="pqc rv2"><span class="ico">🍟</span><h3>Frites Maison</h3><p>Des frites coupées et cuites sur place. Simples, cheddar, bacon, oignons frits — à vous de choisir votre combo.</p></div>
-    <div class="pqc rv3"><span class="ico">🌿</span><h3>Produits de Qualité</h3><p>Des ingrédients sélectionnés avec soin, une cuisine préparée sur place chaque jour. Ici, on ne fait pas de compromis.</p></div>
+    <div class="pqc rv"><span class="ico">🥩</span><h3>Viande Fraîche</h3><p data-editable-zone="pourquoi_1_desc">Chaque burger est préparé avec de la viande hachée fraîche, jamais surgelée. Vous le sentez dès la première bouchée.</p></div>
+    <div class="pqc rv2"><span class="ico">🍟</span><h3>Frites Maison</h3><p data-editable-zone="pourquoi_2_desc">Des frites coupées et cuites sur place. Simples, cheddar, bacon, oignons frits — à vous de choisir votre combo.</p></div>
+    <div class="pqc rv3"><span class="ico">🌿</span><h3>Produits de Qualité</h3><p data-editable-zone="pourquoi_3_desc">Des ingrédients sélectionnés avec soin, une cuisine préparée sur place chaque jour. Ici, on ne fait pas de compromis.</p></div>
   </div>
 </section>
 
@@ -315,7 +315,7 @@
   <h2 class="stitle rv">Les <span>Crus</span> du Beaujolais</h2>
   <p style="color:var(--t2);font-size:.92rem;margin-top:-30px;margin-bottom:12px;" class="rv">Chaque burger porte le nom d'un cru du Beaujolais. Uniquement chez KSM.</p>
   <div class="bscroll-wrap">
-    <div class="bscroll">
+    <div class="bscroll" data-produits-categorie="Burgers">
       <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80" alt="Le Beaujolais burger KSM Fleurie" loading="lazy"><span class="bprice">12€</span></div><div class="bbody"><div class="bname">Le Beaujolais</div><div class="bdesc">Steak 120g, salade, oignons, bacon, cheddar</div></div></div>
       <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&q=80" alt="Le Fleurie burger KSM" loading="lazy"><span class="bprice">12€</span></div><div class="bbody"><div class="bname">Le Fleurie</div><div class="bdesc">Steak 120g, salade, chèvre, miel, oignons</div></div></div>
       <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1586816001966-79b736744398?w=400&q=80" alt="Le Triple Cheese Bacon KSM" loading="lazy"><span class="bprice">16€</span></div><div class="bbody"><div class="bname">Le Triple Cheese Bacon</div><div class="bdesc">Triple steak, salade, bacon, cheddar</div></div></div>
@@ -343,38 +343,50 @@
   <h2 class="stitle rv">Tout ce qu'on <span>propose</span></h2>
   <div class="mgrid">
     <div class="msec rv"><span class="mstitle">Tacos</span>
-      <div class="mi"><span class="min">Tacos simple<small>Viande au choix, salade, frite</small></span><span class="mip">8€</span></div>
-      <div class="mi"><span class="min">Maxi Tacos<small>Double viande au choix, salade, frite</small></span><span class="mip">12€</span></div>
+      <div data-produits-categorie="Tacos">
+        <div class="mi"><span class="min">Tacos simple<small>Viande au choix, salade, frite</small></span><span class="mip">8€</span></div>
+        <div class="mi"><span class="min">Maxi Tacos<small>Double viande au choix, salade, frite</small></span><span class="mip">12€</span></div>
+      </div>
       <p class="mnote">Menu +3€</p>
     </div>
     <div class="msec rv2"><span class="mstitle">Sandwichs</span>
-      <div class="mi"><span class="min">Le Boursin<small>Escalope, boursin, salade</small></span><span class="mip">8€</span></div>
-      <div class="mi"><span class="min">Le Chef<small>Viande hachée, cheddar, salade</small></span><span class="mip">8€</span></div>
-      <div class="mi"><span class="min">Le Kebab<small>Kebab, salade, sauce blanche</small></span><span class="mip">8€</span></div>
+      <div data-produits-categorie="Sandwichs">
+        <div class="mi"><span class="min">Le Boursin<small>Escalope, boursin, salade</small></span><span class="mip">8€</span></div>
+        <div class="mi"><span class="min">Le Chef<small>Viande hachée, cheddar, salade</small></span><span class="mip">8€</span></div>
+        <div class="mi"><span class="min">Le Kebab<small>Kebab, salade, sauce blanche</small></span><span class="mip">8€</span></div>
+      </div>
     </div>
     <div class="msec rv3"><span class="mstitle">Frites</span>
-      <div class="mi"><span class="min">Frite simple</span><span class="mip">3€</span></div>
-      <div class="mi"><span class="min">Frite cheddar</span><span class="mip">4€</span></div>
-      <div class="mi"><span class="min">Frite cheddar bacon</span><span class="mip">4,50€</span></div>
-      <div class="mi"><span class="min">Frite oignons frits</span><span class="mip">4,50€</span></div>
-      <div class="mi"><span class="min">Frite gruyère</span><span class="mip">4€</span></div>
-      <div class="mi"><span class="min">Frite gruyère bacon</span><span class="mip">4,50€</span></div>
+      <div data-produits-categorie="Frites">
+        <div class="mi"><span class="min">Frite simple</span><span class="mip">3€</span></div>
+        <div class="mi"><span class="min">Frite cheddar</span><span class="mip">4€</span></div>
+        <div class="mi"><span class="min">Frite cheddar bacon</span><span class="mip">4,50€</span></div>
+        <div class="mi"><span class="min">Frite oignons frits</span><span class="mip">4,50€</span></div>
+        <div class="mi"><span class="min">Frite gruyère</span><span class="mip">4€</span></div>
+        <div class="mi"><span class="min">Frite gruyère bacon</span><span class="mip">4,50€</span></div>
+      </div>
     </div>
     <div class="msec rv"><span class="mstitle">Bowls &amp; Snacking</span>
-      <div class="mi"><span class="min">Bowl<small>Frite ou salade, viande, fromage, sauce</small></span><span class="mip">10€</span></div>
-      <div class="mi"><span class="min">Snacking<small>Tenders ×4, Nuggets ×6, Jalapeños ×6…</small></span><span class="mip">6€</span></div>
-      <div class="mi"><span class="min">Box à partager<small>4 Tenders, 4 Nuggets, 4 Bouchées, 2 canettes</small></span><span class="mip">19,90€</span></div>
+      <div data-produits-categorie="Bowls et Snacking">
+        <div class="mi"><span class="min">Bowl<small>Frite ou salade, viande, fromage, sauce</small></span><span class="mip">10€</span></div>
+        <div class="mi"><span class="min">Snacking<small>Tenders ×4, Nuggets ×6, Jalapeños ×6…</small></span><span class="mip">6€</span></div>
+        <div class="mi"><span class="min">Box à partager<small>4 Tenders, 4 Nuggets, 4 Bouchées, 2 canettes</small></span><span class="mip">19,90€</span></div>
+      </div>
     </div>
     <div class="msec rv2"><span class="mstitle">Salades &amp; Desserts</span>
-      <div class="mi"><span class="min">Salade chèvre chaud</span><span class="mip">11,90€</span></div>
-      <div class="mi"><span class="min">Salade César</span><span class="mip">11,90€</span></div>
-      <div class="mi"><span class="min">Tiramisu</span><span class="mip">3€</span></div>
-      <div class="mi"><span class="min">Tarte au Daim</span><span class="mip">3€</span></div>
-      <div class="mi"><span class="min">Donuts</span><span class="mip">2€</span></div>
-      <div class="mi"><span class="min">Gaufre</span><span class="mip">5€</span></div>
+      <div data-produits-categorie="Salades et Desserts">
+        <div class="mi"><span class="min">Salade chèvre chaud</span><span class="mip">11,90€</span></div>
+        <div class="mi"><span class="min">Salade César</span><span class="mip">11,90€</span></div>
+        <div class="mi"><span class="min">Tiramisu</span><span class="mip">3€</span></div>
+        <div class="mi"><span class="min">Tarte au Daim</span><span class="mip">3€</span></div>
+        <div class="mi"><span class="min">Donuts</span><span class="mip">2€</span></div>
+        <div class="mi"><span class="min">Gaufre</span><span class="mip">5€</span></div>
+      </div>
     </div>
     <div class="msec rv3"><span class="mstitle">Menu Kids</span>
-      <div class="mi"><span class="min">Menu enfant<small>4 nuggets ou mini burger, eau, compote</small></span><span class="mip">8€</span></div>
+      <div data-produits-categorie="Menu Kids">
+        <div class="mi"><span class="min">Menu enfant<small>4 nuggets ou mini burger, eau, compote</small></span><span class="mip">8€</span></div>
+      </div>
       <p class="mnote" style="margin-top:18px;">👦 Idéal pour les petits appétits</p>
     </div>
   </div>
@@ -389,8 +401,8 @@
     <div class="aptxt rv2">
       <div class="stag">Notre histoire</div>
       <h2 class="stitle" style="font-size:clamp(2rem,4vw,3rem);margin-bottom:24px;">Une histoire<br>de <span>famille</span></h2>
-      <p>KSM, c'est Kassim, Sofiane et Mélanie — une famille passionnée qui a ouvert ses portes en décembre 2024 à Fleurie. Un projet né du désir de combler un manque dans le village et d'apporter un fast-food de qualité au cœur du Beaujolais.</p>
-      <p>Sofiane et Mélanie ont entièrement rénové l'ancienne boucherie du village. Chaque burger porte le nom d'un cru du Beaujolais — un clin d'œil au territoire qu'ils ont adopté.</p>
+      <p data-editable-zone="apropos_texte_1">KSM, c'est Kassim, Sofiane et Mélanie — une famille passionnée qui a ouvert ses portes en décembre 2024 à Fleurie. Un projet né du désir de combler un manque dans le village et d'apporter un fast-food de qualité au cœur du Beaujolais.</p>
+      <p data-editable-zone="apropos_texte_2">Sofiane et Mélanie ont entièrement rénové l'ancienne boucherie du village. Chaque burger porte le nom d'un cru du Beaujolais — un clin d'œil au territoire qu'ils ont adopté.</p>
       <div class="atags">
         <span class="atag">Famille Dorrhom</span>
         <span class="atag">Déc. 2024</span>
@@ -406,9 +418,9 @@
   <div class="stag rv" style="justify-content:center;">Ils nous font confiance</div>
   <h2 class="stitle rv" style="text-align:center;">Ce qu'ils <span>en disent</span></h2>
   <div class="tgrid">
-    <div class="tc rv"><div class="tstars">★★★★★</div><p class="ttxt">« Testé pour l'ouverture et revenu une semaine après — les burgers et les frites cheddar bacon sont une tuerie. Une équipe agréable, des produits vraiment frais. »</p><div class="tau"><strong>Thomas R.</strong><span>Avis Google · Fleurie</span></div></div>
-    <div class="tc rv2"><div class="tstars">★★★★★</div><p class="ttxt">« Meilleur snack de toute la région. Le patron est toujours souriant, une atmosphère paisible et une bonne ambiance. Vraiment une pépite ! »</p><div class="tau"><strong>Nadia K.</strong><span>Avis Google · Belleville</span></div></div>
-    <div class="tc rv3"><div class="tstars">★★★★★</div><p class="ttxt">« Accueil plus que chaleureux ! Le meilleur tacos que j'ai pu manger. Produits frais et de qualité. Enfin un fast-food près de chez nous et BON. »</p><div class="tau"><strong>Camille D.</strong><span>Avis Google · Mâcon</span></div></div>
+    <div class="tc rv"><div class="tstars">★★★★★</div><p class="ttxt" data-editable-zone="temoin_1_texte">« Testé pour l'ouverture et revenu une semaine après — les burgers et les frites cheddar bacon sont une tuerie. Une équipe agréable, des produits vraiment frais. »</p><div class="tau"><strong data-editable-zone="temoin_1_nom">Thomas R.</strong><span data-editable-zone="temoin_1_role">Avis Google · Fleurie</span></div></div>
+    <div class="tc rv2"><div class="tstars">★★★★★</div><p class="ttxt" data-editable-zone="temoin_2_texte">« Meilleur snack de toute la région. Le patron est toujours souriant, une atmosphère paisible et une bonne ambiance. Vraiment une pépite ! »</p><div class="tau"><strong data-editable-zone="temoin_2_nom">Nadia K.</strong><span data-editable-zone="temoin_2_role">Avis Google · Belleville</span></div></div>
+    <div class="tc rv3"><div class="tstars">★★★★★</div><p class="ttxt" data-editable-zone="temoin_3_texte">« Accueil plus que chaleureux ! Le meilleur tacos que j'ai pu manger. Produits frais et de qualité. Enfin un fast-food près de chez nous et BON. »</p><div class="tau"><strong data-editable-zone="temoin_3_nom">Camille D.</strong><span data-editable-zone="temoin_3_role">Avis Google · Mâcon</span></div></div>
   </div>
 </section>
 
@@ -430,11 +442,11 @@
   <div class="stag rv" style="justify-content:center;">Questions fréquentes</div>
   <h2 class="stitle rv" style="text-align:center;">On <span>répond</span> à tout</h2>
   <div class="flist">
-    <div class="fi"><button class="fq">Vos produits sont-ils vraiment frais ?<span class="fico">+</span></button><div class="fa"><p>Absolument. Toute la viande hachée est fraîche, jamais surgelée. Les frites sont coupées et préparées sur place chaque jour.</p></div></div>
-    <div class="fi"><button class="fq">Quels sont vos horaires ?<span class="fico">+</span></button><div class="fa"><p>Mercredi au dimanche : 12h–14h et 18h30–21h30 (22h vendredi et samedi). Fermé lundi et mardi.</p></div></div>
-    <div class="fi"><button class="fq">Faites-vous de la livraison ?<span class="fico">+</span></button><div class="fa"><p>Oui, nous livrons sur Fleurie et les communes proches. Appelez-nous au 09 50 94 88 15 pour passer commande.</p></div></div>
-    <div class="fi"><button class="fq">Acceptez-vous les tickets restaurant ?<span class="fico">+</span></button><div class="fa"><p>Oui ! Chèques déjeuner, tickets restaurant et titres restaurant acceptés, ainsi que les cartes bancaires.</p></div></div>
-    <div class="fi"><button class="fq">Peut-on réserver pour un groupe ?<span class="fico">+</span></button><div class="fa"><p>Bien sûr, appelez-nous ou envoyez un message WhatsApp et on s'organise ensemble.</p></div></div>
+    <div class="fi"><button class="fq">Vos produits sont-ils vraiment frais ?<span class="fico">+</span></button><div class="fa"><p data-editable-zone="faq_1_reponse">Absolument. Toute la viande hachée est fraîche, jamais surgelée. Les frites sont coupées et préparées sur place chaque jour.</p></div></div>
+    <div class="fi"><button class="fq">Quels sont vos horaires ?<span class="fico">+</span></button><div class="fa"><p data-editable-zone="faq_2_reponse">Mercredi au dimanche : 12h–14h et 18h30–21h30 (22h vendredi et samedi). Fermé lundi et mardi.</p></div></div>
+    <div class="fi"><button class="fq">Faites-vous de la livraison ?<span class="fico">+</span></button><div class="fa"><p data-editable-zone="faq_3_reponse">Oui, nous livrons sur Fleurie et les communes proches. Appelez-nous au 09 50 94 88 15 pour passer commande.</p></div></div>
+    <div class="fi"><button class="fq">Acceptez-vous les tickets restaurant ?<span class="fico">+</span></button><div class="fa"><p data-editable-zone="faq_4_reponse">Oui ! Chèques déjeuner, tickets restaurant et titres restaurant acceptés, ainsi que les cartes bancaires.</p></div></div>
+    <div class="fi"><button class="fq">Peut-on réserver pour un groupe ?<span class="fico">+</span></button><div class="fa"><p data-editable-zone="faq_5_reponse">Bien sûr, appelez-nous ou envoyez un message WhatsApp et on s'organise ensemble.</p></div></div>
   </div>
 </section>
 
@@ -459,13 +471,13 @@
     <div class="rv2">
       <div class="hbox">
         <p class="htit">Horaires d'ouverture</p>
-        <div class="hrow f"><span>Lundi</span><span>Fermé</span></div>
-        <div class="hrow f"><span>Mardi</span><span>Fermé</span></div>
-        <div class="hrow"><span>Mercredi</span><span>12h–14h · 18h30–21h30</span></div>
-        <div class="hrow"><span>Jeudi</span><span>12h–14h · 18h30–21h30</span></div>
-        <div class="hrow"><span>Vendredi</span><span>12h–14h · 18h30–22h</span></div>
-        <div class="hrow"><span>Samedi</span><span>12h–14h · 18h30–22h</span></div>
-        <div class="hrow"><span>Dimanche</span><span>12h–14h · 18h30–21h30</span></div>
+        <div class="hrow f"><span>Lundi</span><span data-editable-zone="horaires_lundi">Fermé</span></div>
+        <div class="hrow f"><span>Mardi</span><span data-editable-zone="horaires_mardi">Fermé</span></div>
+        <div class="hrow"><span>Mercredi</span><span data-editable-zone="horaires_mercredi">12h–14h · 18h30–21h30</span></div>
+        <div class="hrow"><span>Jeudi</span><span data-editable-zone="horaires_jeudi">12h–14h · 18h30–21h30</span></div>
+        <div class="hrow"><span>Vendredi</span><span data-editable-zone="horaires_vendredi">12h–14h · 18h30–22h</span></div>
+        <div class="hrow"><span>Samedi</span><span data-editable-zone="horaires_samedi">12h–14h · 18h30–22h</span></div>
+        <div class="hrow"><span>Dimanche</span><span data-editable-zone="horaires_dimanche">12h–14h · 18h30–21h30</span></div>
       </div>
     </div>
   </div>
@@ -473,11 +485,11 @@
 
 <footer>
   <div class="finner">
-    <div><span class="flogo">KSM <span>Burger</span></span><p class="fdesc">Le fast-food artisanal du Beaujolais. Burgers frais, faits maison, nommés d'après les crus locaux. Ouvert depuis décembre 2024.</p></div>
+    <div><span class="flogo">KSM <span>Burger</span></span><p class="fdesc" data-editable-zone="footer_description">Le fast-food artisanal du Beaujolais. Burgers frais, faits maison, nommés d'après les crus locaux. Ouvert depuis décembre 2024.</p></div>
     <div><p class="fct">Navigation</p><ul class="flinks"><li><a href="#burgers">Les burgers</a></li><li><a href="#menu">Le menu</a></li><li><a href="#apropos">Notre histoire</a></li><li><a href="#temoignages">Avis clients</a></li><li><a href="#contact">Contact</a></li></ul></div>
     <div><p class="fct">Contact</p><ul class="flinks"><li><a href="tel:0950948815">09 50 94 88 15</a></li><li><a href="https://wa.me/33950948815" target="_blank" rel="noopener">WhatsApp</a></li><li><a href="https://www.instagram.com/le_ksm_burger_/" target="_blank" rel="noopener">Instagram</a></li><li>10 Rue du Beaujolais, Fleurie</li></ul></div>
   </div>
-  <div class="fbot"><p>&copy; 2025 KSM Burger · Fleurie (69820) · Beaujolais</p><p><a href="#">Mentions légales</a></p></div>
+  <div class="fbot"><p>&copy; 2025 KSM Burger · Fleurie (69820) · Beaujolais</p><p><a href="#">Mentions légales</a> · <a href="https://admin.locweb.fr">Administration</a></p></div>
 </footer>
 
 <a href="https://wa.me/33950948815?text=Bonjour%20KSM%20Burger%2C%20je%20voudrais%20commander" class="wa" target="_blank" rel="noopener" aria-label="Commander sur WhatsApp">
@@ -507,6 +519,16 @@
     });
   });
 </script>
+
+<script>
+  window.LOCWEB_CONFIG = {
+    supabaseUrl: 'https://ibqawtgnucakzdldnitj.supabase.co',
+    supabaseAnonKey: 'sb_publishable_rpLrUo4Cqnfl8zSohDqO0A_Q5Vkj2Hk',
+    clientId: 'dff6ff69-5c68-4ee3-b2f1-21da6304ff5b'
+  };
+</script>
+<script src="contenu-loader.js"></script>
+<script src="produits-loader.js"></script>
 
 </body>
 </html>
