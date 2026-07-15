@@ -26,7 +26,11 @@
       document.querySelectorAll('[data-editable-zone]').forEach((el) => {
         const cle = el.getAttribute('data-editable-zone');
         if (valeurs[cle] !== undefined && valeurs[cle] !== null && valeurs[cle] !== '') {
-          el.textContent = valeurs[cle];
+          if (el.tagName === 'IMG') {
+            el.src = valeurs[cle];
+          } else {
+            el.textContent = valeurs[cle];
+          }
         }
       });
     })
