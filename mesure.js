@@ -23,7 +23,13 @@
 
 (function () {
   var config = window.LOCWEB_CONFIG || {};
-  var idGa4 = config.ga4Id;
+
+  // L'identifiant peut venir de trois endroits, dans cet ordre : la
+  // config du site, une balise gtag deja posee a la main, ou rien.
+  // Ce repli evite de poser une SECONDE balise sur un site qui en a
+  // deja une — ce qui compterait chaque visite en double.
+  var dejaPosee = document.querySelector('script[src*="googletagmanager.com/gtag/js"]');
+  var idGa4 = config.ga4Id || (dejaPosee && idDepuisUrl(dejaPosee.src));
 
   // Pas d'identifiant, pas de mesure. Le site continue de fonctionner
   // normalement — mieux vaut aucune donnee qu'une balise cassee.
@@ -31,16 +37,23 @@
 
   /* ---------- la balise ---------- */
 
-  var script = document.createElement('script');
-  script.async = true;
-  script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(idGa4);
-  document.head.appendChild(script);
-
   window.dataLayer = window.dataLayer || [];
   function gtag() { window.dataLayer.push(arguments); }
-  window.gtag = gtag;
-  gtag('js', new Date());
-  gtag('config', idGa4);
+
+  if (!dejaPosee) {
+    var script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(idGa4);
+    document.head.appendChild(script);
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', idGa4);
+  }
+
+  function idDepuisUrl(src) {
+    var m = /[?&]id=([^&]+)/.exec(src || '');
+    return m ? decodeURIComponent(m[1]) : null;
+  }
 
   /* ---------- les contacts ---------- */
 
