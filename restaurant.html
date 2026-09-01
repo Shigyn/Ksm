@@ -258,6 +258,19 @@
     clientId: 'dff6ff69-5c68-4ee3-b2f1-21da6304ff5b'
   };
 </script>
-<script src="restaurant.js" defer></script>
+<!-- Le numero de version n'est pas decoratif.
+
+     Le CSS de ce site vit dans index.html, et le HTML qu'il met en
+     forme est fabrique par carte.js. GitHub Pages sert les deux avec
+     dix minutes de cache : un visiteur pouvait donc se retrouver avec
+     l'ANCIEN index.html et le NOUVEAU carte.js. Les classes ne
+     correspondaient plus, les boutons reprenaient leur apparence par
+     defaut du navigateur, et la carte s'affichait en blanc, centree,
+     en colonnes. Constate le 2026-09-01.
+
+     Avec le numero, un index.html en cache demande le carte.js de la
+     MEME version : les deux sont toujours d'accord. A incrementer des
+     que le HTML produit par le script change de forme. -->
+<script src="restaurant.js?v=2" defer></script>
 </body>
 </html>
