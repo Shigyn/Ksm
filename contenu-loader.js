@@ -35,6 +35,15 @@
       });
     })
     .catch((err) => {
-      console.warn('Contenu Supabase indisponible, fallback statique conservé.', err);
+      console.warn('Contenu Supabase indisponible, fallback statique conserve.', err);
+    })
+    /* Previent la page que les zones portent enfin leur vraie valeur.
+       Sans ce signal, tout script qui LIT une zone editable (ici
+       l'horaire du jour, recopie dans le hero) lit le texte par
+       defaut du HTML et affiche un horaire qui n'est plus le bon.
+       Emis aussi en cas d'echec : le contenu est alors le statique,
+       mais il est definitif, et le lecteur doit pouvoir partir. */
+    .finally(() => {
+      document.dispatchEvent(new CustomEvent('locweb:contenu-charge'));
     });
 })();

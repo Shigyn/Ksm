@@ -1,524 +1,680 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KSM Burger Fleurie — Burgers Frais et Faits Maison au Cœur du Beaujolais</title>
-  <meta name="description" content="KSM Burger à Fleurie (69820) — Burgers artisanaux, tacos, bowls. Viande hachée fraîche, produits faits maison. Sur place, à emporter, livraison. Tél : 09 50 94 88 15">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://ksm-burger-fleurie.fr/">
-  <meta property="og:type" content="restaurant">
-  <meta property="og:title" content="KSM Burger Fleurie — Burgers Frais et Faits Maison">
-  <meta property="og:description" content="Le meilleur burger du Beaujolais. Produits frais, viande hachée fraîche, fait maison.">
-  <meta property="og:image" content="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1200&q=80">
-  <meta property="og:url" content="https://ksm-burger-fleurie.fr/">
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FastFoodRestaurant",
-    "name": "KSM Burger",
-    "url": "https://ksm-burger-fleurie.fr/",
-    "telephone": "+33950948815",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "10 Rue du Beaujolais",
-      "addressLocality": "Fleurie",
-      "postalCode": "69820",
-      "addressCountry": "FR"
-    },
-    "openingHours": ["We-Fr 12:00-14:00","We-Fr 18:30-21:30","Sa 12:00-14:00","Sa 18:30-22:00","Su 12:00-14:00","Su 18:30-21:30"],
-    "servesCuisine": ["Burgers","Tacos","Fast Food"],
-    "priceRange": "€€",
-    "description": "Burgers artisanaux faits maison avec viande hachée fraîche. Nommés d'après les crus du Beaujolais.",
-    "aggregateRating": {"@type":"AggregateRating","ratingValue":"4.9","reviewCount":"17"}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KSM Burger — Commander à emporter à Fleurie (69820)</title>
+  <link rel="preload" as="image" href="photos/1-burger-bacon.jpg">
+<meta name="description" content="Burgers faits maison à Fleurie, en plein Beaujolais. Commandez en ligne et récupérez sur place. 10 rue du Beaujolais, 69820 Fleurie — 09 50 94 88 15.">
+<link rel="canonical" href="https://shigyn.github.io/Ksm/">
+<meta name="theme-color" content="#121212">
+
+<meta property="og:type" content="restaurant.restaurant">
+<meta property="og:title" content="KSM Burger — Commander à emporter à Fleurie">
+<meta property="og:description" content="Burgers faits maison nommés d'après les crus du Beaujolais. Commande en ligne, retrait sur place.">
+<meta property="og:url" content="https://shigyn.github.io/Ksm/">
+<meta property="og:image" content="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1200&q=80">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  "name": "KSM Burger",
+  "url": "https://shigyn.github.io/Ksm/",
+  "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1200&q=80",
+  "telephone": "+33950948815",
+  "servesCuisine": ["Burger", "Fast-food", "Tacos"],
+  "priceRange": "€€",
+  "currenciesAccepted": "EUR",
+  "paymentAccepted": "Espèces, Carte bancaire, Titres restaurant",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "10 rue du Beaujolais",
+    "addressLocality": "Fleurie",
+    "postalCode": "69820",
+    "addressRegion": "Auvergne-Rhône-Alpes",
+    "addressCountry": "FR"
+  },
+  "geo": { "@type": "GeoCoordinates", "latitude": 46.1928, "longitude": 4.6989 },
+  "acceptsReservations": "False",
+  "hasMenu": "https://shigyn.github.io/Ksm/#carte",
+  "openingHoursSpecification": [
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Wednesday","Thursday","Sunday"], "opens": "12:00", "closes": "14:00" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Wednesday","Thursday","Sunday"], "opens": "18:30", "closes": "21:30" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Friday","Saturday"], "opens": "12:00", "closes": "14:00" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Friday","Saturday"], "opens": "18:30", "closes": "22:00" }
+  ]
+}
+</script>
+
+<style>
+/* ===================================================================
+   KSM Burger — un site, un seul objectif : la commande a emporter.
+
+   Ancrage de style : la discipline d'Uber (bibliotheque
+   awesome-design-md) — deux couleurs seulement, UNE seule couleur de
+   conversion, la pastille comme signature de forme, un display serre
+   sans interlettrage. Ce n'est pas un calque : le rouge fast-food a
+   ete ecarte au profit d'un rouge vin, parce que les burgers de KSM
+   portent les noms des crus du Beaujolais. C'est ca, leur identite.
+
+   Regle tenue d'un bout a l'autre : --vin ne sert QU'A commander.
+   Des qu'on le met ailleurs, il ne veut plus rien dire.
+   =================================================================== */
+:root {
+  --noir: #121212;
+  --encre: #1a1a1a;
+  --gris: #5e5e5e;
+  --mute: #a5a5a5;
+  --blanc: #ffffff;
+  --creme: #f5f2ed;
+  --creme-fonce: #ebe6de;
+  --trait: #e4dfd7;
+  --vin: #8c1d3f;
+  --vin-fonce: #6e1531;
+
+  --disp: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --texte: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+
+  --r-carte: 16px;
+  --wrap: 1120px;
+  /* Hauteur reservee sous le contenu quand la barre panier est la.
+     Sans elle, le dernier produit de la carte reste sous la barre —
+     precisement celui qu'on voulait vendre. Pilotee par carte.js. */
+  --barre: 0px;
+}
+
+*, *::before, *::after { box-sizing: border-box }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth }
+body {
+  margin: 0;
+  font-family: var(--texte);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--encre);
+  background: var(--blanc);
+  padding-bottom: var(--barre);
+}
+img { max-width: 100%; display: block }
+h1, h2, h3 { font-family: var(--disp); font-weight: 800; letter-spacing: -0.015em; margin: 0 }
+p { margin: 0 }
+a { color: inherit }
+
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 20px }
+
+/* Uppercase reserve aux surtitres, jamais aux titres.
+
+   La couleur n'est PAS --mute : mesure a 2,2:1 sur le creme, soit en
+   dessous du seuil lisible. --mute reste reserve aux traits et aux
+   bordures, ou le contraste ne se pose pas. */
+.eyebrow {
+  font-size: 12px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .09em; color: #666666;
+}
+/* Sur le noir du hero, c'est l'inverse : il faut eclaircir. */
+.hero .eyebrow { color: rgba(255,255,255,.62) }
+
+/* --- La pastille : toute chose cliquable en porte la forme -------- */
+.pill {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 48px; padding: 0 24px; border-radius: 999px;
+  font-family: var(--texte); font-size: 15px; font-weight: 600;
+  text-decoration: none; border: 1px solid transparent; cursor: pointer;
+  transition: background-color .18s ease, border-color .18s ease, transform .18s ease;
+  white-space: nowrap;
+}
+.pill:active { transform: scale(.98) }
+.pill-vin { background: var(--vin); color: #fff }
+.pill-vin:hover { background: var(--vin-fonce) }
+.pill-noir { background: var(--encre); color: #fff }
+.pill-noir:hover { background: #000 }
+.pill-clair { background: #fff; color: var(--encre); border-color: var(--trait) }
+.pill-clair:hover { background: var(--creme) }
+.pill-ligne { background: transparent; color: #fff; border-color: rgba(255,255,255,.34) }
+.pill-ligne:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.6) }
+.pill-sm { height: 40px; padding: 0 18px; font-size: 14px }
+
+:focus-visible { outline: 2px solid var(--vin); outline-offset: 3px; border-radius: 4px }
+
+/* --- En-tete : HTML pur, jamais dependant d'un script ------------- */
+.hd {
+  position: sticky; top: 0; z-index: 40;
+  background: rgba(255,255,255,.94);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--trait);
+}
+.hd-in {
+  max-width: var(--wrap); margin: 0 auto; padding: 12px 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.marque {
+  font-family: var(--disp); font-weight: 800; font-size: 20px;
+  letter-spacing: -0.02em; text-decoration: none; color: var(--encre);
+}
+.marque span { color: var(--gris); font-weight: 600 }
+.hd-actions { display: flex; align-items: center; gap: 10px }
+/* Sur un telephone etroit, le numero en clair pousse le bouton
+   Commander hors de l'ecran. Le bouton prime : c'est l'objectif du
+   site, et le numero reste a deux endroits plus bas. */
+@media (max-width: 430px) { .hd-actions .pill-clair { display: none } }
+
+/* --- Hero --------------------------------------------------------- */
+/* Le heros : quatre photos qui se relaient derriere le texte.
+
+   Un seul effet, tenu : un fondu, plus un tres lent rapprochement qui
+   empeche une photo fixe de paraitre morte. Pas de glissement, pas de
+   parallaxe par-dessus — trois mouvements simultanes, c'est ce qui
+   fait « site charge » au lieu de « site soigne ». */
+.hero {
+  position: relative; overflow: hidden; isolation: isolate;
+  background: var(--noir); color: #fff;
+  padding: 64px 0 56px;
+  min-height: 580px; display: flex; align-items: center;
+}
+.hero .wrap { position: relative; z-index: 2; width: 100% }
+
+.hero-fond { position: absolute; inset: 0; z-index: 0 }
+.hero-photo {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  opacity: 0; transform: scale(1.03);
+  transition: opacity 1.1s ease;
+}
+.hero-photo[data-on] { opacity: 1; animation: respire 8s ease-out forwards }
+@keyframes respire { from { transform: scale(1.03) } to { transform: scale(1.11) } }
+
+/* Le voile : plus dense a gauche, ou se trouve le texte, et il
+   s'allege vers la droite pour laisser voir le plat. C'est lui qui
+   garantit le contraste du titre quelle que soit la photo affichee. */
+.hero-voile {
+  position: absolute; inset: 0; z-index: 1;
+  background:
+    linear-gradient(100deg, rgba(9,9,9,.96) 0%, rgba(9,9,9,.88) 38%,
+                    rgba(9,9,9,.62) 68%, rgba(9,9,9,.38) 100%),
+    linear-gradient(to top, rgba(9,9,9,.75) 0%, transparent 45%);
+}
+@media (max-width: 760px) {
+  .hero { min-height: 0 }
+  .hero-voile {
+    background:
+      linear-gradient(to top, rgba(9,9,9,.97) 24%, rgba(9,9,9,.86) 58%, rgba(9,9,9,.62) 100%);
   }
-  </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,700&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --j: #F5C518;
-      --j2: #FFD84D;
-      --n: #111111;
-      --n2: #1c1c1c;
-      --n3: #272727;
-      --b: #ffffff;
-      --t1: rgba(255,255,255,0.92);
-      --t2: rgba(255,255,255,0.72);
-      --t3: rgba(255,255,255,0.48);
-      --r: #e63030;
-      --bord: rgba(245,197,24,0.22);
-      --ft: 'Barlow Condensed', sans-serif;
-      --fc: 'Barlow', sans-serif;
-      --rad: 12px;
-      --radl: 20px;
-    }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    html{scroll-behavior:smooth;}
-    body{background:var(--n);color:var(--b);font-family:var(--fc);overflow-x:hidden;}
+}
 
-    /* NAV */
-    nav{position:fixed;top:0;left:0;right:0;z-index:500;height:64px;padding:0 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(17,17,17,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--bord);}
-    .nlogo{font-family:var(--ft);font-size:1.5rem;font-weight:900;text-transform:uppercase;text-decoration:none;color:var(--b);letter-spacing:.05em;}
-    .nlogo span{color:var(--j);}
-    .nlinks{display:flex;gap:28px;list-style:none;}
-    .nlinks a{font-family:var(--fc);font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t2);text-decoration:none;transition:color .2s;}
-    .nlinks a:hover{color:var(--j);}
-    .ncta{font-family:var(--fc);font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--j);color:var(--n);padding:10px 22px;border-radius:6px;text-decoration:none;transition:all .2s;}
-    .ncta:hover{background:var(--j2);transform:translateY(-1px);}
-    .hbg{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;}
-    .hbg span{display:block;width:22px;height:2px;background:var(--b);}
+/* Quelqu'un qui a demande moins d'animation voit la premiere photo,
+   fixe. Jamais un cadre vide. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-photo { transition: none }
+  .hero-photo[data-on] { animation: none; transform: none }
+}
+.hero h1 {
+  font-size: clamp(34px, 7.2vw, 60px);
+  line-height: 1.06;
+  margin: 14px 0 0;
+  max-width: 15ch;
+  text-wrap: balance;
+}
+.hero-sub {
+  margin-top: 18px; max-width: 46ch;
+  font-size: 17px; color: rgba(255,255,255,.72);
+}
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px }
 
-    /* HERO */
-    #hero{position:relative;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:130px 5% 100px;overflow:hidden;}
-    .hbg-img{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1400&q=80') center/cover no-repeat;filter:brightness(.28) saturate(.9);z-index:-2;}
-    .hov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(17,17,17,.1) 0%,rgba(17,17,17,.5) 65%,var(--n) 100%);z-index:-1;}
-    .hc{position:relative;z-index:5;}
-    .htitle{font-family:var(--ft);font-size:clamp(3.5rem,12vw,9rem);font-weight:900;text-transform:uppercase;line-height:.9;letter-spacing:-.02em;margin-bottom:20px;}
-    .htitle .acc{color:var(--j);}
-    .htitle .it{font-style:italic;}
-    .hsub{font-size:clamp(1rem,2.5vw,1.2rem);color:var(--t2);max-width:500px;margin:0 auto 36px;line-height:1.7;}
-    .hctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:56px;}
-    .bty{font-family:var(--fc);font-size:.88rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--j);color:var(--n);padding:15px 30px;border-radius:8px;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px;min-height:52px;}
-    .bty:hover{background:var(--j2);transform:translateY(-2px);box-shadow:0 4px 20px rgba(245,197,24,.35);}
-    .btg{font-family:var(--fc);font-size:.88rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:transparent;color:var(--b);padding:15px 30px;border-radius:8px;text-decoration:none;border:1.5px solid rgba(255,255,255,.3);transition:all .2s;display:inline-flex;align-items:center;gap:8px;min-height:52px;}
-    .btg:hover{border-color:var(--j);color:var(--j);}
-    .hstats{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
-    .sc{background:rgba(255,255,255,.07);backdrop-filter:blur(10px);border:1px solid rgba(245,197,24,.22);border-radius:var(--rad);padding:18px 22px;text-align:center;min-width:110px;}
-    .sn{font-family:var(--ft);font-size:2.1rem;font-weight:900;color:var(--j);line-height:1;display:block;}
-    .sl{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t2);margin-top:5px;display:block;}
+.faits {
+  display: grid; gap: 1px; margin-top: 44px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  background: rgba(255,255,255,.13);
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: var(--r-carte); overflow: hidden;
+}
+.fait {
+  padding: 20px 22px;
+  background: rgba(12,12,12,.72);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.fait dt {
+  font-size: 12px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .09em; color: rgba(255,255,255,.5); margin-bottom: 7px;
+}
+.fait dd { margin: 0; font-size: 16px; font-weight: 500; line-height: 1.4 }
+.fait dd a { text-decoration: none }
+.fait dd a:hover { text-decoration: underline }
 
-    /* MAP SOUS HERO */
-    #map-hero{padding:0 5% 90px;background:var(--n);}
-    .mapw-hero{max-width:1100px;margin:0 auto;}
-    .mapw-hero iframe{width:100%;height:300px;border:none;border-radius:var(--radl);}
-    .mapbtn{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-family:var(--fc);font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--j);text-decoration:none;border:1px solid rgba(245,197,24,.35);padding:10px 22px;border-radius:100px;transition:all .2s;}
-    .mapbtn:hover{background:rgba(245,197,24,.09);border-color:var(--j);}
+/* --- La carte ----------------------------------------------------- */
+.carte { background: var(--creme); padding: 56px 0 64px }
+.carte-tete { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px }
+.carte h2 { font-size: clamp(28px, 5vw, 40px); line-height: 1.12; margin-top: 8px }
+.carte-note { font-size: 14px; color: var(--gris); max-width: 34ch }
 
-    /* SECTION COMMONS */
-    .stag{font-family:var(--fc);font-size:.65rem;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--j);display:flex;align-items:center;gap:10px;margin-bottom:14px;}
-    .stag::before{content:'';width:18px;height:2px;background:var(--j);}
-    .stitle{font-family:var(--ft);font-size:clamp(2.2rem,5vw,3.8rem);font-weight:900;text-transform:uppercase;line-height:1;letter-spacing:-.01em;margin-bottom:44px;}
-    .stitle span{color:var(--j);}
+/* Le sommaire colle sous l'en-tete : a quarante produits, remonter en
+   haut pour changer de categorie fait perdre la commande en cours. */
+.cats {
+  position: sticky; top: 65px; z-index: 30;
+  margin: 26px -20px 0; padding: 12px 20px;
+  display: flex; gap: 8px; overflow-x: auto;
+  background: var(--creme);
+  border-bottom: 1px solid var(--creme-fonce);
+  scrollbar-width: none;
+}
+.cats::-webkit-scrollbar { display: none }
+.cats button {
+  flex: none; height: 38px; padding: 0 16px; border-radius: 999px;
+  border: 1px solid var(--creme-fonce); background: #fff; color: var(--gris);
+  font-family: var(--texte); font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: background-color .16s ease, color .16s ease, border-color .16s ease;
+}
+.cats button:hover { border-color: var(--mute) }
+.cats button[aria-current="true"] { background: var(--encre); border-color: var(--encre); color: #fff }
 
-    /* POURQUOI */
-    #pourquoi{padding:100px 5%;background:var(--n2);}
-    .pqg{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;max-width:1100px;margin:0 auto;}
-    .pqc{background:var(--n3);border:1px solid rgba(255,255,255,.1);border-radius:var(--radl);padding:32px 28px;transition:border-color .3s,transform .3s;}
-    .pqc:hover{border-color:var(--j);transform:translateY(-4px);}
-    .pqc .ico{font-size:2.4rem;margin-bottom:16px;display:block;}
-    .pqc h3{font-family:var(--ft);font-size:1.3rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--b);margin-bottom:12px;}
-    .pqc p{font-size:.9rem;color:var(--t2);line-height:1.75;}
+.groupe { margin-top: 40px; scroll-margin-top: 122px }
+.groupe > h3 { font-size: 22px; margin-bottom: 14px }
 
-    /* BURGERS SCROLL */
-    #burgers{padding:100px 5%;}
-    .bscroll-wrap{position:relative;margin-top:36px;}
-    .bscroll{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:10px;}
-    .bscroll::-webkit-scrollbar{display:none;}
-    .bcard{min-width:235px;flex-shrink:0;scroll-snap-align:start;background:var(--n2);border:1px solid rgba(255,255,255,.1);border-radius:var(--radl);overflow:hidden;transition:border-color .3s,transform .3s;}
-    .bcard:hover{border-color:var(--j);transform:translateY(-4px);}
-    .btop{height:155px;overflow:hidden;position:relative;}
-    .btop img{width:100%;height:100%;object-fit:cover;opacity:.9;}
-    .bprice{position:absolute;top:10px;right:10px;background:var(--j);color:var(--n);font-family:var(--ft);font-size:.98rem;font-weight:900;padding:3px 11px;border-radius:5px;}
-    .bbody{padding:18px;}
-    .bname{font-family:var(--ft);font-size:1.15rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--b);margin-bottom:7px;}
-    .bdesc{font-size:.8rem;color:var(--t2);line-height:1.55;}
-    .scroll-hint{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:18px;color:var(--t2);font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;}
-    .scroll-arrows{display:flex;align-items:center;gap:3px;}
-    .scroll-arrows svg{width:28px;height:28px;stroke:var(--j);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;animation:arrowPulse 1.4s ease-in-out infinite;}
-    .scroll-arrows svg:nth-child(2){animation-delay:.18s;}
-    .scroll-arrows svg:nth-child(3){animation-delay:.36s;}
-    @keyframes arrowPulse{0%,100%{opacity:.25;transform:translateX(0);}50%{opacity:1;transform:translateX(5px);}}
+.liste { background: #fff; border: 1px solid var(--trait); border-radius: var(--r-carte); overflow: hidden }
 
-    /* MENU */
-    #menu{padding:100px 5%;background:var(--n2);}
-    .mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px;margin-top:44px;max-width:1100px;margin-left:auto;margin-right:auto;}
-    .msec{background:var(--n3);border:1px solid rgba(255,255,255,.1);border-radius:var(--radl);padding:26px 22px;}
-    .mstitle{font-family:var(--ft);font-size:.95rem;font-weight:900;text-transform:uppercase;letter-spacing:.14em;color:var(--n);background:var(--j);padding:4px 12px;border-radius:4px;display:inline-block;margin-bottom:18px;}
-    .mi{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.07);gap:10px;}
-    .mi:last-of-type{border-bottom:none;}
-    .min{font-size:.88rem;color:var(--t1);flex:1;}
-    .min small{display:block;font-size:.72rem;color:var(--t3);margin-top:2px;}
-    .mip{font-family:var(--ft);font-size:1rem;font-weight:700;color:var(--j);white-space:nowrap;}
-    .mnote{font-size:.72rem;color:var(--t3);margin-top:12px;font-style:italic;}
+/* La ligne produit, façon Uber Eats : le texte a gauche, la photo a
+   droite, et le bouton d'ajout pose sur le coin de la photo. Toute la
+   ligne est cliquable — c'est un <button>, pas un <div> : au clavier
+   comme au lecteur d'ecran, un plat s'ouvre comme un bouton s'active. */
+.ligne {
+  display: flex; align-items: center; gap: 16px; width: 100%;
+  padding: 14px 18px; border: 0; border-top: 1px solid var(--trait);
+  background: #fff; text-align: left; font: inherit; color: inherit;
+  cursor: pointer; transition: background-color .16s ease;
+}
+.liste .ligne:first-child { border-top: 0 }
+.ligne:hover { background: var(--creme) }
+.ligne-txt { flex: 1; min-width: 0 }
+.ligne-nom { font-weight: 600; font-size: 16px; line-height: 1.3 }
+.ligne-desc {
+  font-size: 14px; color: var(--gris); margin-top: 3px;
+  /* Deux lignes au maximum : au-dela, la liste perd son rythme et on
+     ne compare plus les plats d'un coup d'oeil. La fiche montre la
+     description entiere. */
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ligne-prix {
+  font-family: var(--disp); font-weight: 700; font-size: 16px;
+  font-variant-numeric: tabular-nums; margin-top: 7px;
+}
+.ligne-perso { font-size: 13px; color: var(--vin); font-weight: 600; margin-top: 5px }
 
-    /* APROPOS */
-    #apropos{padding:100px 5%;}
-    .apinner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
-    .apimg{position:relative;}
-    .apimg img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radl);filter:brightness(.9) saturate(.95);}
-    .apbadge{position:absolute;bottom:-14px;right:-14px;background:var(--j);color:var(--n);padding:14px 18px;border-radius:var(--rad);text-align:center;box-shadow:0 4px 20px rgba(245,197,24,.35);}
-    .apbadge strong{font-family:var(--ft);font-size:1.6rem;font-weight:900;display:block;}
-    .apbadge span{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
-    .aptxt p{font-size:.97rem;color:var(--t2);line-height:1.9;margin-bottom:22px;}
-    .atags{display:flex;flex-wrap:wrap;gap:8px;}
-    .atag{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--j);border:1px solid rgba(245,197,24,.3);padding:5px 14px;border-radius:100px;background:rgba(245,197,24,.06);}
+.ligne-media { position: relative; flex: none; width: 96px; height: 96px }
+.ligne-photo {
+  width: 100%; height: 100%; object-fit: cover;
+  border-radius: 10px; background: var(--creme-fonce);
+}
+/* Sans photo, une tuile sobre plutot qu'une image d'un autre
+   restaurant : mieux vaut ne rien montrer que montrer le plat de
+   quelqu'un d'autre. */
+.ligne-vide {
+  width: 100%; height: 100%; border-radius: 10px;
+  background: var(--creme); border: 1px dashed var(--trait);
+  display: grid; place-items: center;
+  font-family: var(--disp); font-weight: 800; font-size: 19px; color: var(--mute);
+}
+.ajout {
+  position: absolute; right: -8px; bottom: -8px;
+  width: 34px; height: 34px; border-radius: 999px;
+  border: 2px solid #fff; background: #fff; color: var(--encre);
+  box-shadow: 0 2px 8px rgba(0,0,0,.16);
+  display: grid; place-items: center; font-size: 20px; line-height: 1;
+  transition: background-color .16s ease, color .16s ease;
+}
+.ligne:hover .ajout { background: var(--vin); color: #fff }
+/* Le nombre deja au panier, sur la photo : on doit voir ce qu'on a
+   pris sans ouvrir le panier. */
+.ligne-badge {
+  position: absolute; right: -8px; bottom: -8px;
+  min-width: 34px; height: 34px; padding: 0 9px; border-radius: 999px;
+  border: 2px solid #fff; background: var(--vin); color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,.16);
+  display: grid; place-items: center;
+  font-family: var(--disp); font-weight: 700; font-size: 14px;
+}
+.ligne-indispo { opacity: .5; cursor: default }
+.ligne-indispo:hover { background: #fff }
+.ligne-indispo .ligne-prix { text-decoration: line-through }
+.epuise {
+  position: absolute; inset: 0; border-radius: 10px;
+  background: rgba(255,255,255,.72); display: grid; place-items: center;
+  font-size: 13px; font-weight: 600; color: var(--encre);
+}
 
-    /* TEMOIGNAGES */
-    #temoignages{padding:100px 5%;background:var(--n2);}
-    .tgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;margin-top:36px;max-width:1100px;margin-left:auto;margin-right:auto;}
-    .tc{background:var(--n3);border:1px solid rgba(255,255,255,.1);border-radius:var(--radl);padding:28px 24px;transition:border-color .3s;}
-    .tc:hover{border-color:rgba(245,197,24,.4);}
-    .tstars{color:var(--j);font-size:.95rem;letter-spacing:3px;margin-bottom:14px;}
-    .ttxt{font-size:.92rem;color:var(--t2);line-height:1.8;font-style:italic;margin-bottom:18px;}
-    .tau strong{font-size:.86rem;font-weight:700;color:var(--b);display:block;}
-    .tau span{font-size:.7rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;}
+@media (max-width: 480px) {
+  .ligne { padding: 12px 14px; gap: 12px }
+  .ligne-media { width: 80px; height: 80px }
+}
 
-    /* ZONES */
-    #zones{padding:80px 5%;text-align:center;}
-    .zchips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:28px;}
-    .zc{font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t2);border:1px solid rgba(255,255,255,.16);padding:9px 20px;border-radius:100px;transition:all .2s;cursor:default;}
-    .zc:hover{border-color:var(--j);color:var(--j);}
-    .zc.main{border-color:rgba(245,197,24,.45);color:var(--j);background:rgba(245,197,24,.07);}
+/* Le pas-a-pas de quantite, utilise dans la fiche d'un plat. */
+.pas { flex: none; display: flex; align-items: center; gap: 2px }
+.pas button {
+  width: 38px; height: 38px; border-radius: 999px; border: 0;
+  background: transparent; font-size: 20px; line-height: 1; cursor: pointer;
+  display: grid; place-items: center; color: var(--encre);
+}
+.pas button:hover { background: var(--creme) }
+.pas button[disabled] { color: var(--mute); cursor: default }
+.pas button[disabled]:hover { background: transparent }
+.pas-n {
+  min-width: 30px; text-align: center; font-weight: 700;
+  font-variant-numeric: tabular-nums; font-size: 16px;
+}
 
-    /* FAQ */
-    #faq{padding:100px 5%;background:var(--n2);}
-    .flist{max-width:680px;margin:36px auto 0;display:flex;flex-direction:column;gap:8px;}
-    .fi{background:var(--n3);border:1px solid rgba(255,255,255,.1);border-radius:var(--rad);overflow:hidden;transition:border-color .2s;}
-    .fi.open{border-color:rgba(245,197,24,.45);}
-    .fq{width:100%;background:none;border:none;color:var(--t1);font-family:var(--fc);font-size:.92rem;font-weight:600;padding:18px 20px;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:14px;transition:color .2s;}
-    .fq:hover{color:var(--j);}
-    .fico{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;color:var(--j);font-size:.88rem;flex-shrink:0;transition:transform .3s,border-color .2s;}
-    .fi.open .fico{transform:rotate(45deg);border-color:var(--j);}
-    .fa{max-height:0;overflow:hidden;transition:max-height .4s ease;}
-    .fi.open .fa{max-height:200px;}
-    .fa p{padding:0 20px 18px;font-size:.88rem;color:var(--t2);line-height:1.8;}
+/* --- La fiche d'un plat ------------------------------------------- */
+.fiche-photo {
+  width: calc(100% + 44px); margin: -24px -22px 20px;
+  height: 200px; object-fit: cover; background: var(--creme-fonce);
+}
+@media (min-width: 720px) {
+  .fiche-photo { width: calc(100% + 60px); margin: -30px -30px 22px; border-radius: 20px 20px 0 0 }
+}
+.fiche-desc { color: var(--gris); margin-top: 6px }
+.fiche-prix { font-family: var(--disp); font-weight: 700; font-size: 20px; margin-top: 10px }
 
-    /* CONTACT */
-    #contact{padding:100px 5%;}
-    .cinner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;}
-    .cii{display:flex;gap:16px;align-items:flex-start;margin-bottom:28px;}
-    .cico{width:44px;height:44px;border-radius:11px;background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.22);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
-    .cilabel{font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--t3);display:block;margin-bottom:4px;}
-    .cival{font-size:1rem;color:var(--t1);}
-    .cival a{color:var(--t1);text-decoration:none;transition:color .2s;}
-    .cival a:hover{color:var(--j);}
-    /* CTA CONTACT */
-    .cta-bloc{display:flex;flex-direction:column;gap:12px;margin-top:8px;}
-    .cta-btn{display:flex;align-items:center;gap:12px;padding:16px 20px;border-radius:var(--rad);text-decoration:none;font-family:var(--fc);font-weight:700;font-size:.9rem;transition:all .2s;}
-    .cta-btn.tel{background:var(--j);color:var(--n);}
-    .cta-btn.tel:hover{background:var(--j2);transform:translateY(-2px);}
-    .cta-btn.wa{background:#25D366;color:#fff;}
-    .cta-btn.wa:hover{background:#1ebe5c;transform:translateY(-2px);}
-    .cta-btn svg{width:22px;height:22px;flex-shrink:0;}
-    /* HORAIRES */
-    .hbox{background:var(--n2);border:1px solid rgba(255,255,255,.1);border-radius:var(--radl);padding:24px;}
-    .htit{font-family:var(--ft);font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--j);margin-bottom:14px;}
-    .hrow{display:flex;justify-content:space-between;font-size:.84rem;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06);color:var(--t2);}
-    .hrow:last-child{border-bottom:none;}
-    .hrow span:last-child{color:var(--t1);font-weight:600;}
-    .hrow.f span:last-child{color:var(--r);font-weight:600;}
+.groupe-opt { margin-top: 26px }
+.groupe-opt > h3 { font-size: 17px }
+.groupe-opt .aide { font-size: 13px; color: var(--gris); margin-bottom: 10px }
+.opts { border: 1px solid var(--trait); border-radius: 12px; overflow: hidden }
+.opt {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 15px; border-top: 1px solid var(--trait);
+  cursor: pointer; font-size: 15px;
+}
+.opts .opt:first-child { border-top: 0 }
+.opt:hover { background: var(--creme) }
+.opt input { flex: none; width: 20px; height: 20px; accent-color: var(--vin); margin: 0; cursor: pointer }
+.opt span { flex: 1 }
 
-    /* FOOTER */
-    footer{border-top:1px solid rgba(255,255,255,.08);padding:46px 5% 28px;background:var(--n);}
-    .finner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:38px;margin-bottom:36px;}
-    .flogo{font-family:var(--ft);font-size:1.75rem;font-weight:900;text-transform:uppercase;color:var(--b);letter-spacing:.05em;display:block;margin-bottom:10px;}
-    .flogo span{color:var(--j);}
-    .fdesc{font-size:.85rem;color:var(--t2);line-height:1.75;}
-    .fct{font-family:var(--fc);font-size:.62rem;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--j);margin-bottom:14px;}
-    .flinks{list-style:none;display:flex;flex-direction:column;gap:8px;}
-    .flinks a{font-size:.86rem;color:var(--t2);text-decoration:none;transition:color .2s;}
-    .flinks a:hover{color:var(--j);}
-    .fbot{max-width:1100px;margin:0 auto;padding-top:20px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
-    .fbot p,.fbot a{font-size:.7rem;color:var(--t3);text-decoration:none;}
-    .fbot a:hover{color:var(--j);}
+.fiche-pied {
+  display: flex; align-items: center; gap: 14px; margin-top: 26px;
+  position: sticky; bottom: 0; background: #fff; padding: 14px 0 0;
+}
+.fiche-pied .pas { border: 1px solid var(--trait); border-radius: 999px; padding: 3px }
+.fiche-pied .pill-vin { flex: 1; width: auto }
 
-    /* WA FLOATING */
-    .wa{position:fixed;bottom:22px;right:18px;z-index:400;height:52px;padding:0 20px 0 16px;border-radius:100px;background:#25D366;display:flex;align-items:center;gap:10px;text-decoration:none;box-shadow:0 4px 18px rgba(37,211,102,.45);animation:waf 3s ease-in-out infinite;white-space:nowrap;}
-    .wa:hover{transform:scale(1.03);animation:none;background:#1ebe5c;}
-    .wa-label{font-family:'Barlow',sans-serif;font-size:.82rem;font-weight:700;color:#fff;letter-spacing:.04em;}
-    @keyframes waf{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+.carte-vide, .carte-erreur { padding: 28px 0; color: var(--gris) }
 
-    /* REVEAL */
-    .rv{opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease;}
-    .rv.on{opacity:1;transform:translateY(0);}
-    .rv2{opacity:0;transform:translateY(26px);transition:opacity .6s .15s ease,transform .6s .15s ease;}
-    .rv2.on{opacity:1;transform:translateY(0);}
-    .rv3{opacity:0;transform:translateY(26px);transition:opacity .6s .3s ease,transform .6s .3s ease;}
-    .rv3.on{opacity:1;transform:translateY(0);}
+/* --- Venir la chercher -------------------------------------------- */
+.venir { padding: 64px 0 }
+.venir h2 { font-size: clamp(28px, 5vw, 40px); line-height: 1.12; margin-top: 8px }
+.venir-grid { display: grid; gap: 40px; grid-template-columns: 1fr; margin-top: 34px }
+@media (min-width: 860px) { .venir-grid { grid-template-columns: 1.05fr .95fr; gap: 56px } }
+.adresse { font-size: 19px; font-weight: 500; line-height: 1.5 }
+.venir-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px }
+.venir-note { margin-top: 26px; font-size: 14px; color: var(--gris); max-width: 42ch }
 
-    /* RESPONSIVE */
-    @media(max-width:900px){
-      .nlinks,.ncta{display:none;}
-      .hbg{display:flex;}
-      .apinner,.cinner{grid-template-columns:1fr;}
-      .finner{grid-template-columns:1fr;gap:24px;}
-    }
-    @media(max-width:600px){
-      .hstats{gap:8px;}
-      .sc{min-width:90px;padding:14px 12px;}
-      .sn{font-size:1.75rem;}
-    }
-  </style>
+.horaires { border: 1px solid var(--trait); border-radius: var(--r-carte); overflow: hidden }
+.hrow { display: flex; justify-content: space-between; gap: 16px; padding: 13px 18px; border-top: 1px solid var(--trait); font-size: 15px }
+.horaires .hrow:first-child { border-top: 0 }
+.hrow span:first-child { color: var(--gris) }
+.hrow span:last-child { font-weight: 500; font-variant-numeric: tabular-nums; text-align: right }
+/* « Ferme » est une information a lire, pas un ornement : --gris, pas --mute. */
+.hrow.ferme span:last-child { color: var(--gris); font-weight: 400 }
+.hrow.aujourdhui { background: var(--creme) }
+.hrow.aujourdhui span:first-child { color: var(--encre); font-weight: 600 }
+
+/* --- Pied de page -------------------------------------------------- */
+.ft { background: var(--noir); color: rgba(255,255,255,.66); padding: 48px 0 32px; font-size: 14px }
+.ft-haut { display: flex; flex-wrap: wrap; gap: 32px; justify-content: space-between }
+.ft .marque { color: #fff }
+.ft .marque span { color: rgba(255,255,255,.55) }
+.ft-desc { margin-top: 12px; max-width: 40ch; line-height: 1.6 }
+.ft-col p { margin-bottom: 6px }
+.ft-col a { text-decoration: none }
+.ft-col a:hover { text-decoration: underline }
+.ft-bas {
+  margin-top: 36px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,.14);
+  display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between;
+  font-size: 13px; color: rgba(255,255,255,.5);
+}
+.ft-bas a { color: rgba(255,255,255,.72) }
+
+/* --- La barre panier ---------------------------------------------- */
+.barre {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+  background: var(--vin); color: #fff;
+  padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+  transform: translateY(105%); transition: transform .26s cubic-bezier(.22,1,.36,1);
+}
+.barre[data-ouvert="1"] { transform: translateY(0) }
+.barre-in {
+  max-width: var(--wrap); margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.barre-info { font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums }
+.barre-info b { font-family: var(--disp); font-weight: 700 }
+.barre .pill { background: #fff; color: var(--vin) }
+.barre .pill:hover { background: var(--creme) }
+
+/* --- Le formulaire de commande ------------------------------------ */
+.modale {
+  position: fixed; inset: 0; z-index: 60; display: none;
+  align-items: flex-end; justify-content: center;
+  background: rgba(18,18,18,.55);
+}
+.modale[data-ouvert="1"] { display: flex }
+@media (min-width: 720px) { .modale { align-items: center; padding: 24px } }
+.modale-boite {
+  background: #fff; width: 100%; max-width: 560px;
+  max-height: 92vh; overflow-y: auto;
+  border-radius: 20px 20px 0 0; padding: 24px 22px calc(24px + env(safe-area-inset-bottom));
+}
+@media (min-width: 720px) { .modale-boite { border-radius: 20px; padding: 30px } }
+.modale-tete { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 18px }
+.modale-tete h2 { font-size: 25px }
+.fermer {
+  flex: none; width: 38px; height: 38px; border-radius: 999px; border: 1px solid var(--trait);
+  background: #fff; font-size: 20px; line-height: 1; cursor: pointer; color: var(--gris);
+}
+.fermer:hover { background: var(--creme) }
+
+.recap { border: 1px solid var(--trait); border-radius: 12px; overflow: hidden; margin-bottom: 22px }
+.recap-l { display: flex; justify-content: space-between; gap: 14px; padding: 11px 15px; border-top: 1px solid var(--trait); font-size: 15px }
+.recap .recap-l:first-child { border-top: 0 }
+.recap-l span:last-child { font-variant-numeric: tabular-nums; white-space: nowrap }
+.recap-total { background: var(--creme); font-weight: 700 }
+.recap-total span:last-child { font-family: var(--disp) }
+
+.champ { margin-bottom: 15px }
+.champ label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px }
+.champ input, .champ select {
+  width: 100%; height: 48px; padding: 0 15px;
+  border: 1px solid var(--trait); border-radius: 12px;
+  font-family: var(--texte); font-size: 16px; color: var(--encre); background: #fff;
+}
+.champ input:focus, .champ select:focus { outline: none; border-color: var(--vin); box-shadow: 0 0 0 3px rgba(140,29,63,.13) }
+.champ-aide { font-size: 13px; color: var(--gris); margin-top: 5px }
+/* Piege a robots : jamais affiche, jamais lu par un lecteur d'ecran. */
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden }
+
+.modale .pill-vin { width: 100%; height: 52px; font-size: 16px }
+.modale .pill-vin[disabled] { opacity: .6; cursor: default }
+.msg { border-radius: 12px; padding: 12px 15px; font-size: 14px; margin-bottom: 16px; display: none }
+.msg[data-on="1"] { display: block }
+.msg-err { background: #fdeced; color: #8c1d1d; border: 1px solid #f3c7ca }
+
+.ok-bloc { text-align: center; padding: 12px 0 4px }
+.ok-rond {
+  width: 62px; height: 62px; border-radius: 999px; background: var(--vin); color: #fff;
+  display: grid; place-items: center; font-size: 30px; margin: 0 auto 18px;
+}
+.ok-bloc h2 { font-size: 26px; margin-bottom: 10px }
+.ok-bloc p { color: var(--gris); margin-bottom: 10px }
+.ok-bloc .ref { font-family: var(--disp); font-weight: 700; color: var(--encre); font-size: 17px }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto }
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important }
+}
+</style>
 </head>
 <body>
 
-<nav>
-  <a href="#hero" class="nlogo">KSM <span>Burger</span></a>
-  <ul class="nlinks">
-    <li><a href="#burgers">Burgers</a></li>
-    <li><a href="#menu">Menu</a></li>
-    <li><a href="#apropos">Notre histoire</a></li>
-    <li><a href="#temoignages">Avis</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-  <a href="tel:0950948815" class="ncta">☎ Commander</a>
-  <button class="hbg" aria-label="Menu" onclick="toggleNav()"><span></span><span></span><span></span></button>
-</nav>
-
-<section id="hero">
-  <div class="hbg-img"></div>
-  <div class="hov"></div>
-  <div class="hc">
-    <h1 class="htitle"><span data-editable-zone="hero_titre_ligne1">Burgers</span><br><span class="acc it" data-editable-zone="hero_titre_accent">Faits Maison</span></h1>
-    <p class="hsub" data-editable-zone="hero_sous_titre">Viande hachée fraîche, produits de qualité, nommés d'après les crus du Beaujolais. Le meilleur fast-food de Fleurie.</p>
-    <div class="hctas">
-      <a href="#menu" class="bty">🍔 Voir le menu</a>
-      <a href="tel:0950948815" class="btg">📞 09 50 94 88 15</a>
-    </div>
-    <div class="hstats">
-      <div class="sc"><span class="sn" data-editable-zone="stat_1_valeur">4.9★</span><span class="sl" data-editable-zone="stat_1_label">Note Google</span></div>
-      <div class="sc"><span class="sn" data-editable-zone="stat_2_valeur">Fait ❤️</span><span class="sl" data-editable-zone="stat_2_label">avec amour</span></div>
-      <div class="sc"><span class="sn" data-editable-zone="stat_3_valeur">12</span><span class="sl" data-editable-zone="stat_3_label">Crus Beaujolais</span></div>
-      <div class="sc"><span class="sn" data-editable-zone="stat_4_valeur">3</span><span class="sl" data-editable-zone="stat_4_label">Modes service</span></div>
+<header class="hd">
+  <div class="hd-in">
+    <a class="marque" href="#top">KSM <span>Burger</span></a>
+    <div class="hd-actions">
+      <a class="pill pill-clair pill-sm" href="tel:+33950948815">09 50 94 88 15</a>
+      <a class="pill pill-vin pill-sm" href="#carte">Commander</a>
     </div>
   </div>
-</section>
+</header>
 
-<!-- GOOGLE MAP DIRECTEMENT SOUS LE HERO -->
-<section id="map-hero">
-  <div class="mapw-hero">
-    <iframe
-      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2777!2d4.6969!3d46.1916!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s10+Rue+du+Beaujolais+69820+Fleurie!5e0!3m2!1sfr!2sfr!4v1"
-      allowfullscreen=""
-      loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade"
-      title="KSM Burger — 10 Rue du Beaujolais, 69820 Fleurie">
-    </iframe>
-    <a href="https://www.google.com/maps/dir/?api=1&destination=10+Rue+du+Beaujolais%2C+69820+Fleurie" target="_blank" rel="noopener" class="mapbtn">🧭 Obtenir l'itinéraire</a>
-  </div>
-</section>
+<main id="top">
 
-<section id="pourquoi">
-  <div class="stag rv">Pourquoi KSM</div>
-  <h2 class="stitle rv">Le Fast-Food<br>qui <span>change tout</span></h2>
-  <div class="pqg">
-    <div class="pqc rv"><span class="ico">🥩</span><h3>Viande Fraîche</h3><p data-editable-zone="pourquoi_1_desc">Chaque burger est préparé avec de la viande hachée fraîche, jamais surgelée. Vous le sentez dès la première bouchée.</p></div>
-    <div class="pqc rv2"><span class="ico">🍟</span><h3>Frites Maison</h3><p data-editable-zone="pourquoi_2_desc">Des frites coupées et cuites sur place. Simples, cheddar, bacon, oignons frits — à vous de choisir votre combo.</p></div>
-    <div class="pqc rv3"><span class="ico">🌿</span><h3>Produits de Qualité</h3><p data-editable-zone="pourquoi_3_desc">Des ingrédients sélectionnés avec soin, une cuisine préparée sur place chaque jour. Ici, on ne fait pas de compromis.</p></div>
-  </div>
-</section>
-
-<section id="burgers">
-  <div class="stag rv">La carte signature</div>
-  <h2 class="stitle rv">Les <span>Crus</span> du Beaujolais</h2>
-  <p style="color:var(--t2);font-size:.92rem;margin-top:-30px;margin-bottom:12px;" class="rv">Chaque burger porte le nom d'un cru du Beaujolais. Uniquement chez KSM.</p>
-  <div class="bscroll-wrap">
-    <div class="bscroll" data-produits-categorie="Burgers">
-      <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80" alt="Le Beaujolais burger KSM Fleurie" loading="lazy"><span class="bprice">12€</span></div><div class="bbody"><div class="bname">Le Beaujolais</div><div class="bdesc">Steak 120g, salade, oignons, bacon, cheddar</div></div></div>
-      <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&q=80" alt="Le Fleurie burger KSM" loading="lazy"><span class="bprice">12€</span></div><div class="bbody"><div class="bname">Le Fleurie</div><div class="bdesc">Steak 120g, salade, chèvre, miel, oignons</div></div></div>
-      <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1586816001966-79b736744398?w=400&q=80" alt="Le Triple Cheese Bacon KSM" loading="lazy"><span class="bprice">16€</span></div><div class="bbody"><div class="bname">Le Triple Cheese Bacon</div><div class="bdesc">Triple steak, salade, bacon, cheddar</div></div></div>
-      <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=400&q=80" alt="Le Chénas burger KSM" loading="lazy"><span class="bprice">14€</span></div><div class="bbody"><div class="bname">Le Chénas</div><div class="bdesc">Double steak 120g, salade, cheddar, oignons</div></div></div>
-      <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1561758033-48d52648ae8b?w=400&q=80" alt="Le Chiroubles burger KSM" loading="lazy"><span class="bprice">12€</span></div><div class="bbody"><div class="bname">Le Chiroubles</div><div class="bdesc">Steak 120g, salade, rösti, raclette, oignons</div></div></div>
-      <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=400&q=80" alt="Le Triple Juliénas KSM" loading="lazy"><span class="bprice">17€</span></div><div class="bbody"><div class="bname">Le Triple Juliénas</div><div class="bdesc">Triple steak, salade, rösti, oignons</div></div></div>
-      <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=400&q=80" alt="Le Moulin à Vent KSM" loading="lazy"><span class="bprice">12€</span></div><div class="bbody"><div class="bname">Le Moulin à Vent</div><div class="bdesc">Poulet pané, salade, cheddar</div></div></div>
-      <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1585238342024-78d387f4a707?w=400&q=80" alt="Le Morgon KSM" loading="lazy"><span class="bprice">12€</span></div><div class="bbody"><div class="bname">Le Morgon</div><div class="bdesc">Steak 120g, salade, cheddar, bacon, œuf</div></div></div>
-      <div class="bcard"><div class="btop"><img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&q=80" alt="Le Saint Amour KSM" loading="lazy"><span class="bprice">12€</span></div><div class="bbody"><div class="bname">Le Saint Amour</div><div class="bdesc">Steak végétarien, salade, cheddar, oignons</div></div></div>
+  <section class="hero">
+    <div class="hero-fond" aria-hidden="true">
+      <img class="hero-photo" src="photos/1-burger-bacon.jpg" alt="" data-on fetchpriority="high" decoding="async">
+      <img class="hero-photo" src="photos/2-burger-poulet.jpg" alt="" fetchpriority="low" decoding="async">
+      <img class="hero-photo" src="photos/3-tacos-roule.jpg" alt="" fetchpriority="low" decoding="async">
+      <img class="hero-photo" src="photos/4-tacos-frites.jpg" alt="" fetchpriority="low" decoding="async">
     </div>
-    <div class="scroll-hint">
-      <div class="scroll-arrows">
-        <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
-        <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
-        <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+    <div class="hero-voile" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="eyebrow">Fleurie &middot; Beaujolais</p>
+      <h1><span data-editable-zone="hero_titre_ligne1">Commandez en ligne,</span> <span data-editable-zone="hero_titre_accent">récupérez sur place.</span></h1>
+      <p class="hero-sub" data-editable-zone="hero_sous_titre">Viande hachée fraîche, frites coupées sur place, burgers nommés d&rsquo;après les crus du Beaujolais. Vous commandez, on prépare, vous passez la chercher.</p>
+
+      <div class="hero-cta">
+        <a class="pill pill-vin" href="#carte">Voir la carte et commander</a>
+        <a class="pill pill-ligne" href="tel:+33950948815">Appeler le restaurant</a>
       </div>
-      <span>Faites défiler</span>
-      <span style="color:var(--j);margin-left:8px;">Menu +3€ (boisson + frite)</span>
-    </div>
-  </div>
-</section>
 
-<section id="menu">
-  <div class="stag rv">Menu complet</div>
-  <h2 class="stitle rv">Tout ce qu'on <span>propose</span></h2>
-  <div class="mgrid">
-    <div class="msec rv"><span class="mstitle">Tacos</span>
-      <div data-produits-categorie="Tacos">
-        <div class="mi"><span class="min">Tacos simple<small>Viande au choix, salade, frite</small></span><span class="mip">8€</span></div>
-        <div class="mi"><span class="min">Maxi Tacos<small>Double viande au choix, salade, frite</small></span><span class="mip">12€</span></div>
-      </div>
-      <p class="mnote">Menu +3€</p>
+      <dl class="faits">
+        <div class="fait">
+          <dt>L&rsquo;adresse</dt>
+          <dd>10 rue du Beaujolais<br>69820 Fleurie</dd>
+        </div>
+        <div class="fait">
+          <dt>Le téléphone</dt>
+          <dd><a href="tel:+33950948815">09 50 94 88 15</a></dd>
+        </div>
+        <div class="fait">
+          <dt>Aujourd&rsquo;hui</dt>
+          <dd id="fait-horaire">Voir les horaires</dd>
+        </div>
+      </dl>
     </div>
-    <div class="msec rv2"><span class="mstitle">Sandwichs</span>
-      <div data-produits-categorie="Sandwichs">
-        <div class="mi"><span class="min">Le Boursin<small>Escalope, boursin, salade</small></span><span class="mip">8€</span></div>
-        <div class="mi"><span class="min">Le Chef<small>Viande hachée, cheddar, salade</small></span><span class="mip">8€</span></div>
-        <div class="mi"><span class="min">Le Kebab<small>Kebab, salade, sauce blanche</small></span><span class="mip">8€</span></div>
+  </section>
+
+  <section class="carte" id="carte">
+    <div class="wrap">
+      <div class="carte-tete">
+        <div>
+          <p class="eyebrow">La carte</p>
+          <h2>Composez votre commande</h2>
+        </div>
+        <p class="carte-note">Règlement sur place, au retrait. Espèces, carte et titres restaurant acceptés.</p>
+      </div>
+
+      <nav class="cats" id="cats" aria-label="Catégories de la carte"></nav>
+      <div id="carte-liste"><p class="carte-vide">Chargement de la carte&hellip;</p></div>
+    </div>
+  </section>
+
+  <section class="venir" id="venir">
+    <div class="wrap">
+      <p class="eyebrow">Le retrait</p>
+      <h2>Venir la chercher</h2>
+
+      <div class="venir-grid">
+        <div>
+          <p class="adresse">KSM Burger<br>10 rue du Beaujolais<br>69820 Fleurie</p>
+          <div class="venir-cta">
+            <a class="pill pill-noir" href="https://www.google.com/maps/dir/?api=1&destination=10+rue+du+Beaujolais+69820+Fleurie" target="_blank" rel="noopener">Itinéraire</a>
+            <a class="pill pill-clair" href="tel:+33950948815">09 50 94 88 15</a>
+          </div>
+          <p class="venir-note">Nous préparons votre commande dès sa réception. Comptez une vingtaine de minutes aux heures creuses, un peu plus le vendredi et le samedi soir. Nous vous appelons si le délai est plus long.</p>
+        </div>
+
+        <div class="horaires" id="horaires">
+          <div class="hrow ferme" data-jour="1"><span>Lundi</span><span data-editable-zone="horaires_lundi">Fermé</span></div>
+          <div class="hrow ferme" data-jour="2"><span>Mardi</span><span data-editable-zone="horaires_mardi">Fermé</span></div>
+          <div class="hrow" data-jour="3"><span>Mercredi</span><span data-editable-zone="horaires_mercredi">12h–14h · 18h30–21h30</span></div>
+          <div class="hrow" data-jour="4"><span>Jeudi</span><span data-editable-zone="horaires_jeudi">12h–14h · 18h30–21h30</span></div>
+          <div class="hrow" data-jour="5"><span>Vendredi</span><span data-editable-zone="horaires_vendredi">12h–14h · 18h30–22h</span></div>
+          <div class="hrow" data-jour="6"><span>Samedi</span><span data-editable-zone="horaires_samedi">12h–14h · 18h30–22h</span></div>
+          <div class="hrow" data-jour="0"><span>Dimanche</span><span data-editable-zone="horaires_dimanche">12h–14h · 18h30–21h30</span></div>
+        </div>
       </div>
     </div>
-    <div class="msec rv3"><span class="mstitle">Frites</span>
-      <div data-produits-categorie="Frites">
-        <div class="mi"><span class="min">Frite simple</span><span class="mip">3€</span></div>
-        <div class="mi"><span class="min">Frite cheddar</span><span class="mip">4€</span></div>
-        <div class="mi"><span class="min">Frite cheddar bacon</span><span class="mip">4,50€</span></div>
-        <div class="mi"><span class="min">Frite oignons frits</span><span class="mip">4,50€</span></div>
-        <div class="mi"><span class="min">Frite gruyère</span><span class="mip">4€</span></div>
-        <div class="mi"><span class="min">Frite gruyère bacon</span><span class="mip">4,50€</span></div>
-      </div>
-    </div>
-    <div class="msec rv"><span class="mstitle">Bowls &amp; Snacking</span>
-      <div data-produits-categorie="Bowls et Snacking">
-        <div class="mi"><span class="min">Bowl<small>Frite ou salade, viande, fromage, sauce</small></span><span class="mip">10€</span></div>
-        <div class="mi"><span class="min">Snacking<small>Tenders ×4, Nuggets ×6, Jalapeños ×6…</small></span><span class="mip">6€</span></div>
-        <div class="mi"><span class="min">Box à partager<small>4 Tenders, 4 Nuggets, 4 Bouchées, 2 canettes</small></span><span class="mip">19,90€</span></div>
-      </div>
-    </div>
-    <div class="msec rv2"><span class="mstitle">Salades &amp; Desserts</span>
-      <div data-produits-categorie="Salades et Desserts">
-        <div class="mi"><span class="min">Salade chèvre chaud</span><span class="mip">11,90€</span></div>
-        <div class="mi"><span class="min">Salade César</span><span class="mip">11,90€</span></div>
-        <div class="mi"><span class="min">Tiramisu</span><span class="mip">3€</span></div>
-        <div class="mi"><span class="min">Tarte au Daim</span><span class="mip">3€</span></div>
-        <div class="mi"><span class="min">Donuts</span><span class="mip">2€</span></div>
-        <div class="mi"><span class="min">Gaufre</span><span class="mip">5€</span></div>
-      </div>
-    </div>
-    <div class="msec rv3"><span class="mstitle">Menu Kids</span>
-      <div data-produits-categorie="Menu Kids">
-        <div class="mi"><span class="min">Menu enfant<small>4 nuggets ou mini burger, eau, compote</small></span><span class="mip">8€</span></div>
-      </div>
-      <p class="mnote" style="margin-top:18px;">👦 Idéal pour les petits appétits</p>
-    </div>
-  </div>
-</section>
+  </section>
 
-<section id="apropos">
-  <div class="apinner">
-    <div class="apimg rv">
-      <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=700&q=80" alt="KSM Burger restaurant Fleurie Beaujolais" loading="lazy" data-editable-zone="apropos_image">
-      <div class="apbadge"><strong>4.9★</strong><span>17 avis</span></div>
-    </div>
-    <div class="aptxt rv2">
-      <div class="stag">Notre histoire</div>
-      <h2 class="stitle" style="font-size:clamp(2rem,4vw,3rem);margin-bottom:24px;">Une histoire<br>de <span>famille</span></h2>
-      <p data-editable-zone="apropos_texte_1">KSM, c'est Kassim, Sofiane et Mélanie — une famille passionnée qui a ouvert ses portes en décembre 2024 à Fleurie. Un projet né du désir de combler un manque dans le village et d'apporter un fast-food de qualité au cœur du Beaujolais.</p>
-      <p data-editable-zone="apropos_texte_2">Sofiane et Mélanie ont entièrement rénové l'ancienne boucherie du village. Chaque burger porte le nom d'un cru du Beaujolais — un clin d'œil au territoire qu'ils ont adopté.</p>
-      <div class="atags">
-        <span class="atag">Famille Dorrhom</span>
-        <span class="atag">Déc. 2024</span>
-        <span class="atag">Produits frais</span>
-        <span class="atag">Fait maison</span>
-        <span class="atag">Local Beaujolais</span>
+</main>
+
+<footer class="ft">
+  <div class="wrap">
+    <div class="ft-haut">
+      <div>
+        <span class="marque">KSM <span>Burger</span></span>
+        <p class="ft-desc" data-editable-zone="footer_description">Le fast-food artisanal du Beaujolais. Burgers frais, faits maison, nommés d&rsquo;après les crus locaux. Commande à emporter, à récupérer sur place.</p>
+      </div>
+      <div class="ft-col">
+        <p><strong style="color:#fff">Nous trouver</strong></p>
+        <p>10 rue du Beaujolais</p>
+        <p>69820 Fleurie</p>
+        <p><a href="tel:+33950948815">09 50 94 88 15</a></p>
       </div>
     </div>
-  </div>
-</section>
-
-<section id="temoignages">
-  <div class="stag rv" style="justify-content:center;">Ils nous font confiance</div>
-  <h2 class="stitle rv" style="text-align:center;">Ce qu'ils <span>en disent</span></h2>
-  <div class="tgrid">
-    <div class="tc rv"><div class="tstars">★★★★★</div><p class="ttxt" data-editable-zone="temoin_1_texte">« Testé pour l'ouverture et revenu une semaine après — les burgers et les frites cheddar bacon sont une tuerie. Une équipe agréable, des produits vraiment frais. »</p><div class="tau"><strong data-editable-zone="temoin_1_nom">Thomas R.</strong><span data-editable-zone="temoin_1_role">Avis Google · Fleurie</span></div></div>
-    <div class="tc rv2"><div class="tstars">★★★★★</div><p class="ttxt" data-editable-zone="temoin_2_texte">« Meilleur snack de toute la région. Le patron est toujours souriant, une atmosphère paisible et une bonne ambiance. Vraiment une pépite ! »</p><div class="tau"><strong data-editable-zone="temoin_2_nom">Nadia K.</strong><span data-editable-zone="temoin_2_role">Avis Google · Belleville</span></div></div>
-    <div class="tc rv3"><div class="tstars">★★★★★</div><p class="ttxt" data-editable-zone="temoin_3_texte">« Accueil plus que chaleureux ! Le meilleur tacos que j'ai pu manger. Produits frais et de qualité. Enfin un fast-food près de chez nous et BON. »</p><div class="tau"><strong data-editable-zone="temoin_3_nom">Camille D.</strong><span data-editable-zone="temoin_3_role">Avis Google · Mâcon</span></div></div>
-  </div>
-</section>
-
-<section id="zones">
-  <div class="stag rv" style="justify-content:center;">On vous accueille</div>
-  <h2 class="stitle rv" style="text-align:center;">Fleurie &amp; <span>alentours</span></h2>
-  <div class="zchips rv">
-    <span class="zc main">Fleurie</span>
-    <span class="zc">Belleville-en-Beaujolais</span>
-    <span class="zc">Mâcon</span>
-    <span class="zc">Thoissey</span>
-    <span class="zc">Villié-Morgon</span>
-    <span class="zc">Beaujolais</span>
-    <span class="zc">Livraison locale</span>
-  </div>
-</section>
-
-<section id="faq">
-  <div class="stag rv" style="justify-content:center;">Questions fréquentes</div>
-  <h2 class="stitle rv" style="text-align:center;">On <span>répond</span> à tout</h2>
-  <div class="flist">
-    <div class="fi"><button class="fq">Vos produits sont-ils vraiment frais ?<span class="fico">+</span></button><div class="fa"><p data-editable-zone="faq_1_reponse">Absolument. Toute la viande hachée est fraîche, jamais surgelée. Les frites sont coupées et préparées sur place chaque jour.</p></div></div>
-    <div class="fi"><button class="fq">Quels sont vos horaires ?<span class="fico">+</span></button><div class="fa"><p data-editable-zone="faq_2_reponse">Mercredi au dimanche : 12h–14h et 18h30–21h30 (22h vendredi et samedi). Fermé lundi et mardi.</p></div></div>
-    <div class="fi"><button class="fq">Faites-vous de la livraison ?<span class="fico">+</span></button><div class="fa"><p data-editable-zone="faq_3_reponse">Oui, nous livrons sur Fleurie et les communes proches. Appelez-nous au 09 50 94 88 15 pour passer commande.</p></div></div>
-    <div class="fi"><button class="fq">Acceptez-vous les tickets restaurant ?<span class="fico">+</span></button><div class="fa"><p data-editable-zone="faq_4_reponse">Oui ! Chèques déjeuner, tickets restaurant et titres restaurant acceptés, ainsi que les cartes bancaires.</p></div></div>
-    <div class="fi"><button class="fq">Peut-on réserver pour un groupe ?<span class="fico">+</span></button><div class="fa"><p data-editable-zone="faq_5_reponse">Bien sûr, appelez-nous ou envoyez un message WhatsApp et on s'organise ensemble.</p></div></div>
-  </div>
-</section>
-
-<section id="contact">
-  <div class="stag rv">Nous trouver</div>
-  <h2 class="stitle rv">Rendez-nous <span>visite</span></h2>
-  <div class="cinner">
-    <div class="rv">
-      <div class="cii"><div class="cico">📍</div><div><span class="cilabel">Adresse</span><div class="cival">10 Rue du Beaujolais<br>69820 Fleurie</div></div></div>
-      <div class="cii"><div class="cico">📷</div><div><span class="cilabel">Instagram</span><div class="cival"><a href="https://www.instagram.com/le_ksm_burger_/" target="_blank" rel="noopener">@le_ksm_burger_</a></div></div></div>
-      <div class="cta-bloc">
-        <a href="tel:0950948815" class="cta-btn tel">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.22 2.18 2 2 0 012.18 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.29 6.29l1.28-1.28a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-          Appeler — 09 50 94 88 15
-        </a>
-        <a href="https://wa.me/33950948815?text=Bonjour%20KSM%20Burger%2C%20je%20voudrais%20commander" target="_blank" rel="noopener" class="cta-btn wa">
-          <svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          Commander sur WhatsApp
-        </a>
-      </div>
-    </div>
-    <div class="rv2">
-      <div class="hbox">
-        <p class="htit">Horaires d'ouverture</p>
-        <div class="hrow f"><span>Lundi</span><span data-editable-zone="horaires_lundi">Fermé</span></div>
-        <div class="hrow f"><span>Mardi</span><span data-editable-zone="horaires_mardi">Fermé</span></div>
-        <div class="hrow"><span>Mercredi</span><span data-editable-zone="horaires_mercredi">12h–14h · 18h30–21h30</span></div>
-        <div class="hrow"><span>Jeudi</span><span data-editable-zone="horaires_jeudi">12h–14h · 18h30–21h30</span></div>
-        <div class="hrow"><span>Vendredi</span><span data-editable-zone="horaires_vendredi">12h–14h · 18h30–22h</span></div>
-        <div class="hrow"><span>Samedi</span><span data-editable-zone="horaires_samedi">12h–14h · 18h30–22h</span></div>
-        <div class="hrow"><span>Dimanche</span><span data-editable-zone="horaires_dimanche">12h–14h · 18h30–21h30</span></div>
-      </div>
+    <div class="ft-bas">
+      <span>&copy; <span id="annee">2026</span> KSM Burger &middot; Fleurie</span>
+      <span>Site réalisé et suivi par <a href="https://locweb.fr" target="_blank" rel="noopener">LocWeb</a></span>
     </div>
   </div>
-</section>
-
-<footer>
-  <div class="finner">
-    <div><span class="flogo">KSM <span>Burger</span></span><p class="fdesc" data-editable-zone="footer_description">Le fast-food artisanal du Beaujolais. Burgers frais, faits maison, nommés d'après les crus locaux. Ouvert depuis décembre 2024.</p></div>
-    <div><p class="fct">Navigation</p><ul class="flinks"><li><a href="#burgers">Les burgers</a></li><li><a href="#menu">Le menu</a></li><li><a href="#apropos">Notre histoire</a></li><li><a href="#temoignages">Avis clients</a></li><li><a href="#contact">Contact</a></li></ul></div>
-    <div><p class="fct">Contact</p><ul class="flinks"><li><a href="tel:0950948815">09 50 94 88 15</a></li><li><a href="https://wa.me/33950948815" target="_blank" rel="noopener">WhatsApp</a></li><li><a href="https://www.instagram.com/le_ksm_burger_/" target="_blank" rel="noopener">Instagram</a></li><li>10 Rue du Beaujolais, Fleurie</li></ul></div>
-  </div>
-  <div class="fbot"><p>&copy; 2025 KSM Burger · Fleurie (69820) · Beaujolais</p><p><a href="#">Mentions légales</a> · <a href="https://admin.locweb.fr">🔒 Administration</a></p></div>
 </footer>
 
-<a href="https://wa.me/33950948815?text=Bonjour%20KSM%20Burger%2C%20je%20voudrais%20commander" class="wa" target="_blank" rel="noopener" aria-label="Commander sur WhatsApp">
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-  <span class="wa-label">Commander</span>
-</a>
+<div class="barre" id="barre" aria-live="polite">
+  <div class="barre-in">
+    <span class="barre-info"><b id="barre-n">0</b> <span id="barre-mot">article</span> &middot; <b id="barre-total">0,00&nbsp;&euro;</b></span>
+    <button class="pill" type="button" id="barre-btn">Passer commande</button>
+  </div>
+</div>
 
-<script>
-  function toggleNav(){
-    var l=document.querySelector('.nlinks');
-    if(!l)return;
-    if(l.style.display==='flex'){l.removeAttribute('style');}
-    else{l.style.cssText='display:flex;flex-direction:column;position:absolute;top:64px;left:0;right:0;background:rgba(17,17,17,.98);padding:20px 5%;gap:16px;border-bottom:1px solid rgba(245,197,24,.16)';}
-  }
-  var obs=new IntersectionObserver(function(entries){
-    entries.forEach(function(e,i){
-      if(e.isIntersecting){setTimeout(function(){e.target.classList.add('on');},i*75);obs.unobserve(e.target);}
-    });
-  },{threshold:0.08});
-  document.querySelectorAll('.rv,.rv2,.rv3').forEach(function(el){obs.observe(el);});
-  document.querySelectorAll('.fq').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      var item=btn.parentElement;
-      var isOpen=item.classList.contains('open');
-      document.querySelectorAll('.fi').forEach(function(i){i.classList.remove('open');});
-      if(!isOpen)item.classList.add('open');
-    });
-  });
-</script>
+<div class="modale" id="fiche" role="dialog" aria-modal="true" aria-labelledby="fiche-titre">
+  <div class="modale-boite" id="fiche-boite"></div>
+</div>
+
+<div class="modale" id="modale" role="dialog" aria-modal="true" aria-labelledby="modale-titre">
+  <div class="modale-boite" id="modale-boite">
+    <div class="modale-tete">
+      <h2 id="modale-titre">Votre commande</h2>
+      <button class="fermer" type="button" id="modale-fermer" aria-label="Fermer">&times;</button>
+    </div>
+
+    <div class="recap" id="recap"></div>
+
+    <div class="msg msg-err" id="msg-err"></div>
+
+    <form id="form-commande" novalidate>
+      <div class="champ">
+        <label for="f-nom">Votre nom</label>
+        <input id="f-nom" name="nom" type="text" autocomplete="name" required>
+      </div>
+      <div class="champ">
+        <label for="f-tel">Votre téléphone</label>
+        <input id="f-tel" name="tel" type="tel" autocomplete="tel" inputmode="tel" required>
+        <p class="champ-aide">Pour vous prévenir dès que la commande est prête.</p>
+      </div>
+      <div class="champ">
+        <label for="f-heure">À récupérer</label>
+        <select id="f-heure" name="heure"></select>
+      </div>
+      <div class="hp" aria-hidden="true">
+        <label for="f-site">Ne pas remplir</label>
+        <input id="f-site" name="site" type="text" tabindex="-1" autocomplete="off">
+      </div>
+      <button class="pill pill-vin" type="submit" id="f-envoyer">Envoyer la commande</button>
+      <p class="champ-aide" style="margin-top:12px">Aucun paiement en ligne : vous réglez sur place au retrait.</p>
+    </form>
+  </div>
+</div>
 
 <script>
   window.LOCWEB_CONFIG = {
@@ -528,9 +684,9 @@
     ga4Id: ''   // laisse vide : recupere seul apres la connexion Google
   };
 </script>
-<script src="mesure.js"></script>
-<script src="contenu-loader.js"></script>
-<script src="produits-loader.js"></script>
+<script src="contenu-loader.js" defer></script>
+<script src="carte.js" defer></script>
+<script src="mesure.js" defer></script>
 
 </body>
 </html>
