@@ -76,7 +76,15 @@
   --sombre:   #141416;   /* les sections qui alternent */
   --carte:    #1b1b1e;   /* listes, cartes, champs */
   --surface:  #232327;   /* le survol */
-  --trait:    #2c2c31;   /* les filets */
+  --trait:    #2c2c31;   /* les filets decoratifs : separer deux lignes */
+  /* Le contour de ce qui se CLIQUE, et il est volontairement plus
+     clair. Un bouton secondaire sur fond sombre ne peut pas compter
+     sur son remplissage : #1b1b1e sur #141416 ne fait que 1,3:1, le
+     bouton disparait. C'est la bordure qui porte alors l'affordance,
+     et elle doit atteindre 3:1 (WCAG 1.4.11, contour d'un element
+     d'interface). #70707d est la valeur la plus sombre qui y arrive
+     sur les quatre fonds du site. */
+  --trait-fort: #70707d;
 
   --or:       #d4af37;
   --or-vif:   #e8c87a;
@@ -140,9 +148,9 @@ a { color: inherit }
 .pill:active { transform: scale(.98) }
 .pill-vin { background: var(--or); color: var(--noir) }
 .pill-vin:hover { background: var(--or-vif) }
-.pill-noir { background: var(--carte); color: var(--encre); border-color: var(--trait) }
+.pill-noir { background: var(--carte); color: var(--encre); border-color: var(--trait-fort) }
 .pill-noir:hover { background: #000 }
-.pill-clair { background: var(--carte); color: var(--encre); border-color: var(--trait) }
+.pill-clair { background: var(--carte); color: var(--encre); border-color: var(--trait-fort) }
 .pill-clair:hover { background: var(--surface) }
 .pill-ligne { background: transparent; color: #fff; border-color: rgba(255,255,255,.34) }
 .pill-ligne:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.6) }
@@ -273,7 +281,7 @@ a { color: inherit }
 .cats::-webkit-scrollbar { display: none }
 .cats button {
   flex: none; height: 38px; padding: 0 16px; border-radius: 999px;
-  border: 1px solid var(--trait); background: var(--carte); color: var(--gris);
+  border: 1px solid var(--trait-fort); background: var(--carte); color: var(--encre);
   font-family: var(--texte); font-size: 14px; font-weight: 600; cursor: pointer;
   transition: background-color .16s ease, color .16s ease, border-color .16s ease;
 }
@@ -389,7 +397,7 @@ a { color: inherit }
 .groupe-opt { margin-top: 26px }
 .groupe-opt > h3 { font-size: 17px }
 .groupe-opt .aide { font-size: 13px; color: var(--gris); margin-bottom: 10px }
-.opts { border: 1px solid var(--trait); border-radius: 12px; overflow: hidden }
+.opts { border: 1px solid var(--trait-fort); border-radius: 12px; overflow: hidden }
 .opt {
   display: flex; align-items: center; gap: 12px;
   padding: 12px 15px; border-top: 1px solid var(--trait);
@@ -404,7 +412,7 @@ a { color: inherit }
   display: flex; align-items: center; gap: 14px; margin-top: 26px;
   position: sticky; bottom: 0; background: var(--carte); padding: 14px 0 0;
 }
-.fiche-pied .pas { border: 1px solid var(--trait); border-radius: 999px; padding: 3px }
+.fiche-pied .pas { border: 1px solid var(--trait-fort); border-radius: 999px; padding: 3px }
 .fiche-pied .pill-vin { flex: 1; width: auto }
 
 .carte-vide, .carte-erreur { padding: 28px 0; color: var(--gris) }
@@ -479,7 +487,8 @@ a { color: inherit }
 .modale-tete h2 { font-size: 25px }
 .fermer {
   flex: none; width: 38px; height: 38px; border-radius: 999px; border: 1px solid var(--trait);
-  background: transparent; font-size: 20px; line-height: 1; cursor: pointer; color: var(--gris);
+  background: var(--surface); border: 1px solid var(--trait-fort);
+  font-size: 20px; line-height: 1; cursor: pointer; color: var(--encre);
 }
 .fermer:hover { background: var(--surface) }
 
@@ -496,6 +505,7 @@ a { color: inherit }
   width: 100%; height: 48px; padding: 0 15px;
   border: 1px solid var(--trait); border-radius: 12px;
   font-family: var(--texte); font-size: 16px; color: var(--encre); background: var(--sombre);
+  border-color: var(--trait-fort);
 }
 .champ input:focus, .champ select:focus { outline: none; border-color: var(--or); box-shadow: 0 0 0 3px rgba(212,175,55,.18) }
 .champ-aide { font-size: 13px; color: var(--gris); margin-top: 5px }
