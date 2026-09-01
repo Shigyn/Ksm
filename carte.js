@@ -297,26 +297,33 @@
       elListe.appendChild(section);
     });
 
+    /* Indispensable, et pas seulement pour la mise a jour : c'est ce
+       qui replie les pas-a-pas a leur seul « + » au premier rendu.
+       Sans cet appel, chaque photo affichait une pastille doree vide
+       jusqu'au premier ajout au panier. */
+    majPas();
     surveillerCategories();
   }
 
   function ligne(p) {
     var dispo = p.disponible !== false;
 
-    var row = creer('button', 'ligne' + (dispo ? '' : ' ligne-indispo'));
-    row.type = 'button';
+    var row = creer('div', 'ligne' + (dispo ? '' : ' ligne-indispo'));
     row.setAttribute('data-produit', p.id);
-    if (!dispo) row.disabled = true;
+
+    // Le corps ouvre la fiche ; le pas-a-pas vit a cote, pas dedans.
+    var corps = creer('button', 'ligne-corps');
+    corps.type = 'button';
+    if (!dispo) corps.disabled = true;
 
     var txt = creer('div', 'ligne-txt');
     txt.appendChild(creer('div', 'ligne-nom', p.nom));
     if (p.description) txt.appendChild(creer('div', 'ligne-desc', p.description));
     txt.appendChild(creer('div', 'ligne-prix', euros(p.prix)));
 
-    if (dispo && groupesOptions(p).length) {
-      txt.appendChild(creer('div', 'ligne-perso', 'Personnalisable'));
-    }
-    row.appendChild(txt);
+    var aOptions = dispo && groupesOptions(p).length > 0;
+    if (aOptions) txt.appendChild(creer('div', 'ligne-perso', 'Personnalisable'));
+    corps.appendChild(txt);
 
     var media = creer('div', 'ligne-media');
     var src = photoDe(p);
@@ -332,17 +339,85 @@
       // Initiale du plat plutot qu'une photo d'un autre restaurant.
       media.appendChild(creer('div', 'ligne-vide', p.nom.charAt(0).toUpperCase()));
     }
+    if (!dispo) media.appendChild(creer('span', 'epuise', 'Épuisé'));
+    corps.appendChild(media);
 
-    if (dispo) {
-      media.appendChild(creer('span', 'ajout', '+'));
-      media.appendChild(creer('span', 'ligne-badge'));
-    } else {
-      media.appendChild(creer('span', 'epuise', 'Épuisé'));
-    }
-    row.appendChild(media);
+    corps.addEventListener('click', function () { ouvrirFiche(p); });
+    row.appendChild(corps);
 
-    if (dispo) row.addEventListener('click', function () { ouvrirFiche(p); });
+    if (dispo) row.appendChild(pasRapide(p, aOptions));
     return row;
+  }
+
+  /* Le pas-a-pas rapide, sur le coin de la photo.
+
+     Tant que le plat n'est pas au panier : un seul rond « + ». Des
+     qu'il y est : « − n + ». Trente-quatre plats affichant trois
+     boutons chacun feraient une carte illisible, alors qu'on n'en
+     commande que deux ou trois. */
+  function pasRapide(p, aOptions) {
+    var boite = creer('div', 'ligne-pas');
+    boite.setAttribute('data-produit-pas', p.id);
+
+    var moins = creer('button', null, '−');
+    moins.type = 'button';
+    moins.setAttribute('aria-label', 'Retirer un ' + p.nom);
+    moins.addEventListener('click', function (e) {
+      e.stopPropagation();
+      retirerUn(p);
+    });
+
+    var n = creer('span', 'n');
+
+    var plus = creer('button', null, '+');
+    plus.type = 'button';
+    plus.setAttribute('aria-label', 'Ajouter un ' + p.nom);
+    plus.addEventListener('click', function (e) {
+      e.stopPropagation();
+      ajouterUn(p, aOptions);
+    });
+
+    boite.appendChild(moins);
+    boite.appendChild(n);
+    boite.appendChild(plus);
+    return boite;
+  }
+
+  /* Un « + » sur un plat a options ne peut pas deviner la recette.
+     Deux cas, et un seul est ambigu :
+      - rien de ce plat au panier : on ouvre la fiche, il faut bien
+        choisir une viande avant de commander un tacos ;
+      - deja au panier : on refait le MEME, c'est « la meme chose »
+        et c'est ce qu'on attend d'un bouton +. Pour une autre
+        composition, on ouvre la fiche en touchant la ligne. */
+  function ajouterUn(p, aOptions) {
+    var derniere = derniereVariante(p.id);
+    if (aOptions && !derniere) { ouvrirFiche(p); return; }
+    ajouter(p, 1, derniere ? derniere.options : []);
+  }
+
+  function retirerUn(p) {
+    var derniere = derniereVariante(p.id);
+    if (!derniere) return;
+    var k = cle(p, derniere.options);
+    if (panier[k].quantite <= 1) delete panier[k];
+    else panier[k].quantite -= 1;
+    majBarre();
+    majPas();
+  }
+
+  /* La variante ajoutee en dernier pour ce plat. `ordre` et non
+     l'ordre des cles : reajouter une variante existante ne la
+     deplace pas en fin d'objet, et « + » retomberait alors sur une
+     composition choisie il y a cinq minutes. */
+  function derniereVariante(produitId) {
+    var meilleure = null;
+    Object.keys(panier).forEach(function (k) {
+      var l = panier[k];
+      if (l.produit.id !== produitId) return;
+      if (!meilleure || l.ordre > meilleure.ordre) meilleure = l;
+    });
+    return meilleure;
   }
 
   // -----------------------------------------------------------------
@@ -528,22 +603,25 @@
     return produit.id + '|' + options.slice().sort().join(',');
   }
 
+  var rang = 0;
+
   function ajouter(produit, quantite, options) {
     var k = cle(produit, options);
     var e = panier[k];
     panier[k] = {
       produit: produit,
       options: options,
+      ordre: ++rang,
       quantite: Math.min(50, (e ? e.quantite : 0) + quantite)
     };
     majBarre();
-    majBadges();
+    majPas();
   }
 
   function retirerLigne(k) {
     delete panier[k];
     majBarre();
-    majBadges();
+    majPas();
   }
 
   function lignesPanier() {
@@ -580,20 +658,24 @@
   /* Le nombre pose sur la photo, toutes options confondues : ce que le
      client veut savoir en parcourant la carte, c'est « combien de
      Fleurie j'ai pris », pas le detail de chaque variante. */
-  function majBadges() {
+  function majPas() {
     var parProduit = Object.create(null);
     lignesPanier().forEach(function (l) {
       parProduit[l.produit.id] = (parProduit[l.produit.id] || 0) + l.quantite;
     });
 
-    document.querySelectorAll('.ligne[data-produit]').forEach(function (row) {
-      var n = parProduit[row.getAttribute('data-produit')] || 0;
-      var badge = row.querySelector('.ligne-badge');
-      var plus = row.querySelector('.ajout');
-      if (!badge) return;
-      badge.textContent = n ? n : '';
-      badge.style.display = n ? '' : 'none';
-      if (plus) plus.style.display = n ? 'none' : '';
+    document.querySelectorAll('.ligne-pas[data-produit-pas]').forEach(function (boite) {
+      var n = parProduit[boite.getAttribute('data-produit-pas')] || 0;
+      boite.querySelector('.n').textContent = n || '';
+
+      /* Le « − » et le compteur n'existent que si le plat est au
+         panier. Sans ca, chaque photo de la carte porterait une
+         pastille vide qui ne veut rien dire — et un « − » qui ne
+         retire rien. */
+      boite.children[0].hidden = !n;
+      boite.children[1].hidden = !n;
+      if (n) boite.setAttribute('data-au-panier', '');
+      else boite.removeAttribute('data-au-panier');
     });
   }
 
@@ -827,7 +909,7 @@
 
     panier = Object.create(null);
     majBarre();
-    majBadges();
+    majPas();
 
     if (window.gtag) {
       window.gtag('event', 'commande_envoyee', {
