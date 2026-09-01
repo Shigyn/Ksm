@@ -574,6 +574,7 @@
     // dernier produit de la carte reste inatteignable.
     document.documentElement.style.setProperty(
       '--barre', ouvert ? (elBarre.offsetHeight + 8) + 'px' : '0px');
+    majBarreSuivi();
   }
 
   /* Le nombre pose sur la photo, toutes options confondues : ce que le
@@ -771,39 +772,206 @@
       });
   }
 
+  /* Une fois la commande partie, l'ecran ne se fige pas : il suit
+     l'avancement, parce que c'est la seule question que se pose le
+     client ensuite — « c'est bon, ils l'ont prise ? » et « je viens
+     quand ? ». Sans ca, il rappelle le restaurant pour le savoir. */
+  var ETAPES = {
+    recue: {
+      rond: '<i></i><i></i><i></i>',
+      titre: 'Commande envoyée',
+      texte: 'Le restaurant va la confirmer dans un instant.',
+      libelleHeure: 'Vous avez demandé'
+    },
+    en_preparation: {
+      rond: '🔥',
+      titre: 'Commande acceptée',
+      texte: 'Elle est en cours de préparation.',
+      libelleHeure: 'À récupérer à'
+    },
+    prete: {
+      rond: '✓',
+      titre: 'Votre commande est prête',
+      texte: 'Présentez-vous au comptoir, elle vous attend.',
+      libelleHeure: 'Prête depuis'
+    },
+    recuperee: {
+      rond: '✓',
+      titre: 'Bon appétit',
+      texte: 'Merci, et à bientôt chez KSM.',
+      libelleHeure: null
+    },
+    annulee: {
+      rond: '!',
+      titre: 'Commande non retenue',
+      texte: 'Le restaurant n’a pas pu la prendre. Appelez-nous, on trouve une solution.',
+      libelleHeure: null
+    }
+  };
+
+  var suiviId = null;
+
   function confirmer(corps, heure) {
-    // La reference est le debut de l'identifiant de commande : c'est
-    // ce que le restaurateur voit de son cote, donc ce qui permet de
-    // se retrouver au comptoir.
-    var ref = String(corps.commande_id || '').slice(0, 8).toUpperCase();
+    // La reference est le debut de l'identifiant : c'est ce que le
+    // comptoir voit de son cote, donc ce qui permet de se retrouver.
+    var id = String(corps.commande_id || '');
 
-    $('#modale-boite').innerHTML =
-      '<div class="ok-bloc">'
-      + '<div class="ok-rond" aria-hidden="true">✓</div>'
-      + '<h2>Commande envoyée</h2>'
-      + '<p>Nous la préparons. Présentez-vous au comptoir à l’heure choisie&nbsp;: <strong>'
-      + (heure === 'Dès que possible' ? 'dès que possible' : heure) + '</strong>.</p>'
-      + '<p class="ref">Référence ' + ref + '</p>'
-      + '<p style="margin-top:18px">10 rue du Beaujolais, 69820 Fleurie<br>'
-      + 'Règlement sur place.</p>'
-      + '<a class="pill pill-vin" style="margin-top:20px" href="tel:+33950948815">Un souci&nbsp;? Appelez-nous</a>'
-      + '</div>';
+    // Garde la commande sous la main : si le client ferme la page ou
+    // rafraichit, il retrouve son suivi au lieu d'un site normal qui
+    // fait comme s'il n'avait rien commande.
+    try {
+      localStorage.setItem('ksm_commande', JSON.stringify({
+        id: id, heure: heure, quand: Date.now()
+      }));
+    } catch (e) { /* navigation privee : le suivi vivra le temps de la page */ }
 
-    // Le panier est parti : le vider evite qu'un second envoi parte
-    // par megarde depuis la barre restee a l'ecran.
     panier = Object.create(null);
     majBarre();
     majBadges();
 
-    // La commande est le seul geste qui compte sur ce site : sans ce
-    // signal, le tableau de bord affiche des visiteurs et aucune
-    // conversion, et l'abonnement devient indefendable.
     if (window.gtag) {
       window.gtag('event', 'commande_envoyee', {
         event_category: 'conversion',
         value: corps.total || 0
       });
     }
+
+    commandeEnCours = { id: id, heure: heure, statut: 'recue' };
+    ouvrirSuivi(id, heure, 'recue');
+  }
+
+  function ouvrirSuivi(id, heure, statut) {
+    elModale.setAttribute('data-ouvert', '1');
+    document.body.style.overflow = 'hidden';
+    peindreSuivi(id, heure, statut);
+    lancerSuivi(id);
+  }
+
+  function peindreSuivi(id, heure, statut) {
+    var e = ETAPES[statut] || ETAPES.recue;
+    var ref = id.slice(0, 8).toUpperCase();
+
+    var html = '<div class="modale-tete" style="border:0;padding:0">'
+      + '<span></span>'
+      + '<button class="fermer" type="button" data-fermer aria-label="Fermer">&times;</button>'
+      + '</div>'
+      + '<div class="ok-bloc">'
+      + '<div class="ok-rond" data-s="' + statut + '" aria-hidden="true">' + e.rond + '</div>'
+      + '<h2>' + e.titre + '</h2>'
+      + '<p>' + e.texte + '</p>';
+
+    if (e.libelleHeure && heure) {
+      html += '<p class="ok-heure"><small>' + e.libelleHeure + '</small>'
+        + (heure === 'Dès que possible' ? 'dès que possible' : heure) + '</p>';
+    }
+
+    html += '<p class="ref" style="margin-top:16px">Référence ' + ref + '</p>'
+      + '<p style="margin-top:14px">10 rue du Beaujolais, 69820 Fleurie<br>Règlement sur place.</p>'
+      + '<a class="pill pill-vin" style="margin-top:18px" href="tel:+33950948815">Appeler le restaurant</a>'
+      + '</div>';
+
+    $('#modale-boite').innerHTML = html;
+    var x = $('#modale-boite [data-fermer]');
+    if (x) x.addEventListener('click', fermerModale);
+  }
+
+  /* On interroge le serveur toutes les quinze secondes. Assez souvent
+     pour que « c'est prêt » arrive vite, assez rare pour ne pas vider
+     la batterie de quelqu'un qui attend vingt minutes. */
+  function lancerSuivi(id) {
+    clearInterval(suiviId);
+
+    function voir() {
+      // Onglet en arriere-plan : personne ne regarde, on ne demande
+      // rien. Le retour au premier plan declenche une lecture.
+      if (document.hidden) return;
+
+      fetch(config.supabaseUrl + '/functions/v1/commande-statut', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: config.supabaseAnonKey,
+          Authorization: 'Bearer ' + config.supabaseAnonKey
+        },
+        body: JSON.stringify({ commande_id: id })
+      })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) {
+          if (!d || !d.statut) return;
+          commandeEnCours = { id: id, heure: d.heure, statut: d.statut };
+          majBarreSuivi();
+          // Ne repeindre que si l'ecran de suivi est effectivement
+          // ouvert : sinon on ecraserait le formulaire de commande
+          // d'un client en train d'en passer une seconde.
+          if (elModale.getAttribute('data-ouvert') && $('#modale-boite .ok-bloc')) {
+            peindreSuivi(id, d.heure, d.statut);
+          }
+
+          // Commande close : plus rien a suivre, et on oublie la
+          // commande pour ne pas rouvrir ce suivi au prochain passage.
+          if (d.statut === 'recuperee' || d.statut === 'annulee') {
+            clearInterval(suiviId);
+            commandeEnCours = null;
+            majBarreSuivi();
+            try { localStorage.removeItem('ksm_commande'); } catch (e) {}
+          }
+        })
+        .catch(function () { /* reseau coupe : on reessaie au tour suivant */ });
+    }
+
+    suiviId = setInterval(voir, 15000);
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) voir();
+    });
+    voir();
+  }
+
+  /* Au chargement du site, une commande encore en cours rouvre son
+     suivi. Passe quatre heures, on considere le service termine et on
+     oublie : rouvrir le suivi d'un repas d'hier serait absurde. */
+  function reprendreSuivi() {
+    var brut;
+    try { brut = localStorage.getItem('ksm_commande'); } catch (e) { return; }
+    if (!brut) return;
+
+    var c;
+    try { c = JSON.parse(brut); } catch (e) { return; }
+    if (!c || !c.id) return;
+
+    if (Date.now() - (c.quand || 0) > 4 * 3600 * 1000) {
+      try { localStorage.removeItem('ksm_commande'); } catch (e) {}
+      return;
+    }
+
+    /* Une barre en bas, pas une modale : quelqu'un qui revient sur le
+       site veut peut-etre commander autre chose, et se faire barrer la
+       route par l'ecran de sa commande precedente serait absurde. Il
+       l'ouvre s'il veut la voir. */
+    commandeEnCours = { id: c.id, heure: c.heure, statut: 'recue' };
+    majBarreSuivi();
+    lancerSuivi(c.id);
+  }
+
+  var commandeEnCours = null;
+
+  function majBarreSuivi() {
+    var b = $('#suivi-barre');
+    if (!b) return;
+
+    // Panier non vide : la barre du panier prend la place. Les deux
+    // sont fixees en bas de l'ecran, elles ne peuvent pas cohabiter.
+    var visible = commandeEnCours && !totaux().n;
+    b.setAttribute('data-ouvert', visible ? '1' : '0');
+    if (!visible) return;
+
+    var e = ETAPES[commandeEnCours.statut] || ETAPES.recue;
+    var t = e.titre;
+    if (commandeEnCours.statut === 'en_preparation' && commandeEnCours.heure) {
+      t = 'En préparation · prête à ' + commandeEnCours.heure;
+    } else if (commandeEnCours.statut === 'prete') {
+      t = 'Votre commande est prête';
+    }
+    $('#suivi-txt').innerHTML = '<b>' + t + '</b>';
   }
 
   // -----------------------------------------------------------------
@@ -868,6 +1036,10 @@
   //  8. Branchements
   // -----------------------------------------------------------------
   $('#barre-btn').addEventListener('click', ouvrirModale);
+  $('#suivi-barre').addEventListener('click', function () {
+    if (!commandeEnCours) return;
+    ouvrirSuivi(commandeEnCours.id, commandeEnCours.heure, commandeEnCours.statut);
+  });
   $('#modale-fermer').addEventListener('click', fermerModale);
   elModale.addEventListener('click', function (e) {
     if (e.target === elModale) fermerModale();
@@ -891,4 +1063,5 @@
 
   heros();
   chargerCarte();
+  reprendreSuivi();
 })();

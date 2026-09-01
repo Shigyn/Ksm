@@ -1,0 +1,255 @@
+<!DOCTYPE html><html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Espace restaurant — KSM Burger</title>
+
+<!-- Un ecran de service ne doit jamais finir dans un resultat de
+     recherche : il n'apporte rien a personne et il expose l'existence
+     d'une porte d'entree. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0b0c">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* Meme famille visuelle que le site public, mais assumee comme un
+     outil de travail : plus dense, plus contraste, pense pour un ecran
+     pose sur un plan de travail et regarde de loin, souvent avec les
+     mains occupees. */
+  :root {
+    /* Meme noir et meme dore que le site public : le restaurateur
+       doit reconnaitre sa maison en ouvrant son ecran de service.
+       Le dore ne signale qu'une chose ici : ce sur quoi il faut agir. */
+    --noir: #0b0b0c;
+    --sombre: #141416;
+    --carte: #1b1b1e;
+    --surface: #232327;
+    --trait: #2c2c31;
+    --encre: #f5f3ef;
+    --gris: #9a968e;
+    --or: #d4af37;
+    --or-vif: #e8c87a;
+    --or-sourd: #7a6428;
+    /* Deux couleurs d'etat, et deux seulement. Elles ne sont pas
+       decoratives : le vert dit « ca part », le dore « ca attend ».
+       Les melanger a l'identite ferait perdre les deux.
+
+       Deux verts, et pour une raison mesuree : sur un bouton plein,
+       #3f9e6b sous du texte clair ne donne que 3,0:1, sous le seuil
+       lisible. Le vert fonce sert donc aux boutons (4,9:1), le vert
+       clair aux pastilles et aux points, ou il est lui-meme le
+       texte pose sur du sombre. */
+    --vert: #25784a;
+    --vert-vif: #6fd39c;
+    --disp: 'Archivo', system-ui, sans-serif;
+    --r: 14px;
+  }
+
+  * { box-sizing: border-box }
+  body {
+    margin: 0; background: var(--noir); color: var(--encre);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 15px; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding: 0 0 40px;
+  }
+  h1, h2, h3 { font-family: var(--disp); margin: 0; letter-spacing: -.01em }
+  button { font: inherit; cursor: pointer }
+  a { color: inherit }
+
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 18px }
+
+  /* ---- Ecran de code d'acces ---- */
+  #ecran-code {
+    min-height: 100dvh; display: grid; place-items: center; padding: 24px;
+  }
+  .code-boite { width: 100%; max-width: 340px; text-align: center }
+  .code-boite h1 { font-size: 30px; font-weight: 800 }
+  .code-boite h1 span { color: var(--gris); font-weight: 600 }
+  .code-boite p { color: var(--gris); margin: 6px 0 26px; font-size: 14px }
+  .code-boite input {
+    width: 100%; padding: 15px 18px; border-radius: 999px;
+    border: 1px solid var(--trait); background: var(--sombre);
+    color: var(--encre); font-size: 16px; text-align: center; margin-bottom: 12px;
+  }
+  .code-boite input:focus { outline: 2px solid var(--or); outline-offset: 2px }
+  .code-boite button {
+    width: 100%; padding: 15px 18px; border-radius: 999px; border: 0;
+    background: var(--or); color: var(--noir); font-weight: 600; font-size: 16px;
+  }
+  #code-erreur { color: #ff7b8f; font-size: 14px; min-height: 20px; margin-top: 12px }
+
+  /* ---- Entete ---- */
+  #ecran-app { display: none }
+  .tete {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(11,11,12,.9);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--trait);
+    padding: 14px 0;
+  }
+  .tete-ligne { display: flex; align-items: center; gap: 14px }
+  .tete h1 { font-size: 20px; font-weight: 800; flex: 1 }
+  .tete h1 span { color: var(--gris); font-weight: 600 }
+
+  /* Le point de vie : il dit que l'ecran est encore relie. Un comptoir
+     qui croit voir « aucune commande » alors que la connexion est
+     tombee, c'est un client qui attend pour rien. */
+  .pouls { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--gris) }
+  .pouls i {
+    width: 9px; height: 9px; border-radius: 999px; background: var(--vert-vif);
+    display: block; animation: bat 2.4s ease-in-out infinite;
+  }
+  .pouls.perdu i { background: #ff7b8f; animation: none }
+  @keyframes bat { 0%,100% { opacity: 1 } 50% { opacity: .28 } }
+
+  .son-btn {
+    border: 1px solid var(--trait); background: var(--sombre); color: var(--gris);
+    border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 500;
+  }
+  .son-btn[data-on] { color: var(--encre); border-color: var(--vert-vif) }
+
+  /* ---- Compteurs ---- */
+  .compteurs { display: flex; gap: 10px; margin: 18px 0 4px; flex-wrap: wrap }
+  .compteur {
+    flex: 1; min-width: 130px; background: var(--sombre);
+    border: 1px solid var(--trait); border-radius: var(--r); padding: 13px 16px;
+  }
+  .compteur b { display: block; font-family: var(--disp); font-size: 26px; font-weight: 800; line-height: 1 }
+  .compteur span { font-size: 12px; color: var(--gris); text-transform: uppercase; letter-spacing: .07em }
+  .compteur[data-alerte] b { color: var(--or) }
+  .compteur[data-alerte] { border-color: var(--or-sourd) }
+
+  /* ---- Une commande ---- */
+  .cmds { display: grid; gap: 14px; margin-top: 22px }
+  .cmd {
+    background: var(--carte); border: 1px solid var(--trait);
+    border-radius: var(--r); overflow: hidden;
+  }
+  /* Un liseré de couleur sur la tranche : au comptoir on lit l'etat
+     d'un coup d'oeil, avant meme de lire le mot. */
+  .cmd[data-statut="recue"]         { border-left: 4px solid var(--or) }
+  .cmd[data-statut="en_preparation"]{ border-left: 4px solid var(--gris) }
+  .cmd[data-statut="prete"]         { border-left: 4px solid var(--vert-vif) }
+
+  .cmd-tete {
+    display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+    padding: 15px 18px 0;
+  }
+  .cmd-ref {
+    font-family: var(--disp); font-weight: 700; font-size: 13px;
+    color: var(--gris); letter-spacing: .06em;
+  }
+  .cmd-nom { font-family: var(--disp); font-size: 20px; font-weight: 700; flex: 1 }
+  .cmd-total { font-family: var(--disp); font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums }
+
+  .cmd-meta {
+    display: flex; gap: 18px; flex-wrap: wrap;
+    padding: 8px 18px 0; font-size: 14px; color: var(--gris);
+  }
+  .cmd-meta b { color: var(--encre); font-weight: 600 }
+  .cmd-meta a { font-weight: 600; color: var(--encre); text-decoration: none }
+
+  .etat {
+    display: inline-block; padding: 4px 11px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
+  }
+  /* Le dore ne marque QUE ce qui attend une decision. Une commande
+     deja lancee n'a besoin de rien : elle passe en gris. Sans cette
+     distinction, tout l'ecran est dore et plus rien ne ressort. */
+  .etat[data-s="recue"]          { background: rgba(212,175,55,.16); color: var(--or-vif) }
+  .etat[data-s="en_preparation"] { background: var(--surface);       color: var(--gris) }
+  .etat[data-s="prete"]          { background: rgba(63,158,107,.2);  color: var(--vert-vif) }
+
+  .cmd-articles { padding: 14px 18px 0; display: grid; gap: 7px }
+  .art { display: flex; gap: 12px; font-size: 15px }
+  .art-q {
+    flex: none; min-width: 26px; height: 26px; border-radius: 7px;
+    background: var(--sombre); border: 1px solid var(--trait);
+    display: grid; place-items: center; font-weight: 700; font-size: 13px;
+  }
+  .art-n { flex: 1 }
+  /* Les options en dessous, pas a la suite : « sans oignons » doit
+     sauter aux yeux de celui qui prepare, pas se perdre en fin de
+     ligne derriere le nom du plat. */
+  .art-opt { display: block; color: var(--or); font-size: 13.5px; font-weight: 600; margin-top: 2px }
+
+  .cmd-actions { display: flex; gap: 10px; flex-wrap: wrap; padding: 16px 18px 18px }
+  .b {
+    border: 0; border-radius: 999px; padding: 12px 22px;
+    font-weight: 600; font-size: 15px; color: var(--encre); background: var(--sombre);
+    border: 1px solid var(--trait);
+  }
+  .b-ok    { background: var(--vert);  border-color: var(--vert) }
+  .b-or    { background: var(--or); border-color: var(--or); color: var(--noir) }
+  .b-refus { background: transparent; color: var(--gris) }
+  .b:disabled { opacity: .5; cursor: default }
+
+  /* ---- Choix de l'heure a l'acceptation ---- */
+  .heures { padding: 0 18px 4px }
+  .heures p { font-size: 14px; color: var(--gris); margin: 0 0 10px }
+  .heures-liste { display: flex; gap: 8px; flex-wrap: wrap }
+  .h-btn {
+    border: 1px solid var(--trait); background: var(--sombre); color: #fff;
+    border-radius: 999px; padding: 10px 17px; font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .h-btn[data-choisi] { background: #fff; color: var(--noir); border-color: #fff }
+  .h-btn[data-demande]::after {
+    content: ' · demandé'; font-weight: 500; font-size: 12px; opacity: .7;
+  }
+
+  .vide { text-align: center; color: var(--gris); padding: 60px 20px }
+  .vide b { display: block; font-family: var(--disp); font-size: 20px; color: #fff; margin-bottom: 6px }
+
+  @media (max-width: 520px) {
+    .cmd-nom { font-size: 18px }
+    .b { flex: 1; text-align: center; padding: 13px 16px }
+  }
+</style>
+</head>
+<body>
+
+<div id="ecran-code">
+  <div class="code-boite">
+    <h1>KSM <span>Burger</span></h1>
+    <p>Espace restaurant</p>
+    <input type="password" id="code-input" placeholder="Code d'accès" inputmode="text" autocomplete="current-password">
+    <button id="code-valider">Entrer</button>
+    <p id="code-erreur" role="alert"></p>
+  </div>
+</div>
+
+<div id="ecran-app">
+  <div class="tete">
+    <div class="wrap tete-ligne">
+      <h1>KSM <span>Burger</span></h1>
+      <button class="son-btn" id="son-btn" type="button">Son coupé</button>
+      <span class="pouls" id="pouls"><i></i><span id="pouls-txt">À jour</span></span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="compteurs">
+      <div class="compteur" id="c-attente"><b>0</b><span>À accepter</span></div>
+      <div class="compteur"><b id="n-prep">0</b><span>En préparation</span></div>
+      <div class="compteur"><b id="n-prete">0</b><span>Prêtes</span></div>
+    </div>
+
+    <div class="cmds" id="cmds"></div>
+  </div>
+</div>
+
+<script>
+  window.LOCWEB_CONFIG = {
+    supabaseUrl: 'https://ibqawtgnucakzdldnitj.supabase.co',
+    supabaseAnonKey: 'sb_publishable_rpLrUo4Cqnfl8zSohDqO0A_Q5Vkj2Hk',
+    clientId: 'dff6ff69-5c68-4ee3-b2f1-21da6304ff5b'
+  };
+</script>
+<script src="restaurant.js" defer></script>
+</body>
+</html>

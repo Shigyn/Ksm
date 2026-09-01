@@ -61,23 +61,30 @@
    awesome-design-md) — deux couleurs seulement, UNE seule couleur de
    conversion, la pastille comme signature de forme, un display serre
    sans interlettrage. Ce n'est pas un calque : le rouge fast-food a
-   ete ecarte au profit d'un rouge vin, parce que les burgers de KSM
-   portent les noms des crus du Beaujolais. C'est ca, leur identite.
+   ete ecarte au profit du noir et du dore : c'est ce qui distingue
+   un snack d'un fast-food de chaine, et ca tient sans photo.
 
-   Regle tenue d'un bout a l'autre : --vin ne sert QU'A commander.
+   Regle tenue d'un bout a l'autre : --or ne sert QU'A commander.
    Des qu'on le met ailleurs, il ne veut plus rien dire.
    =================================================================== */
 :root {
-  --noir: #121212;
-  --encre: #1a1a1a;
-  --gris: #5e5e5e;
-  --mute: #a5a5a5;
-  --blanc: #ffffff;
-  --creme: #f5f2ed;
-  --creme-fonce: #ebe6de;
-  --trait: #e4dfd7;
-  --vin: #8c1d3f;
-  --vin-fonce: #6e1531;
+  /* Noir et dore. Le dore est la SEULE couleur de la page : il ne
+     sert qu'a ce sur quoi on doit appuyer — le bouton de commande, le
+     panier, l'etat d'une commande. Partout ailleurs, des gris.
+     Un dore qui sert aussi a decorer ne signale plus rien. */
+  --noir:     #0b0b0c;   /* le fond */
+  --sombre:   #141416;   /* les sections qui alternent */
+  --carte:    #1b1b1e;   /* listes, cartes, champs */
+  --surface:  #232327;   /* le survol */
+  --trait:    #2c2c31;   /* les filets */
+
+  --or:       #d4af37;
+  --or-vif:   #e8c87a;
+  --or-sourd: #7a6428;
+
+  --encre:    #f5f3ef;   /* le texte courant, blanc casse et non blanc pur */
+  --gris:     #9a968e;   /* 6,7:1 sur le fond — lisible, pas criard */
+  --mute:     #6b6862;   /* uniquement decoratif, jamais du texte a lire */
 
   --disp: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
   --texte: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
@@ -98,7 +105,7 @@ body {
   font-size: 16px;
   line-height: 1.55;
   color: var(--encre);
-  background: var(--blanc);
+  background: var(--noir);
   padding-bottom: var(--barre);
 }
 img { max-width: 100%; display: block }
@@ -110,12 +117,13 @@ a { color: inherit }
 
 /* Uppercase reserve aux surtitres, jamais aux titres.
 
-   La couleur n'est PAS --mute : mesure a 2,2:1 sur le creme, soit en
-   dessous du seuil lisible. --mute reste reserve aux traits et aux
+   La couleur n'est ni --mute ni le var(--gris) d'origine : tous deux tombent
+   sous 3,5:1 sur le fond noir, sous le seuil du texte courant.
+   --gris mesure 6,7:1. --mute reste reserve aux traits et aux
    bordures, ou le contraste ne se pose pas. */
 .eyebrow {
   font-size: 12px; font-weight: 600; text-transform: uppercase;
-  letter-spacing: .09em; color: #666666;
+  letter-spacing: .09em; color: var(--gris)666;
 }
 /* Sur le noir du hero, c'est l'inverse : il faut eclaircir. */
 .hero .eyebrow { color: rgba(255,255,255,.62) }
@@ -130,23 +138,23 @@ a { color: inherit }
   white-space: nowrap;
 }
 .pill:active { transform: scale(.98) }
-.pill-vin { background: var(--vin); color: #fff }
-.pill-vin:hover { background: var(--vin-fonce) }
-.pill-noir { background: var(--encre); color: #fff }
+.pill-vin { background: var(--or); color: var(--noir) }
+.pill-vin:hover { background: var(--or-vif) }
+.pill-noir { background: var(--carte); color: var(--encre); border-color: var(--trait) }
 .pill-noir:hover { background: #000 }
-.pill-clair { background: #fff; color: var(--encre); border-color: var(--trait) }
-.pill-clair:hover { background: var(--creme) }
+.pill-clair { background: var(--carte); color: var(--encre); border-color: var(--trait) }
+.pill-clair:hover { background: var(--surface) }
 .pill-ligne { background: transparent; color: #fff; border-color: rgba(255,255,255,.34) }
 .pill-ligne:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.6) }
 .pill-sm { height: 40px; padding: 0 18px; font-size: 14px }
 
-:focus-visible { outline: 2px solid var(--vin); outline-offset: 3px; border-radius: 4px }
+:focus-visible { outline: 2px solid var(--or); outline-offset: 3px; border-radius: 4px }
 
 /* --- En-tete : HTML pur, jamais dependant d'un script ------------- */
 .hd {
   position: sticky; top: 0; z-index: 40;
-  background: rgba(255,255,255,.94);
-  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  background: rgba(11,11,12,.88);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--trait);
 }
 .hd-in {
@@ -173,7 +181,7 @@ a { color: inherit }
    fait « site charge » au lieu de « site soigne ». */
 .hero {
   position: relative; overflow: hidden; isolation: isolate;
-  background: var(--noir); color: #fff;
+  background: var(--noir); color: var(--encre);
   padding: 64px 0 56px;
   min-height: 580px; display: flex; align-items: center;
 }
@@ -247,7 +255,7 @@ a { color: inherit }
 .fait dd a:hover { text-decoration: underline }
 
 /* --- La carte ----------------------------------------------------- */
-.carte { background: var(--creme); padding: 56px 0 64px }
+.carte { background: var(--sombre); padding: 56px 0 64px }
 .carte-tete { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px }
 .carte h2 { font-size: clamp(28px, 5vw, 40px); line-height: 1.12; margin-top: 8px }
 .carte-note { font-size: 14px; color: var(--gris); max-width: 34ch }
@@ -258,24 +266,24 @@ a { color: inherit }
   position: sticky; top: 65px; z-index: 30;
   margin: 26px -20px 0; padding: 12px 20px;
   display: flex; gap: 8px; overflow-x: auto;
-  background: var(--creme);
-  border-bottom: 1px solid var(--creme-fonce);
+  background: var(--sombre);
+  border-bottom: 1px solid var(--trait);
   scrollbar-width: none;
 }
 .cats::-webkit-scrollbar { display: none }
 .cats button {
   flex: none; height: 38px; padding: 0 16px; border-radius: 999px;
-  border: 1px solid var(--creme-fonce); background: #fff; color: var(--gris);
+  border: 1px solid var(--trait); background: var(--carte); color: var(--gris);
   font-family: var(--texte); font-size: 14px; font-weight: 600; cursor: pointer;
   transition: background-color .16s ease, color .16s ease, border-color .16s ease;
 }
 .cats button:hover { border-color: var(--mute) }
-.cats button[aria-current="true"] { background: var(--encre); border-color: var(--encre); color: #fff }
+.cats button[aria-current="true"] { background: var(--or); border-color: var(--or); color: var(--noir) }
 
 .groupe { margin-top: 40px; scroll-margin-top: 122px }
 .groupe > h3 { font-size: 22px; margin-bottom: 14px }
 
-.liste { background: #fff; border: 1px solid var(--trait); border-radius: var(--r-carte); overflow: hidden }
+.liste { background: var(--carte); border: 1px solid var(--trait); border-radius: var(--r-carte); overflow: hidden }
 
 /* La ligne produit, façon Uber Eats : le texte a gauche, la photo a
    droite, et le bouton d'ajout pose sur le coin de la photo. Toute la
@@ -284,11 +292,11 @@ a { color: inherit }
 .ligne {
   display: flex; align-items: center; gap: 16px; width: 100%;
   padding: 14px 18px; border: 0; border-top: 1px solid var(--trait);
-  background: #fff; text-align: left; font: inherit; color: inherit;
+  background: var(--carte); text-align: left; font: inherit; color: inherit;
   cursor: pointer; transition: background-color .16s ease;
 }
 .liste .ligne:first-child { border-top: 0 }
-.ligne:hover { background: var(--creme) }
+.ligne:hover { background: var(--surface) }
 .ligne-txt { flex: 1; min-width: 0 }
 .ligne-nom { font-weight: 600; font-size: 16px; line-height: 1.3 }
 .ligne-desc {
@@ -303,43 +311,43 @@ a { color: inherit }
   font-family: var(--disp); font-weight: 700; font-size: 16px;
   font-variant-numeric: tabular-nums; margin-top: 7px;
 }
-.ligne-perso { font-size: 13px; color: var(--vin); font-weight: 600; margin-top: 5px }
+.ligne-perso { font-size: 13px; color: var(--or); font-weight: 600; margin-top: 5px }
 
 .ligne-media { position: relative; flex: none; width: 96px; height: 96px }
 .ligne-photo {
   width: 100%; height: 100%; object-fit: cover;
-  border-radius: 10px; background: var(--creme-fonce);
+  border-radius: 10px; background: var(--surface);
 }
 /* Sans photo, une tuile sobre plutot qu'une image d'un autre
    restaurant : mieux vaut ne rien montrer que montrer le plat de
    quelqu'un d'autre. */
 .ligne-vide {
   width: 100%; height: 100%; border-radius: 10px;
-  background: var(--creme); border: 1px dashed var(--trait);
+  background: var(--sombre); border: 1px dashed var(--trait);
   display: grid; place-items: center;
   font-family: var(--disp); font-weight: 800; font-size: 19px; color: var(--mute);
 }
 .ajout {
   position: absolute; right: -8px; bottom: -8px;
   width: 34px; height: 34px; border-radius: 999px;
-  border: 2px solid #fff; background: #fff; color: var(--encre);
+  border: 2px solid var(--carte); background: var(--encre); color: var(--noir);
   box-shadow: 0 2px 8px rgba(0,0,0,.16);
   display: grid; place-items: center; font-size: 20px; line-height: 1;
   transition: background-color .16s ease, color .16s ease;
 }
-.ligne:hover .ajout { background: var(--vin); color: #fff }
+.ligne:hover .ajout { background: var(--or); color: var(--noir) }
 /* Le nombre deja au panier, sur la photo : on doit voir ce qu'on a
    pris sans ouvrir le panier. */
 .ligne-badge {
   position: absolute; right: -8px; bottom: -8px;
   min-width: 34px; height: 34px; padding: 0 9px; border-radius: 999px;
-  border: 2px solid #fff; background: var(--vin); color: #fff;
+  border: 2px solid var(--carte); background: var(--or); color: var(--noir);
   box-shadow: 0 2px 8px rgba(0,0,0,.16);
   display: grid; place-items: center;
   font-family: var(--disp); font-weight: 700; font-size: 14px;
 }
 .ligne-indispo { opacity: .5; cursor: default }
-.ligne-indispo:hover { background: #fff }
+.ligne-indispo:hover { background: var(--carte) }
 .ligne-indispo .ligne-prix { text-decoration: line-through }
 .epuise {
   position: absolute; inset: 0; border-radius: 10px;
@@ -359,7 +367,7 @@ a { color: inherit }
   background: transparent; font-size: 20px; line-height: 1; cursor: pointer;
   display: grid; place-items: center; color: var(--encre);
 }
-.pas button:hover { background: var(--creme) }
+.pas button:hover { background: var(--surface) }
 .pas button[disabled] { color: var(--mute); cursor: default }
 .pas button[disabled]:hover { background: transparent }
 .pas-n {
@@ -370,7 +378,7 @@ a { color: inherit }
 /* --- La fiche d'un plat ------------------------------------------- */
 .fiche-photo {
   width: calc(100% + 44px); margin: -24px -22px 20px;
-  height: 200px; object-fit: cover; background: var(--creme-fonce);
+  height: 200px; object-fit: cover; background: var(--surface);
 }
 @media (min-width: 720px) {
   .fiche-photo { width: calc(100% + 60px); margin: -30px -30px 22px; border-radius: 20px 20px 0 0 }
@@ -388,13 +396,13 @@ a { color: inherit }
   cursor: pointer; font-size: 15px;
 }
 .opts .opt:first-child { border-top: 0 }
-.opt:hover { background: var(--creme) }
-.opt input { flex: none; width: 20px; height: 20px; accent-color: var(--vin); margin: 0; cursor: pointer }
+.opt:hover { background: var(--surface) }
+.opt input { flex: none; width: 20px; height: 20px; accent-color: var(--or); margin: 0; cursor: pointer }
 .opt span { flex: 1 }
 
 .fiche-pied {
   display: flex; align-items: center; gap: 14px; margin-top: 26px;
-  position: sticky; bottom: 0; background: #fff; padding: 14px 0 0;
+  position: sticky; bottom: 0; background: var(--carte); padding: 14px 0 0;
 }
 .fiche-pied .pas { border: 1px solid var(--trait); border-radius: 999px; padding: 3px }
 .fiche-pied .pill-vin { flex: 1; width: auto }
@@ -417,13 +425,13 @@ a { color: inherit }
 .hrow span:last-child { font-weight: 500; font-variant-numeric: tabular-nums; text-align: right }
 /* « Ferme » est une information a lire, pas un ornement : --gris, pas --mute. */
 .hrow.ferme span:last-child { color: var(--gris); font-weight: 400 }
-.hrow.aujourdhui { background: var(--creme) }
+.hrow.aujourdhui { background: var(--surface) }
 .hrow.aujourdhui span:first-child { color: var(--encre); font-weight: 600 }
 
 /* --- Pied de page -------------------------------------------------- */
 .ft { background: var(--noir); color: rgba(255,255,255,.66); padding: 48px 0 32px; font-size: 14px }
 .ft-haut { display: flex; flex-wrap: wrap; gap: 32px; justify-content: space-between }
-.ft .marque { color: #fff }
+.ft .marque { color: var(--encre) }
 .ft .marque span { color: rgba(255,255,255,.55) }
 .ft-desc { margin-top: 12px; max-width: 40ch; line-height: 1.6 }
 .ft-col p { margin-bottom: 6px }
@@ -439,7 +447,7 @@ a { color: inherit }
 /* --- La barre panier ---------------------------------------------- */
 .barre {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
-  background: var(--vin); color: #fff;
+  background: var(--or); color: var(--noir);
   padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
   transform: translateY(105%); transition: transform .26s cubic-bezier(.22,1,.36,1);
 }
@@ -450,8 +458,8 @@ a { color: inherit }
 }
 .barre-info { font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums }
 .barre-info b { font-family: var(--disp); font-weight: 700 }
-.barre .pill { background: #fff; color: var(--vin) }
-.barre .pill:hover { background: var(--creme) }
+.barre .pill { background: var(--noir); color: var(--or) }
+.barre .pill:hover { background: var(--sombre) }
 
 /* --- Le formulaire de commande ------------------------------------ */
 .modale {
@@ -462,7 +470,7 @@ a { color: inherit }
 .modale[data-ouvert="1"] { display: flex }
 @media (min-width: 720px) { .modale { align-items: center; padding: 24px } }
 .modale-boite {
-  background: #fff; width: 100%; max-width: 560px;
+  background: var(--carte); width: 100%; max-width: 560px;
   max-height: 92vh; overflow-y: auto;
   border-radius: 20px 20px 0 0; padding: 24px 22px calc(24px + env(safe-area-inset-bottom));
 }
@@ -471,15 +479,15 @@ a { color: inherit }
 .modale-tete h2 { font-size: 25px }
 .fermer {
   flex: none; width: 38px; height: 38px; border-radius: 999px; border: 1px solid var(--trait);
-  background: #fff; font-size: 20px; line-height: 1; cursor: pointer; color: var(--gris);
+  background: transparent; font-size: 20px; line-height: 1; cursor: pointer; color: var(--gris);
 }
-.fermer:hover { background: var(--creme) }
+.fermer:hover { background: var(--surface) }
 
 .recap { border: 1px solid var(--trait); border-radius: 12px; overflow: hidden; margin-bottom: 22px }
 .recap-l { display: flex; justify-content: space-between; gap: 14px; padding: 11px 15px; border-top: 1px solid var(--trait); font-size: 15px }
 .recap .recap-l:first-child { border-top: 0 }
 .recap-l span:last-child { font-variant-numeric: tabular-nums; white-space: nowrap }
-.recap-total { background: var(--creme); font-weight: 700 }
+.recap-total { background: var(--surface); font-weight: 700 }
 .recap-total span:last-child { font-family: var(--disp) }
 
 .champ { margin-bottom: 15px }
@@ -487,9 +495,9 @@ a { color: inherit }
 .champ input, .champ select {
   width: 100%; height: 48px; padding: 0 15px;
   border: 1px solid var(--trait); border-radius: 12px;
-  font-family: var(--texte); font-size: 16px; color: var(--encre); background: #fff;
+  font-family: var(--texte); font-size: 16px; color: var(--encre); background: var(--sombre);
 }
-.champ input:focus, .champ select:focus { outline: none; border-color: var(--vin); box-shadow: 0 0 0 3px rgba(140,29,63,.13) }
+.champ input:focus, .champ select:focus { outline: none; border-color: var(--or); box-shadow: 0 0 0 3px rgba(212,175,55,.18) }
 .champ-aide { font-size: 13px; color: var(--gris); margin-top: 5px }
 /* Piege a robots : jamais affiche, jamais lu par un lecteur d'ecran. */
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden }
@@ -502,12 +510,71 @@ a { color: inherit }
 
 .ok-bloc { text-align: center; padding: 12px 0 4px }
 .ok-rond {
-  width: 62px; height: 62px; border-radius: 999px; background: var(--vin); color: #fff;
+  width: 62px; height: 62px; border-radius: 999px; background: var(--or); color: var(--noir);
   display: grid; place-items: center; font-size: 30px; margin: 0 auto 18px;
 }
 .ok-bloc h2 { font-size: 26px; margin-bottom: 10px }
 .ok-bloc p { color: var(--gris); margin-bottom: 10px }
 .ok-bloc .ref { font-family: var(--disp); font-weight: 700; color: var(--encre); font-size: 17px }
+
+/* La barre de suivi : discrete, sombre, elle ne se confond pas avec
+   celle du panier. Elle ne s'affiche que si le panier est vide — deux
+   barres fixes en bas d'ecran se recouvriraient, et quelqu'un en train
+   de composer une nouvelle commande regarde son panier, pas la
+   precedente. */
+.suivi-barre {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 49;
+  background: var(--carte); color: var(--encre);
+  border-top: 1px solid var(--or-sourd);
+  padding: 11px 20px calc(11px + env(safe-area-inset-bottom));
+  transform: translateY(105%); transition: transform .26s cubic-bezier(.22,1,.36,1);
+  border: 0; width: 100%; text-align: left; font: inherit; cursor: pointer;
+}
+.suivi-barre[data-ouvert="1"] { transform: translateY(0) }
+.suivi-in {
+  max-width: var(--wrap); margin: 0 auto;
+  display: flex; align-items: center; gap: 14px;
+}
+.suivi-pastille {
+  flex: none; width: 9px; height: 9px; border-radius: 999px; background: #5fc98d;
+  animation: pointe 1.6s ease-in-out infinite;
+}
+.suivi-txt { flex: 1; font-size: 15px; font-weight: 500 }
+.suivi-txt b { font-weight: 700 }
+.suivi-fleche { flex: none; opacity: .6 }
+
+/* --- Le suivi d'une commande, cote client -------------------------
+   Le meme bloc que la confirmation, mais qui change d'etat pendant
+   que la cuisine avance. C'est le seul endroit du site ou le client
+   revient apres avoir commande : il doit y lire, sans chercher, ou en
+   est son repas et a quelle heure venir. */
+.ok-rond[data-s="recue"]          { background: var(--surface); color: var(--encre) }
+.ok-rond[data-s="en_preparation"] { background: var(--or); color: var(--noir) }
+.ok-rond[data-s="prete"]          { background: #2f8f5b }
+.ok-rond[data-s="annulee"]        { background: var(--surface); color: var(--gris) }
+
+/* Trois points qui respirent pendant l'attente : ils disent que
+   quelque chose se passe, la ou un ecran fige laisse croire a une
+   panne. */
+.ok-rond[data-s="recue"] i, .ok-rond[data-s="en_preparation"] i {
+  width: 7px; height: 7px; border-radius: 999px; background: currentColor;
+  display: inline-block; margin: 0 2px; animation: pointe 1.3s ease-in-out infinite;
+}
+.ok-rond i:nth-child(2) { animation-delay: .18s }
+.ok-rond i:nth-child(3) { animation-delay: .36s }
+@keyframes pointe { 0%,100% { opacity: .25 } 50% { opacity: 1 } }
+
+.ok-heure {
+  display: inline-block; margin-top: 4px; padding: 11px 22px;
+  border-radius: 999px; background: var(--sombre);
+  border: 1px solid var(--trait);
+  font-family: var(--disp); font-weight: 700; font-size: 19px;
+}
+.ok-heure small {
+  display: block; font-family: 'Inter', sans-serif; font-weight: 500;
+  font-size: 12px; text-transform: uppercase; letter-spacing: .07em;
+  color: var(--gris); margin-bottom: 3px;
+}
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto }
@@ -629,6 +696,14 @@ a { color: inherit }
     </div>
   </div>
 </footer>
+
+<button class="suivi-barre" id="suivi-barre" type="button" aria-live="polite">
+  <span class="suivi-in">
+    <span class="suivi-pastille" aria-hidden="true"></span>
+    <span class="suivi-txt" id="suivi-txt">Commande en cours</span>
+    <span class="suivi-fleche" aria-hidden="true">&rsaquo;</span>
+  </span>
+</button>
 
 <div class="barre" id="barre" aria-live="polite">
   <div class="barre-in">
