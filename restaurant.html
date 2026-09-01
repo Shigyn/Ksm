@@ -132,7 +132,7 @@
   /* Un liseré de couleur sur la tranche : au comptoir on lit l'etat
      d'un coup d'oeil, avant meme de lire le mot. */
   .cmd[data-statut="recue"]         { border-left: 4px solid var(--or) }
-  .cmd[data-statut="en_preparation"]{ border-left: 4px solid var(--gris) }
+  .cmd[data-statut="acceptee"]{ border-left: 4px solid var(--gris) }
   .cmd[data-statut="prete"]         { border-left: 4px solid var(--vert-vif) }
 
   .cmd-tete {
@@ -161,7 +161,7 @@
      deja lancee n'a besoin de rien : elle passe en gris. Sans cette
      distinction, tout l'ecran est dore et plus rien ne ressort. */
   .etat[data-s="recue"]          { background: rgba(212,175,55,.16); color: var(--or-vif) }
-  .etat[data-s="en_preparation"] { background: var(--surface);       color: var(--gris) }
+  .etat[data-s="acceptee"] { background: var(--surface);       color: var(--gris) }
   .etat[data-s="prete"]          { background: rgba(63,158,107,.2);  color: var(--vert-vif) }
 
   .cmd-articles { padding: 14px 18px 0; display: grid; gap: 7px }

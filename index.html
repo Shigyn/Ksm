@@ -549,14 +549,14 @@ a { color: inherit }
    revient apres avoir commande : il doit y lire, sans chercher, ou en
    est son repas et a quelle heure venir. */
 .ok-rond[data-s="recue"]          { background: var(--surface); color: var(--encre) }
-.ok-rond[data-s="en_preparation"] { background: var(--or); color: var(--noir) }
+.ok-rond[data-s="acceptee"] { background: var(--or); color: var(--noir) }
 .ok-rond[data-s="prete"]          { background: #2f8f5b }
-.ok-rond[data-s="annulee"]        { background: var(--surface); color: var(--gris) }
+.ok-rond[data-s="refusee"]        { background: var(--surface); color: var(--gris) }
 
 /* Trois points qui respirent pendant l'attente : ils disent que
    quelque chose se passe, la ou un ecran fige laisse croire a une
    panne. */
-.ok-rond[data-s="recue"] i, .ok-rond[data-s="en_preparation"] i {
+.ok-rond[data-s="recue"] i, .ok-rond[data-s="acceptee"] i {
   width: 7px; height: 7px; border-radius: 999px; background: currentColor;
   display: inline-block; margin: 0 2px; animation: pointe 1.3s ease-in-out infinite;
 }

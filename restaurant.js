@@ -26,7 +26,7 @@
 
   var LIBELLE = {
     recue: 'À accepter',
-    en_preparation: 'En préparation',
+    acceptee: 'En préparation',
     prete: 'Prête'
   };
 
@@ -158,7 +158,7 @@
 
   function afficher(commandes) {
     var zone = $('#cmds');
-    var n = { recue: 0, en_preparation: 0, prete: 0 };
+    var n = { recue: 0, acceptee: 0, prete: 0 };
     var nouvelle = false;
 
     commandes.forEach(function (c) {
@@ -176,7 +176,7 @@
     $('#c-attente').querySelector('b').textContent = n.recue;
     if (n.recue) $('#c-attente').setAttribute('data-alerte', '');
     else $('#c-attente').removeAttribute('data-alerte');
-    $('#n-prep').textContent = n.en_preparation;
+    $('#n-prep').textContent = n.acceptee;
     $('#n-prete').textContent = n.prete;
 
     if (!commandes.length) {
@@ -188,7 +188,7 @@
     /* Les commandes a accepter passent devant, puis celles qui sont
        pretes (quelqu'un attend au comptoir), puis celles en cours.
        L'ordre d'arrivee departage a l'interieur de chaque groupe. */
-    var rang = { recue: 0, prete: 1, en_preparation: 2 };
+    var rang = { recue: 0, prete: 1, acceptee: 2 };
     commandes.sort(function (a, b) {
       var d = (rang[a.statut] ?? 9) - (rang[b.statut] ?? 9);
       return d !== 0 ? d : new Date(a.date_creation) - new Date(b.date_creation);
@@ -325,7 +325,7 @@
       // Un refus se voit du cote du client : on demande confirmation
       // plutot que de laisser un doigt maladroit annuler un repas.
       if (!confirm('Refuser la commande de ' + (c.nom_client || 'ce client') + ' ?')) return;
-      majStatut(c.id, 'annulee', non);
+      majStatut(c.id, 'refusee', non);
     });
     act.appendChild(non);
 
@@ -336,7 +336,7 @@
   function actions(c) {
     var act = el('div', 'cmd-actions');
 
-    if (c.statut === 'en_preparation') {
+    if (c.statut === 'acceptee') {
       var pret = el('button', 'b b-ok', 'C’est prêt');
       pret.type = 'button';
       pret.addEventListener('click', function () { majStatut(c.id, 'prete', pret); });

@@ -783,7 +783,7 @@
       texte: 'Le restaurant va la confirmer dans un instant.',
       libelleHeure: 'Vous avez demandé'
     },
-    en_preparation: {
+    acceptee: {
       rond: '🔥',
       titre: 'Commande acceptée',
       texte: 'Elle est en cours de préparation.',
@@ -801,7 +801,7 @@
       texte: 'Merci, et à bientôt chez KSM.',
       libelleHeure: null
     },
-    annulee: {
+    refusee: {
       rond: '!',
       titre: 'Commande non retenue',
       texte: 'Le restaurant n’a pas pu la prendre. Appelez-nous, on trouve une solution.',
@@ -886,7 +886,7 @@
       // rien. Le retour au premier plan declenche une lecture.
       if (document.hidden) return;
 
-      fetch(config.supabaseUrl + '/functions/v1/commande-statut', {
+      fetch(config.supabaseUrl + '/functions/v1/commande-statut-ksm', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -909,7 +909,7 @@
 
           // Commande close : plus rien a suivre, et on oublie la
           // commande pour ne pas rouvrir ce suivi au prochain passage.
-          if (d.statut === 'recuperee' || d.statut === 'annulee') {
+          if (d.statut === 'recuperee' || d.statut === 'refusee') {
             clearInterval(suiviId);
             commandeEnCours = null;
             majBarreSuivi();
@@ -966,7 +966,7 @@
 
     var e = ETAPES[commandeEnCours.statut] || ETAPES.recue;
     var t = e.titre;
-    if (commandeEnCours.statut === 'en_preparation' && commandeEnCours.heure) {
+    if (commandeEnCours.statut === 'acceptee' && commandeEnCours.heure) {
       t = 'En préparation · prête à ' + commandeEnCours.heure;
     } else if (commandeEnCours.statut === 'prete') {
       t = 'Votre commande est prête';
