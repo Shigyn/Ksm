@@ -119,6 +119,13 @@
     border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 500;
   }
   .son-btn[data-on] { color: var(--encre); border-color: var(--vert-vif) }
+  .son-btn[disabled] { opacity: .55; cursor: default }
+  /* Tant que les alertes ne sont pas actives, ce bouton est le seul
+     dore de l'entete : c'est la seule chose qui empeche une commande
+     de passer inapercue, telephone dans la poche. */
+  #push-btn:not([data-on]):not([disabled]) {
+    background: var(--or); color: var(--noir); border-color: var(--or); font-weight: 600;
+  }
 
   /* ---- Compteurs ---- */
   .compteurs { display: flex; gap: 10px; margin: 18px 0 4px; flex-wrap: wrap }
@@ -235,6 +242,7 @@
   <div class="tete">
     <div class="wrap tete-ligne">
       <h1>KSM <span>Burger</span></h1>
+      <button class="son-btn" id="push-btn" type="button" hidden>Activer les alertes</button>
       <button class="son-btn" id="son-btn" type="button">Son coupé</button>
       <span class="pouls" id="pouls"><i></i><span id="pouls-txt">À jour</span></span>
     </div>
@@ -271,6 +279,6 @@
      Avec le numero, un index.html en cache demande le carte.js de la
      MEME version : les deux sont toujours d'accord. A incrementer des
      que le HTML produit par le script change de forme. -->
-<script src="restaurant.js?v=2" defer></script>
+<script src="restaurant.js?v=3" defer></script>
 </body>
 </html>

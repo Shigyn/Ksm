@@ -83,6 +83,7 @@
       navigator.wakeLock.request('screen').catch(function () {});
     }
 
+    etatPush();
     rafraichir();
     minuteur = setInterval(rafraichir, 10000);
 
@@ -396,6 +397,100 @@
   }
 
   // -----------------------------------------------------------------
+  //  Les notifications de commande
+  //
+  //  Le vrai trou que ca bouche : sans elles, cet ecran doit rester
+  //  ouvert ET regarde. Tablette en veille, autre onglet, navigateur
+  //  ferme, et la commande arrive sans que personne le sache.
+  //
+  //  On ne demande JAMAIS l'autorisation au chargement. Un navigateur
+  //  qui voit surgir « Autoriser les notifications ? » sans raison se
+  //  fait refuser une fois pour toutes, et il n'existe aucun moyen de
+  //  redemander ensuite — c'est definitif, par appareil. La demande
+  //  part donc au clic, et uniquement au clic.
+  // -----------------------------------------------------------------
+  /* Cle publique VAPID. Elle n'est pas secrete : elle voyage dans
+     chaque abonnement et identifie l'expediteur aupres du service de
+     push du navigateur. La cle privee ne quitte jamais le serveur. */
+  var VAPID = 'BOcZdqb1smdsNqnHjCZHxOff-NQGry6n_m7Dos_tT1g43gn0RzcF5Zk5a6tUT7X_Cl0GodBMy4cZZcg5A6tgYvk';
+
+  function pushPossible() {
+    return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+  }
+
+  function versOctets(b64) {
+    var bourrage = '='.repeat((4 - (b64.length % 4)) % 4);
+    var brut = atob((b64 + bourrage).replace(/-/g, '+').replace(/_/g, '/'));
+    return Uint8Array.from(brut, function (c) { return c.charCodeAt(0); });
+  }
+
+  function majBoutonPush(etat) {
+    var b = $('#push-btn');
+    if (!b) return;
+    if (etat === 'absent') { b.hidden = true; return; }
+    b.hidden = false;
+    b.textContent = ({
+      actif: 'Alertes activées',
+      refuse: 'Alertes bloquées',
+      inactif: 'Activer les alertes',
+      attente: 'Activation…'
+    })[etat] || 'Activer les alertes';
+    if (etat === 'actif') b.setAttribute('data-on', ''); else b.removeAttribute('data-on');
+    b.disabled = (etat === 'attente' || etat === 'refuse');
+    b.title = etat === 'refuse'
+      ? 'Vous avez refusé les notifications sur cet appareil. Il faut les réautoriser dans les réglages du navigateur.'
+      : '';
+  }
+
+  function etatPush() {
+    if (!pushPossible()) return majBoutonPush('absent');
+    if (Notification.permission === 'denied') return majBoutonPush('refuse');
+
+    // Sans argument : la portee est deduite de la page en cours.
+    // Ecrire '/Ksm/' marchait en ligne et echouait partout ailleurs.
+    navigator.serviceWorker.getRegistration()
+      .then(function (r) { return r ? r.pushManager.getSubscription() : null; })
+      .then(function (ab) { majBoutonPush(ab ? 'actif' : 'inactif'); })
+      .catch(function () { majBoutonPush('inactif'); });
+  }
+
+  function activerPush() {
+    if (!pushPossible()) return;
+    majBoutonPush('attente');
+
+    navigator.serviceWorker.register('sw-resto.js')
+      .then(function (r) { return navigator.serviceWorker.ready.then(function () { return r; }); })
+      .then(function (r) {
+        return Notification.requestPermission().then(function (perm) {
+          if (perm !== 'granted') throw new Error('refus');
+          return r.pushManager.subscribe({
+            userVisibleOnly: true,   // exige par Chrome : pas de push silencieux
+            applicationServerKey: versOctets(VAPID)
+          });
+        });
+      })
+      .then(function (ab) {
+        return appel('abonner_push', { abonnement: ab.toJSON() });
+      })
+      .then(function () {
+        majBoutonPush('actif');
+        // Un abonnement qu'on ne voit pas fonctionner n'inspire aucune
+        // confiance : on montre tout de suite a quoi ca ressemble.
+        new Notification('Alertes activées', {
+          body: 'Vous serez prévenu ici à chaque nouvelle commande.',
+          icon: 'photos/1-burger-bacon.jpg'
+        });
+      })
+      .catch(function (err) {
+        console.warn('Abonnement push impossible', err);
+        etatPush();
+        if (String(err.message) !== 'refus') {
+          alert('Les alertes n’ont pas pu être activées. Réessayez, ou prévenez LocWeb.');
+        }
+      });
+  }
+
+  // -----------------------------------------------------------------
   //  Branchements
   // -----------------------------------------------------------------
   $('#code-valider').addEventListener('click', valider);
@@ -403,6 +498,7 @@
     if (e.key === 'Enter') valider();
   });
   $('#son-btn').addEventListener('click', basculerSon);
+  $('#push-btn').addEventListener('click', activerPush);
 
   // Code deja connu : on entre directement, mais on verifie d'abord
   // qu'il vaut encore quelque chose.
