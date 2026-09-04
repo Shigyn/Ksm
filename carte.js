@@ -305,6 +305,15 @@
     surveillerCategories();
   }
 
+  /* Un plat epuise, c'est la case « disponible » decochee dans
+     l'espace du restaurateur, et rien d'autre.
+
+     On NE regarde PAS `produits.stock` ici, contrairement au camion.
+     Verifie le 2026-09-04 : les 40 produits de KSM sont a stock = 0,
+     valeur par defaut jamais touchee — le champ n'existe pas dans
+     l'editeur d'un restaurateur, seulement dans l'ecran du chauffeur,
+     qui epuise son chargement au fil de la tournee. Traiter ce 0
+     comme une rupture rendait la carte ENTIEREMENT indisponible. */
   function ligne(p) {
     var dispo = p.disponible !== false;
 
@@ -715,10 +724,134 @@
   }
 
   // -----------------------------------------------------------------
+  //  6 bis. Les horaires d'ouverture
+  //
+  //  Regle de securite qui prime sur tout le reste ici : en cas de
+  //  doute, ON LAISSE COMMANDER. Ces horaires sont du texte libre,
+  //  saisi par le restaurateur depuis son espace. S'il ecrit quelque
+  //  chose que je ne sais pas lire, refuser une commande serait lui
+  //  faire perdre de l'argent a cause de MON analyseur. Une commande
+  //  hors horaires se refuse d'un geste au comptoir ; une commande
+  //  jamais passee ne se rattrape pas.
+  // -----------------------------------------------------------------
+  var JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+  var PREPARATION = 20;   // minutes annoncees au client
+
+  function texteHoraire(jour) {
+    var r = document.querySelector('#horaires .hrow[data-jour="' + jour + '"]');
+    return r ? r.lastElementChild.textContent.trim() : '';
+  }
+
+  /* Rend { ferme } , { inconnu } ou { plages: [[debutMin, finMin], ...] },
+     en minutes depuis minuit. Comprend « 12h–14h · 18h30–21h30 »,
+     « 12h - 14h », « 12h a 14h », et « Ferme ». */
+  function analyserHoraire(texte) {
+    if (!texte) return { inconnu: true };
+    // Sans accents : le restaurateur peut ecrire « Fermé » ou « ferme ».
+    var sansAccent = texte.normalize ? texte.normalize('NFD').replace(/[̀-ͯ]/g, '') : texte;
+    if (/ferm/i.test(sansAccent)) return { ferme: true, plages: [] };
+
+    var re = /(\d{1,2})\s*h\s*(\d{2})?\s*(?:[-–—]|a)\s*(\d{1,2})\s*h\s*(\d{2})?/gi;
+    var plages = [], m;
+    while ((m = re.exec(sansAccent)) !== null) {
+      var d = Number(m[1]) * 60 + Number(m[2] || 0);
+      var f = Number(m[3]) * 60 + Number(m[4] || 0);
+      // Une plage qui « recule » (23h–1h) passe minuit : on la coupe a
+      // la fin de la journee plutot que de produire une plage vide.
+      if (f <= d) f = 24 * 60;
+      plages.push([d, f]);
+    }
+    return plages.length ? { plages: plages } : { inconnu: true };
+  }
+
+  /* Les creneaux de retrait possibles aujourd'hui, en minutes.
+     Rend aussi `inconnu` : dans ce cas on retombe sur l'ancien
+     comportement, trois heures de creneaux sans contrainte. */
+  function creneauxDuJour() {
+    var maintenant = new Date();
+    var h = analyserHoraire(texteHoraire(maintenant.getDay()));
+    if (h.inconnu) return { inconnu: true, creneaux: [] };
+
+    var tot = maintenant.getHours() * 60 + maintenant.getMinutes() + PREPARATION;
+    var depuis = Math.ceil(tot / 15) * 15;
+
+    var creneaux = [], ouvertMaintenant = false;
+    (h.plages || []).forEach(function (p) {
+      if (tot >= p[0] && tot <= p[1]) ouvertMaintenant = true;
+      for (var m = Math.max(p[0], depuis); m <= p[1]; m += 15) {
+        if (m % 15 === 0) creneaux.push(m);
+      }
+    });
+    return { creneaux: creneaux, ouvertMaintenant: ouvertMaintenant, ferme: h.ferme === true };
+  }
+
+  /* Le prochain moment ou l'on peut venir chercher. Sert a dire
+     « nous rouvrons mercredi a 12h » plutot qu'un « ferme » sec. */
+  function prochaineOuverture() {
+    var maintenant = new Date();
+    for (var i = 1; i <= 7; i++) {
+      var jour = (maintenant.getDay() + i) % 7;
+      var h = analyserHoraire(texteHoraire(jour));
+      if (h.inconnu || h.ferme || !h.plages.length) continue;
+      return { jour: JOURS[jour], minute: h.plages[0][0] };
+    }
+    return null;
+  }
+
+  function enHeure(minutes) {
+    return String(Math.floor(minutes / 60)).padStart(2, '0') + 'h'
+      + String(minutes % 60).padStart(2, '0');
+  }
+
+  /* Le bandeau au-dessus de la carte. Il ne masque jamais les plats :
+     on peut regarder le menu a n'importe quelle heure. */
+  function majAvisFermeture() {
+    var el = $('#avis-ferme');
+    if (!el) return;
+    var d = creneauxDuJour();
+
+    if (d.inconnu || d.creneaux.length) { el.hidden = true; return; }
+
+    var suite = prochaineOuverture();
+    el.innerHTML = suite
+      ? '<span>Nous ne prenons plus de commande pour aujourd’hui. '
+        + '<b>Réouverture ' + suite.jour + ' à ' + enHeure(suite.minute) + '.</b></span>'
+      : '<span>Nous ne prenons pas de commande en ligne pour le moment. '
+        + '<b>Appelez-nous au 09 50 94 88 15.</b></span>';
+    el.hidden = false;
+  }
+
+  // -----------------------------------------------------------------
   //  6. Le formulaire de commande
   // -----------------------------------------------------------------
   function ouvrirModale() {
     if (!totaux().n) return;
+
+    /* Hors horaires, on ne montre pas un formulaire dont on sait qu'il
+       ne menera nulle part. Le panier n'est pas vide pour autant : il
+       attend la reouverture. */
+    var d = creneauxDuJour();
+    if (!d.inconnu && !d.creneaux.length) {
+      var suite = prochaineOuverture();
+      $('#modale-boite').innerHTML =
+        '<div class="modale-tete" style="border:0;padding:0">'
+        + '<span></span><button class="fermer" type="button" data-fermer aria-label="Fermer">&times;</button></div>'
+        + '<div class="ok-bloc">'
+        + '<div class="ok-rond" data-s="recue" aria-hidden="true">⏱</div>'
+        + '<h2>C’est fermé pour aujourd’hui</h2>'
+        + (suite
+            ? '<p>Nous rouvrons <strong>' + suite.jour + ' à ' + enHeure(suite.minute) + '</strong>.</p>'
+              + '<p>Votre panier vous attend d’ici là.</p>'
+            : '<p>Les commandes en ligne sont momentanément fermées.</p>')
+        + '<a class="pill pill-vin" style="margin-top:18px" href="tel:+33950948815">Appeler le restaurant</a>'
+        + '</div>';
+      var x = $('#modale-boite [data-fermer]');
+      if (x) x.addEventListener('click', fermerModale);
+      elModale.setAttribute('data-ouvert', '1');
+      document.body.style.overflow = 'hidden';
+      return;
+    }
+
     remplirRecap();
     remplirHeures();
     elModale.setAttribute('data-ouvert', '1');
@@ -763,28 +896,49 @@
      l'horaire du jour est modifiable depuis l'espace client, et une
      regle codee en dur finirait par refuser des commandes un jour ou
      KSM aurait justement decide d'ouvrir. */
+  /* Les creneaux proposes, bornes aux horaires du jour. « Des que
+     possible » n'apparait que si le restaurant est ouvert MAINTENANT :
+     le proposer a 10h du matin promettrait un burger dans vingt
+     minutes alors que la cuisine ouvre a midi. */
   function remplirHeures() {
     var sel = $('#f-heure');
-    if (sel.options.length) return;
+    sel.innerHTML = '';
 
-    var opt = document.createElement('option');
-    opt.value = 'Dès que possible';
-    opt.textContent = 'Dès que possible (environ 20 min)';
-    sel.appendChild(opt);
+    var d = creneauxDuJour();
 
-    var d = new Date();
-    d.setMinutes(d.getMinutes() + 20);
-    d.setMinutes(Math.ceil(d.getMinutes() / 15) * 15, 0, 0);
+    // Horaire illisible : on retombe sur trois heures de creneaux sans
+    // contrainte, plutot que de bloquer la commande.
+    if (d.inconnu) {
+      var o0 = document.createElement('option');
+      o0.value = 'Dès que possible';
+      o0.textContent = 'Dès que possible (environ ' + PREPARATION + ' min)';
+      sel.appendChild(o0);
 
-    for (var i = 0; i < 12; i++) {
-      var lib = String(d.getHours()).padStart(2, '0') + 'h'
-        + String(d.getMinutes()).padStart(2, '0');
-      var o = document.createElement('option');
-      o.value = lib;
-      o.textContent = lib;
-      sel.appendChild(o);
-      d.setMinutes(d.getMinutes() + 15);
+      var t = new Date();
+      t.setMinutes(t.getMinutes() + PREPARATION);
+      t.setMinutes(Math.ceil(t.getMinutes() / 15) * 15, 0, 0);
+      for (var i = 0; i < 12; i++) {
+        ajouterCreneau(sel, String(t.getHours()).padStart(2, '0') + 'h'
+          + String(t.getMinutes()).padStart(2, '0'));
+        t.setMinutes(t.getMinutes() + 15);
+      }
+      return;
     }
+
+    if (d.ouvertMaintenant) {
+      var o = document.createElement('option');
+      o.value = 'Dès que possible';
+      o.textContent = 'Dès que possible (environ ' + PREPARATION + ' min)';
+      sel.appendChild(o);
+    }
+    d.creneaux.forEach(function (m) { ajouterCreneau(sel, enHeure(m)); });
+  }
+
+  function ajouterCreneau(sel, libelle) {
+    var o = document.createElement('option');
+    o.value = libelle;
+    o.textContent = libelle;
+    sel.appendChild(o);
   }
 
   function erreur(message) {
@@ -1141,7 +1295,14 @@
   // valeurs, sinon on recopierait dans le hero l'horaire par defaut
   // du HTML — celui qui n'est plus le bon.
   majHoraires();
-  document.addEventListener('locweb:contenu-charge', majHoraires);
+  majAvisFermeture();
+  /* Les horaires reels arrivent de l'espace client apres coup : sans
+     ce second passage, on jugerait l'ouverture sur les valeurs par
+     defaut du HTML, qui ne sont peut-etre plus les bonnes. */
+  document.addEventListener('locweb:contenu-charge', function () {
+    majHoraires();
+    majAvisFermeture();
+  });
 
   heros();
   chargerCarte();

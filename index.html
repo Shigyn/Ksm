@@ -409,6 +409,19 @@ a { color: inherit }
   font-variant-numeric: tabular-nums; font-size: 16px;
 }
 
+/* Le bandeau « c'est ferme ». Il ne cache pas la carte : quelqu'un
+   qui regarde le menu a 23h prepare peut-etre sa commande de demain,
+   et lui fermer la porte au nez ne sert personne. Il dit seulement,
+   avant qu'on remplisse un panier pour rien, quand on rouvre. */
+.avis-ferme {
+  display: flex; align-items: center; gap: 12px;
+  margin: 0 0 20px; padding: 14px 18px;
+  background: var(--carte); border: 1px solid var(--or-sourd);
+  border-left: 4px solid var(--or); border-radius: var(--r-carte);
+  font-size: 15px; color: var(--encre);
+}
+.avis-ferme b { color: var(--or-vif) }
+
 /* --- La fiche d'un plat ------------------------------------------- */
 .fiche-photo {
   width: calc(100% + 44px); margin: -24px -22px 20px;
@@ -677,6 +690,8 @@ a { color: inherit }
         <p class="carte-note">Règlement sur place, au retrait. Espèces, carte et titres restaurant acceptés.</p>
       </div>
 
+      <p class="avis-ferme" id="avis-ferme" hidden></p>
+
       <nav class="cats" id="cats" aria-label="Catégories de la carte"></nav>
       <div id="carte-liste"><p class="carte-vide">Chargement de la carte&hellip;</p></div>
     </div>
@@ -808,9 +823,9 @@ a { color: inherit }
      Avec le numero, un index.html en cache demande le carte.js de la
      MEME version : les deux sont toujours d'accord. A incrementer des
      que le HTML produit par le script change de forme. -->
-<script src="contenu-loader.js?v=2" defer></script>
-<script src="carte.js?v=2" defer></script>
-<script src="mesure.js?v=2" defer></script>
+<script src="contenu-loader.js?v=3" defer></script>
+<script src="carte.js?v=3" defer></script>
+<script src="mesure.js?v=3" defer></script>
 
 </body>
 </html>
