@@ -478,7 +478,7 @@
         // confiance : on montre tout de suite a quoi ca ressemble.
         new Notification('Alertes activées', {
           body: 'Vous serez prévenu ici à chaque nouvelle commande.',
-          icon: 'photos/1-burger-bacon.jpg'
+          icon: 'videos/4-burger.jpg'
         });
       })
       .catch(function (err) {

@@ -29,8 +29,8 @@ self.addEventListener('push', (e) => {
     // le site vit aujourd'hui sous /Ksm/ et vivra peut-etre demain a la
     // racine de ksm-burger.fr. Un chemin absolu casserait ce jour-la,
     // en silence.
-    icon: new URL('photos/1-burger-bacon.jpg', self.registration.scope).href,
-    badge: new URL('photos/1-burger-bacon.jpg', self.registration.scope).href,
+    icon: new URL('videos/4-burger.jpg', self.registration.scope).href,
+    badge: new URL('videos/4-burger.jpg', self.registration.scope).href,
     tag: d.etiquette || 'commande',
     // Deux commandes coup sur coup n'empilent pas deux bandeaux, mais
     // le telephone vibre quand meme la seconde fois.

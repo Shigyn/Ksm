@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KSM Burger — Commander à emporter à Fleurie (69820)</title>
-  <link rel="preload" as="image" href="photos/1-burger-bacon.jpg">
+  <!-- Le premier clip est ce qu'on voit en arrivant : le precharger
+       evite que le heros reste noir une seconde. -->
+  <link rel="preload" as="video" href="videos/1-plancha.mp4" type="video/mp4">
 <meta name="description" content="Burgers faits maison à Fleurie, en plein Beaujolais. Commandez en ligne et récupérez sur place. 10 rue du Beaujolais, 69820 Fleurie — 09 50 94 88 15.">
 <link rel="canonical" href="https://shigyn.github.io/Ksm/">
 <meta name="theme-color" content="#121212">
@@ -181,12 +183,18 @@ a { color: inherit }
 @media (max-width: 430px) { .hd-actions .pill-clair { display: none } }
 
 /* --- Hero --------------------------------------------------------- */
-/* Le heros : quatre photos qui se relaient derriere le texte.
+/* Le heros : quatre plans de cuisine qui se relaient en fondu.
 
-   Un seul effet, tenu : un fondu, plus un tres lent rapprochement qui
-   empeche une photo fixe de paraitre morte. Pas de glissement, pas de
-   parallaxe par-dessus — trois mouvements simultanes, c'est ce qui
-   fait « site charge » au lieu de « site soigne ». */
+   Les quatre viennent d'une seule video de 864 x 496 ou ils tenaient
+   en mosaique : chacun ne faisait donc que 432 x 248 et moins d'une
+   seconde. Ils ont ete decoupes, agrandis en Lanczos a l'encodage
+   (bien meilleur que l'etirement du navigateur) et ralentis de moitie
+   avec interpolation, sinon le ralenti tombait a 12 images par seconde
+   et saccadait.
+
+   Un seul effet : le fondu. Pas de glissement ni de zoom par-dessus —
+   trois mouvements simultanes, c'est ce qui fait « site charge » au
+   lieu de « site soigne ». */
 .hero {
   position: relative; overflow: hidden; isolation: isolate;
   background: var(--noir); color: var(--encre);
@@ -196,14 +204,28 @@ a { color: inherit }
 .hero .wrap { position: relative; z-index: 2; width: 100% }
 
 .hero-fond { position: absolute; inset: 0; z-index: 0 }
-.hero-photo {
+.hero-clip, .hero-fixe {
   position: absolute; inset: 0;
   width: 100%; height: 100%; object-fit: cover;
-  opacity: 0; transform: scale(1.03);
-  transition: opacity 1.1s ease;
 }
-.hero-photo[data-on] { opacity: 1; animation: respire 8s ease-out forwards }
-@keyframes respire { from { transform: scale(1.03) } to { transform: scale(1.11) } }
+.hero-clip { opacity: 0; transition: opacity .8s ease }
+.hero-clip[data-on] { opacity: 1 }
+
+/* L'image fixe ne sert qu'au repli : masquee tant que les clips
+   jouent, elle reprend la place s'ils ne le peuvent pas. */
+.hero-fixe { display: none }
+
+/* Moins d'animation demande : une image, pas quatre videos. C'est
+   exactement ce que ce reglage cherche a eviter. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-clip { display: none }
+  .hero-fixe { display: block }
+}
+/* Repli pose par carte.js quand la lecture automatique est refusee. */
+.hero[data-sans-video] .hero-clip { display: none }
+.hero[data-sans-video] .hero-fixe { display: block }
+
+@media (max-width: 760px) { .hero { min-height: 0 } }
 
 /* Le voile : plus dense a gauche, ou se trouve le texte, et il
    s'allege vers la droite pour laisser voir le plat. C'est lui qui
@@ -216,7 +238,6 @@ a { color: inherit }
     linear-gradient(to top, rgba(9,9,9,.75) 0%, transparent 45%);
 }
 @media (max-width: 760px) {
-  .hero { min-height: 0 }
   .hero-voile {
     background:
       linear-gradient(to top, rgba(9,9,9,.97) 24%, rgba(9,9,9,.86) 58%, rgba(9,9,9,.62) 100%);
@@ -226,8 +247,6 @@ a { color: inherit }
 /* Quelqu'un qui a demande moins d'animation voit la premiere photo,
    fixe. Jamais un cadre vide. */
 @media (prefers-reduced-motion: reduce) {
-  .hero-photo { transition: none }
-  .hero-photo[data-on] { animation: none; transform: none }
 }
 .hero h1 {
   font-size: clamp(34px, 7.2vw, 60px);
@@ -647,10 +666,15 @@ a { color: inherit }
 
   <section class="hero">
     <div class="hero-fond" aria-hidden="true">
-      <img class="hero-photo" src="photos/1-burger-bacon.jpg" alt="" data-on fetchpriority="high" decoding="async">
-      <img class="hero-photo" src="photos/2-burger-poulet.jpg" alt="" fetchpriority="low" decoding="async">
-      <img class="hero-photo" src="photos/3-tacos-roule.jpg" alt="" fetchpriority="low" decoding="async">
-      <img class="hero-photo" src="photos/4-tacos-frites.jpg" alt="" fetchpriority="low" decoding="async">
+      <video class="hero-clip" data-on src="videos/1-plancha.mp4" poster="videos/1-plancha.jpg"
+             muted playsinline preload="auto"></video>
+      <video class="hero-clip" src="videos/2-cuisson.mp4" poster="videos/2-cuisson.jpg"
+             muted playsinline preload="metadata"></video>
+      <video class="hero-clip" src="videos/3-montage.mp4" poster="videos/3-montage.jpg"
+             muted playsinline preload="metadata"></video>
+      <video class="hero-clip" src="videos/4-burger.mp4" poster="videos/4-burger.jpg"
+             muted playsinline preload="metadata"></video>
+      <img class="hero-fixe" src="videos/4-burger.jpg" alt="">
     </div>
     <div class="hero-voile" aria-hidden="true"></div>
     <div class="wrap">
@@ -823,9 +847,9 @@ a { color: inherit }
      Avec le numero, un index.html en cache demande le carte.js de la
      MEME version : les deux sont toujours d'accord. A incrementer des
      que le HTML produit par le script change de forme. -->
-<script src="contenu-loader.js?v=3" defer></script>
-<script src="carte.js?v=3" defer></script>
-<script src="mesure.js?v=3" defer></script>
+<script src="contenu-loader.js?v=4" defer></script>
+<script src="carte.js?v=4" defer></script>
+<script src="mesure.js?v=4" defer></script>
 
 </body>
 </html>

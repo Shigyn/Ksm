@@ -1224,48 +1224,99 @@
   }
 
   // -----------------------------------------------------------------
-  //  7 bis. Le heros : les quatre photos se relaient
+  //  7 bis. Le heros : les quatre clips se relaient
   // -----------------------------------------------------------------
   function heros() {
-    var photos = document.querySelectorAll('.hero-photo');
-    if (photos.length < 2) return;
+    var clips = Array.prototype.slice.call(document.querySelectorAll('.hero-clip'));
+    if (!clips.length) return;
 
-    // Respecter le reglage systeme « moins d'animations » : on garde
-    // la premiere photo, fixe. Un site de commande doit pouvoir se
-    // lire par quelqu'un que le mouvement gene.
+    var hero = document.querySelector('.hero');
+
+    // Respecter « moins d'animations » : l'image fixe suffit. Un site
+    // de commande doit pouvoir se lire par quelqu'un que le mouvement
+    // gene.
     var calme = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
     if (calme && calme.matches) return;
 
     var i = 0;
     var minuteur = null;
 
-    function suivante() {
-      photos[i].removeAttribute('data-on');
-      i = (i + 1) % photos.length;
-      var p = photos[i];
-      // Retirer puis remettre l'attribut relance le rapprochement :
-      // sans ce reflow force, l'animation ne rejoue pas au second
-      // passage sur la meme image.
-      p.removeAttribute('data-on');
-      void p.offsetWidth;
-      p.setAttribute('data-on', '');
+    /* Le navigateur peut refuser la lecture automatique — economie de
+       donnees, reglage strict, batterie faible. On ne laisse pas un
+       cadre noir : on bascule sur l'image fixe. */
+    function replier() {
+      clearTimeout(minuteur);
+      hero.setAttribute('data-sans-video', '');
     }
 
-    function demarrer() {
-      if (minuteur) return;
-      minuteur = setInterval(suivante, 5000);
-    }
-    function arreter() {
-      clearInterval(minuteur);
-      minuteur = null;
+    /* `play()` est lance sans qu'on l'attende, et son echec est
+       rattrape a part.
+
+       La premiere version enchainait les clips DANS le `.then()` de
+       cette promesse. Or dans un onglet en arriere-plan elle ne se
+       resout jamais : la bascule ne partait pas, et le heros restait
+       fige sur le meme clip pour toujours, y compris apres le retour
+       au premier plan. */
+    function jouer(v) {
+      var p = v.play();
+      if (p && p.catch) p.catch(function () { /* rattrape par le minuteur */ });
     }
 
-    // Onglet en arriere-plan : inutile de faire tourner un diaporama
-    // que personne ne regarde, et le telephone economise sa batterie.
-    document.addEventListener('visibilitychange', function () {
-      if (document.hidden) arreter(); else demarrer();
+    /* La bascule est pilotee par un minuteur, jamais par l'evenement
+       `ended` seul : un clip qui ne se termine pas — onglet masque,
+       decodage en retard, reseau coupe — bloquerait la boucle. Le
+       minuteur, lui, tombe toujours. */
+    function programmer() {
+      clearTimeout(minuteur);
+      var v = clips[i];
+      var duree = (v.duration && isFinite(v.duration)) ? v.duration * 1000 : 1800;
+      minuteur = setTimeout(suivant, Math.max(1200, duree - 250));
+    }
+
+    function suivant() {
+      var sortant = clips[i];
+      i = (i + 1) % clips.length;
+      var entrant = clips[i];
+
+      entrant.currentTime = 0;
+      jouer(entrant);
+      entrant.setAttribute('data-on', '');
+      sortant.removeAttribute('data-on');
+
+      // On arrete le sortant APRES le fondu, sinon sa derniere image se
+      // fige a l'ecran pendant toute la transition.
+      setTimeout(function () {
+        sortant.pause();
+        sortant.currentTime = 0;
+      }, 850);
+
+      // Le clip d'apres se prepare pendant celui-ci : sans ca, son
+      // premier passage attend le reseau et le fondu tombe sur du noir.
+      var apres = clips[(i + 1) % clips.length];
+      if (apres.preload !== 'auto') { apres.preload = 'auto'; apres.load(); }
+
+      programmer();
+    }
+
+    clips.forEach(function (v) {
+      v.addEventListener('error', replier);
     });
-    demarrer();
+
+    // Onglet en arriere-plan : quatre videos qui tournent pour personne
+    // vident la batterie d'un telephone. On arrete aussi le minuteur,
+    // sinon on revient sur un heros qui a defile dans le vide.
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        clearTimeout(minuteur);
+        clips[i].pause();
+      } else if (!hero.hasAttribute('data-sans-video')) {
+        jouer(clips[i]);
+        programmer();
+      }
+    });
+
+    jouer(clips[0]);
+    programmer();
   }
 
   // -----------------------------------------------------------------
