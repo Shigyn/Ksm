@@ -6,7 +6,7 @@
 <title>KSM Burger — Commander à emporter à Fleurie (69820)</title>
   <!-- Le premier clip est ce qu'on voit en arrivant : le precharger
        evite que le heros reste noir une seconde. -->
-  <link rel="preload" as="video" href="videos/1-plancha.mp4" type="video/mp4">
+  <link rel="preload" as="video" href="videos/1-pose.mp4" type="video/mp4">
 <meta name="description" content="Burgers faits maison à Fleurie, en plein Beaujolais. Commandez en ligne et récupérez sur place. 10 rue du Beaujolais, 69820 Fleurie — 09 50 94 88 15.">
 <link rel="canonical" href="https://shigyn.github.io/Ksm/">
 <meta name="theme-color" content="#121212">
@@ -666,15 +666,16 @@ a { color: inherit }
 
   <section class="hero">
     <div class="hero-fond" aria-hidden="true">
-      <video class="hero-clip" data-on src="videos/1-plancha.mp4" poster="videos/1-plancha.jpg"
+      <video class="hero-clip" data-on data-boucles="1"
+             src="videos/1-pose.mp4" poster="videos/1-pose.jpg"
              muted playsinline preload="auto"></video>
-      <video class="hero-clip" src="videos/2-cuisson.mp4" poster="videos/2-cuisson.jpg"
+      <video class="hero-clip" data-boucles="2" loop
+             src="videos/2-cuisson.mp4" poster="videos/2-cuisson.jpg"
              muted playsinline preload="metadata"></video>
-      <video class="hero-clip" src="videos/3-montage.mp4" poster="videos/3-montage.jpg"
+      <video class="hero-clip" data-boucles="1"
+             src="videos/3-montage.mp4" poster="videos/3-montage.jpg"
              muted playsinline preload="metadata"></video>
-      <video class="hero-clip" src="videos/4-burger.mp4" poster="videos/4-burger.jpg"
-             muted playsinline preload="metadata"></video>
-      <img class="hero-fixe" src="videos/4-burger.jpg" alt="">
+      <img class="hero-fixe" src="videos/3-montage.jpg" alt="">
     </div>
     <div class="hero-voile" aria-hidden="true"></div>
     <div class="wrap">
@@ -847,9 +848,9 @@ a { color: inherit }
      Avec le numero, un index.html en cache demande le carte.js de la
      MEME version : les deux sont toujours d'accord. A incrementer des
      que le HTML produit par le script change de forme. -->
-<script src="contenu-loader.js?v=4" defer></script>
-<script src="carte.js?v=4" defer></script>
-<script src="mesure.js?v=4" defer></script>
+<script src="contenu-loader.js?v=5" defer></script>
+<script src="carte.js?v=5" defer></script>
+<script src="mesure.js?v=5" defer></script>
 
 </body>
 </html>

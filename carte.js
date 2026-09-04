@@ -1266,11 +1266,17 @@
        `ended` seul : un clip qui ne se termine pas — onglet masque,
        decodage en retard, reseau coupe — bloquerait la boucle. Le
        minuteur, lui, tombe toujours. */
+    /* Chaque plan reste a l'ecran le temps du nombre de boucles qu'il
+       declare. La cuisson en demande deux : un seul passage de 1,8 s
+       ne laisse pas le temps de voir la viande saisir. Elle porte
+       l'attribut `loop`, donc elle repart d'elle-meme ; le minuteur ne
+       fait qu'attendre plus longtemps avant de passer au suivant. */
     function programmer() {
       clearTimeout(minuteur);
       var v = clips[i];
       var duree = (v.duration && isFinite(v.duration)) ? v.duration * 1000 : 1800;
-      minuteur = setTimeout(suivant, Math.max(1200, duree - 250));
+      var boucles = Number(v.getAttribute('data-boucles')) || 1;
+      minuteur = setTimeout(suivant, Math.max(1200, duree * boucles - 250));
     }
 
     function suivant() {
