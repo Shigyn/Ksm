@@ -68,7 +68,9 @@
       })
       .catch(function () {
         code = '';
-        $('#code-erreur').textContent = 'Code incorrect.';
+        // On precise la casse : c'est la cause la plus frequente d'un
+        // refus, et « Code incorrect » tout seul laisse chercher.
+        $('#code-erreur').textContent = 'Code incorrect. Attention aux majuscules.';
       });
   }
 

@@ -232,7 +232,14 @@
   <div class="code-boite">
     <h1>KSM <span>Burger</span></h1>
     <p>Espace restaurant</p>
-    <input type="password" id="code-input" placeholder="Code d'accès" inputmode="text" autocomplete="current-password">
+    <!-- `autocapitalize="none"` n'est pas cosmetique : sur telephone, le
+         clavier met une majuscule a la premiere lettre par defaut, et le
+         code est sensible a la casse. Sans ca, quelqu'un tape le bon code
+         au comptoir et se fait refuser sans comprendre. Arrive le
+         2026-09-04. `autocorrect` et `spellcheck` pour la meme raison. -->
+    <input type="password" id="code-input" placeholder="Code d'accès"
+           inputmode="text" autocomplete="current-password"
+           autocapitalize="none" autocorrect="off" spellcheck="false">
     <button id="code-valider">Entrer</button>
     <p id="code-erreur" role="alert"></p>
   </div>
@@ -279,6 +286,6 @@
      Avec le numero, un index.html en cache demande le carte.js de la
      MEME version : les deux sont toujours d'accord. A incrementer des
      que le HTML produit par le script change de forme. -->
-<script src="restaurant.js?v=3" defer></script>
+<script src="restaurant.js?v=4" defer></script>
 </body>
 </html>
