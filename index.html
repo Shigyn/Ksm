@@ -464,6 +464,12 @@ a { color: inherit }
 .opts .opt:first-child { border-top: 0 }
 .opt:hover { background: var(--surface) }
 .opt input { flex: none; width: 20px; height: 20px; accent-color: var(--or); margin: 0; cursor: pointer }
+/* Le prix d'un supplement, aligne a droite : on compare d'un coup
+   d'oeil ce que coute chaque ajout, sans lire ligne a ligne. */
+.opt-prix {
+  flex: none; font-family: var(--disp); font-weight: 700; font-size: 14px;
+  color: var(--or); font-variant-numeric: tabular-nums;
+}
 .opt span { flex: 1 }
 
 .fiche-pied {
@@ -848,9 +854,9 @@ a { color: inherit }
      Avec le numero, un index.html en cache demande le carte.js de la
      MEME version : les deux sont toujours d'accord. A incrementer des
      que le HTML produit par le script change de forme. -->
-<script src="contenu-loader.js?v=5" defer></script>
-<script src="carte.js?v=5" defer></script>
-<script src="mesure.js?v=5" defer></script>
+<script src="contenu-loader.js?v=6" defer></script>
+<script src="carte.js?v=6" defer></script>
+<script src="mesure.js?v=6" defer></script>
 
 </body>
 </html>

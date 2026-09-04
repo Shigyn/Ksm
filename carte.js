@@ -91,6 +91,13 @@
   var SOCLE = /steak|poulet|escalope|kebab|viande|pain|galette/i;
 
   var panier = Object.create(null);   // cle -> { produit, quantite, options }
+  var supplements = [];               // produits de la categorie Supplements
+  /* Les supplements sont de vrais produits, avec leur prix en base —
+     c'est ce qui permet au serveur de les facturer sans une ligne de
+     code de plus. Mais on ne les parcourt pas comme des plats : on ne
+     commande pas un cheddar tout seul, il ne se choisit que dans la
+     fiche d'un burger ou d'un tacos. */
+  var CAT_SUP = 'Suppléments';
   var neAvant = Date.now();           // sert au filtre anti-robot
 
   var $ = function (s) { return document.querySelector(s); };
@@ -260,9 +267,14 @@
   }
 
   function afficher(produits) {
+    supplements = produits
+      .filter(function (p) { return (p.categorie || '').trim() === CAT_SUP && p.disponible !== false; })
+      .sort(function (x, y) { return Number(y.prix) - Number(x.prix); });   // la viande d'abord
+
     var groupes = Object.create(null);
     produits.forEach(function (p) {
       var cat = (p.categorie || 'Autres').trim();
+      if (cat === CAT_SUP) return;
       (groupes[cat] || (groupes[cat] = [])).push(p);
     });
 
@@ -435,7 +447,7 @@
   var ficheEtat = null;
 
   function ouvrirFiche(p) {
-    ficheEtat = { produit: p, quantite: 1, choisi: Object.create(null) };
+    ficheEtat = { produit: p, quantite: 1, choisi: Object.create(null), sup: Object.create(null) };
 
     var boite = $('#fiche-boite');
     boite.innerHTML = '';
@@ -469,10 +481,62 @@
     var groupes = groupesOptions(p);
     groupes.forEach(function (grp, i) { boite.appendChild(blocOption(grp, i)); });
 
+    if (accepteSupplements(p)) boite.appendChild(blocSupplements());
+
     boite.appendChild(pied(groupes));
     elFiche.setAttribute('data-ouvert', '1');
     document.body.style.overflow = 'hidden';
     x.focus();
+  }
+
+  /* Burgers et tacos seulement. Un supplement cheddar sur un Coca ou
+     sur un tiramisu n'a pas de sens, et proposer partout revient a ne
+     rien proposer : le client cesse de lire. */
+  function accepteSupplements(p) {
+    if (!supplements.length) return false;
+    var cat = (p.categorie || '').toLowerCase();
+    return cat.indexOf('burger') !== -1 || cat.indexOf('tacos') !== -1;
+  }
+
+  function blocSupplements() {
+    var bloc = creer('div', 'groupe-opt');
+    bloc.appendChild(creer('h3', null, 'Suppléments'));
+    bloc.appendChild(creer('p', 'aide', 'Facultatif, ajouté au prix.'));
+
+    var opts = creer('div', 'opts');
+    ficheEtat.sup = Object.create(null);
+
+    supplements.forEach(function (sup) {
+      var label = creer('label', 'opt');
+      var input = document.createElement('input');
+      input.type = 'checkbox';
+      input.value = sup.id;
+      input.addEventListener('change', function () {
+        if (input.checked) ficheEtat.sup[sup.id] = sup;
+        else delete ficheEtat.sup[sup.id];
+        majPied();
+      });
+      label.appendChild(input);
+      label.appendChild(creer('span', null, sup.nom));
+      // Le prix a droite, aligne : on compare d'un coup d'oeil ce que
+      // coute chaque ajout sans lire ligne a ligne.
+      label.appendChild(creer('span', 'opt-prix', '+ ' + euros(sup.prix)));
+      opts.appendChild(label);
+    });
+
+    bloc.appendChild(opts);
+    return bloc;
+  }
+
+  /* Ce que coute la fiche telle qu'elle est composee : le plat plus ses
+     supplements, multiplie par la quantite. C'est un affichage — le
+     total qui fait foi reste celui que le serveur recalcule. */
+  function totalFiche() {
+    var unite = Number(ficheEtat.produit.prix);
+    Object.keys(ficheEtat.sup || {}).forEach(function (id) {
+      unite += Number(ficheEtat.sup[id].prix);
+    });
+    return unite * ficheEtat.quantite;
   }
 
   function blocOption(grp, index) {
@@ -577,8 +641,7 @@
       btn.textContent = manque;
     } else {
       btn.disabled = false;
-      btn.textContent = 'Ajouter · '
-        + euros(Number(ficheEtat.produit.prix) * ficheEtat.quantite);
+      btn.textContent = 'Ajouter · ' + euros(totalFiche());
     }
   }
 
@@ -592,7 +655,27 @@
       });
     });
 
-    ajouter(ficheEtat.produit, ficheEtat.quantite, options);
+    var plat = ficheEtat.produit;
+    var qte = ficheEtat.quantite;
+    var sup = ficheEtat.sup || {};
+
+    ajouter(plat, qte, options);
+
+    /* Chaque supplement part comme une LIGNE A PART du panier, avec le
+       nom du plat en option.
+
+       C'est ce qui le rend payant sans une ligne de code cote serveur :
+       la fonction de commande recalcule le total depuis `produits`, et
+       un supplement EST un produit. Le glisser dans le texte des
+       options du burger, au contraire, ne lui aurait donne aucun prix —
+       le client aurait lu un total et paye un autre.
+
+       Le nom du plat suit pour la cuisine : « Cheddar (Le Fleurie) »
+       dit sur quoi le poser. */
+    Object.keys(sup).forEach(function (id) {
+      ajouter(sup[id], qte, [plat.nom]);
+    });
+
     fermerFiche();
   }
 
@@ -640,10 +723,14 @@
     });
   }
 
+  /* Le compteur d'articles ne compte QUE les plats. Un burger avec
+     cheddar et steak en plus, c'est un article et non trois — annoncer
+     « 6 articles » pour deux burgers ferait douter le client de ce
+     qu'il a mis au panier. Le total, lui, additionne bien tout. */
   function totaux() {
     var n = 0, somme = 0;
     lignesPanier().forEach(function (l) {
-      n += l.quantite;
+      if ((l.produit.categorie || '').trim() !== CAT_SUP) n += l.quantite;
       somme += Number(l.produit.prix) * l.quantite;
     });
     return { n: n, somme: somme };
