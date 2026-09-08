@@ -402,9 +402,21 @@
         requis: true,
         choix: viandesAuChoix()
       });
+      /* DEUX sauces, et gratuites.
+
+         Un tacos se mange avec deux sauces, c'est l'usage. La
+         fiche n'en laissait choisir qu'une, et la seconde passait
+         par la « Sauce supplementaire » a 0,50 € : on facturait
+         un usage courant.
+
+         `min` et non `max` pour la validation : le client peut
+         n'en vouloir qu'une, et le bouton ne doit pas rester
+         bloque a l'attendre. La ligne payante a 0,50 € reste dans
+         les supplements pour une TROISIEME sauce ou un pot en
+         plus. */
       groupes.push({
-        titre: 'Votre sauce', aide: 'Une seule, offerte.',
-        type: 'unique', max: 1, requis: true, choix: saucesOffertes()
+        titre: 'Vos sauces', aide: 'Une ou deux, offertes.',
+        type: 'multi', min: 1, max: 2, requis: true, choix: saucesOffertes()
       });
     }
 
@@ -418,8 +430,8 @@
         type: 'unique', max: 1, requis: true, choix: viandesAuChoix()
       });
       groupes.push({
-        titre: 'Votre sauce', aide: 'Une seule.',
-        type: 'unique', max: 1, requis: true, choix: SAUCES
+        titre: 'Votre sauce', aide: 'Une seule, offerte.',
+        type: 'unique', max: 1, requis: true, choix: saucesOffertes()
       });
     }
 
@@ -1018,7 +1030,14 @@
     var manque = null;
     ficheEtat.groupes.forEach(function (grp, i) {
       if (manque) return;
-      if (grp.requis && ficheEtat.choisi[i].length < grp.max) manque = grp.titre;
+      /* Combien il en faut AU MOINS. Sans `min`, c'est `max` : les
+         « deux viandes » d'un maxi tacos se prennent bien par deux,
+         il en manque une tant qu'il n'y en a qu'une. Mais les
+         sauces se prennent par une OU deux — exiger le maximum y
+         bloquerait le bouton sur un choix que le client a fini de
+         faire. */
+      var mini = (grp.min == null) ? grp.max : grp.min;
+      if (grp.requis && ficheEtat.choisi[i].length < mini) manque = grp.titre;
     });
 
     if (manque) {
