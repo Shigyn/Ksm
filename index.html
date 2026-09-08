@@ -520,7 +520,13 @@ a { color: inherit }
 .venir { padding: 64px 0 }
 .venir h2 { font-size: clamp(28px, 5vw, 40px); line-height: 1.12; margin-top: 8px }
 .venir-grid { display: grid; gap: 40px; grid-template-columns: 1fr; margin-top: 34px }
-@media (min-width: 860px) { .venir-grid { grid-template-columns: 1.05fr .95fr; gap: 56px } }
+/* `align-items: start` : sans lui, les deux colonnes s'etirent sur la
+   plus haute. Depuis que la carte de Fleurie occupe la colonne de
+   gauche, la boite horaires heritait de sa hauteur et laissait 350 px
+   de vide sous « Dimanche ». */
+@media (min-width: 860px) {
+  .venir-grid { grid-template-columns: 1.05fr .95fr; gap: 56px; align-items: start }
+}
 .adresse { font-size: 19px; font-weight: 500; line-height: 1.5 }
 .venir-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px }
 .venir-note { margin-top: 26px; font-size: 14px; color: var(--gris); max-width: 42ch }

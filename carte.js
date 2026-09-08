@@ -113,12 +113,23 @@
 
   // Ordre d'apparition des categories. Ce qui fait venir les gens
   // passe en premier ; les boissons ferment la marche, comme au
-  // comptoir. Une categorie absente d'ici s'ajoute a la fin plutot
+  // comptoir.
+  //
+  // Mis a jour le 2026-09-08, apres separation des categories en base.
+  // L'ancienne liste citait « Bowls et Snacking » et « Salades et
+  // Desserts », qui n'existent plus : les categories inconnues
+  // tombant a la fin, les desserts se retrouvaient APRES les boissons
+  // et les bowls entre le menu enfant et les canettes. Le menu se
+  // lisait dans un ordre que personne ne commande. Une categorie absente d'ici s'ajoute a la fin plutot
   // que de disparaitre — le restaurateur peut en creer depuis son
   // espace sans que personne ait a toucher au code.
   var ORDRE = [
-    'Burgers', 'Tacos', 'Sandwichs', 'Frites',
-    'Bowls et Snacking', 'Salades et Desserts', 'Menu Kids', 'Boissons'
+    // Les plats d'abord, du plus commande au moins.
+    'Burgers', 'Tacos', 'Sandwichs', 'Bowls', 'Salades',
+    // Puis ce qui accompagne.
+    'Snacking', 'Frites',
+    // Puis la fin de repas, dans l'ordre ou on la commande.
+    'Menu Kids', 'Desserts', 'Boissons'
   ];
 
   // Ingredients qu'on ne propose pas de retirer : ce qui reste du plat
