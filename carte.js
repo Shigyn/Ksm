@@ -320,11 +320,26 @@
   }
 
   /* Les viandes au choix d'un tacos ou d'un bowl : celles a 3 € en
-     base, moins le « steak supplementaire » qui n'est pas une
-     garniture au choix mais un ajout payant. */
+     base, moins deux intrus qui portent le meme prix sans etre des
+     viandes :
+
+      - le « steak supplementaire », qui est un ajout payant et non
+        une garniture au choix ;
+
+      - la « formule menu ». Sans elle, la fiche l'affichait comme
+        une viande entre l'escalope et le kebab, et elle partait en
+        cuisine comme telle. Vu le 2026-09-08 sur le recapitulatif :
+        « 1 x Tacos simple — Formule menu, Samourai, Harissa », un
+        tacos sans viande. C'est le meme piege que dans
+        `supplementsPour`, a un endroit que je n'avais pas repris :
+        TOUTE lecture des supplements par le prix doit ecarter la
+        formule, qui n'est un supplement que par commodite. */
   function viandesAuChoix() {
     var l = supplements
-      .filter(function (x) { return Number(x.prix) >= 3 && !/suppl[eé]mentaire/i.test(x.nom); })
+      .filter(function (x) {
+        if (MENU_SUP.test(String(x.nom).trim())) return false;
+        return Number(x.prix) >= 3 && !/suppl[eé]mentaire/i.test(x.nom);
+      })
       .map(function (x) { return x.nom; })
       .sort(ordreFr);
     return l.length ? l : VIANDES;
@@ -832,7 +847,7 @@
   function blocMenu(p) {
     var menu = supplementMenu();
     var bloc = creer('div', 'groupe-opt menu-bloc');
-    bloc.appendChild(creer('h3', null, 'En menu'));
+    bloc.appendChild(entete('En menu', false));
     bloc.appendChild(creer('p', 'aide', menu.description || 'Frites et une boisson.'));
 
 
@@ -891,7 +906,7 @@
 
   function blocSupplements(p) {
     var bloc = creer('div', 'groupe-opt');
-    bloc.appendChild(creer('h3', null, 'Suppléments'));
+    bloc.appendChild(entete('Suppléments', false));
     bloc.appendChild(creer('p', 'aide', 'Facultatif, ajouté au prix.'));
 
 
@@ -936,9 +951,43 @@
     return unite * ficheEtat.quantite;
   }
 
+  /* Combien de choix il faut AU MOINS dans ce groupe. */
+  function minimum(grp) { return (grp.min == null) ? grp.max : grp.min; }
+
+  /* L'etat d'un groupe, affiche a droite de son titre.
+
+     Sur une fiche qui compte quarante options, le client perd le
+     fil de ce qu'il a deja choisi des qu'il a defile. « 1 / 2 »
+     le lui rend sans qu'il ait a remonter compter les cases.
+
+     Seuls les groupes OBLIGATOIRES en portent un : sur « Retirer
+     un ingredient », un « 0 / 4 » n'apprendrait rien et ferait
+     croire qu'il reste quelque chose a faire. */
+  function majEtatGroupe(bloc, grp, index) {
+    var pastille = bloc.querySelector('.grp-etat');
+    if (!pastille) return;
+    var n = ficheEtat.choisi[index].length;
+    pastille.textContent = grp.max > 1 ? (n + ' / ' + grp.max)
+                                       : (n ? 'Choisi' : 'À choisir');
+    if (n >= minimum(grp)) pastille.setAttribute('data-plein', '1');
+    else pastille.removeAttribute('data-plein');
+  }
+
+  /* L'entete d'un bloc : le titre, et a sa droite l'etat quand il y
+     en a un. Une seule fonction pour les trois sortes de blocs
+     (choix, menu, supplements), sinon le comportement collant du
+     titre ne s'appliquerait qu'a ceux passes par `blocOption` —
+     c'est-a-dire pas aux supplements, qui sont le plus long. */
+  function entete(titre, avecEtat) {
+    var tete = creer('div', 'groupe-tete');
+    tete.appendChild(creer('h3', null, titre));
+    if (avecEtat) tete.appendChild(creer('span', 'grp-etat'));
+    return tete;
+  }
+
   function blocOption(grp, index) {
     var bloc = creer('div', 'groupe-opt');
-    bloc.appendChild(creer('h3', null, grp.titre));
+    bloc.appendChild(entete(grp.titre, grp.requis));
     bloc.appendChild(creer('p', 'aide', grp.aide));
 
     var opts = creer('div', 'opts');
@@ -969,6 +1018,7 @@
         } else {
           ficheEtat.choisi[index] = liste.filter(function (v) { return v !== valeur; });
         }
+        majEtatGroupe(bloc, grp, index);
         majPied();
       });
 
@@ -978,6 +1028,7 @@
     });
 
     bloc.appendChild(opts);
+    majEtatGroupe(bloc, grp, index);
     return bloc;
   }
 
@@ -1036,8 +1087,7 @@
          sauces se prennent par une OU deux — exiger le maximum y
          bloquerait le bouton sur un choix que le client a fini de
          faire. */
-      var mini = (grp.min == null) ? grp.max : grp.min;
-      if (grp.requis && ficheEtat.choisi[i].length < mini) manque = grp.titre;
+      if (grp.requis && ficheEtat.choisi[i].length < minimum(grp)) manque = grp.titre;
     });
 
     if (manque) {

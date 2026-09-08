@@ -488,7 +488,7 @@ a { color: inherit }
 .fiche-prix { font-family: var(--disp); font-weight: 700; font-size: 20px; margin-top: 10px }
 
 .groupe-opt { margin-top: 26px }
-.groupe-opt > h3 { font-size: 17px }
+.groupe-opt > h3, .groupe-tete h3 { font-size: 17px }
 .groupe-opt .aide { font-size: 13px; color: var(--gris); margin-bottom: 10px }
 /* L'intitule d'une famille de supplements (viandes, fromages,
    garnitures, sauces). Plus discret que le titre du groupe qui le
@@ -515,25 +515,98 @@ a { color: inherit }
 .menu-bloc > h3 { color: var(--or) }
 /* Les bords de la liste tombent : dans un encadre, un cadre dans
    le cadre alourdit pour rien. */
-.menu-bloc .opts { border: 0; border-radius: 0 }
-.menu-bloc .opt { padding-left: 0; padding-right: 0 }
-.menu-boisson { margin-top: 4px }
-.opts { border: 1px solid var(--trait-fort); border-radius: 12px; overflow: hidden }
-.opt {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 15px; border-top: 1px solid var(--trait);
-  cursor: pointer; font-size: 15px;
+.menu-boisson { margin-top: 10px }
+
+/* =================================================================
+   LES OPTIONS : UNE GRILLE DE TUILES, PLUS UNE LISTE
+
+   Mesure du 2026-09-08 sur la fiche d'un tacos, avant changement :
+   43 options empilees en UNE colonne, 2912 px de haut, soit trois
+   ecrans et demi a parcourir avant d'atteindre le bouton. Les douze
+   sauces a elles seules occupaient 636 px.
+
+   Une liste verticale est le bon reflexe pour cinq lignes. Passe
+   quinze, elle cesse d'etre une liste et devient un couloir : on ne
+   compare plus, on defile. La grille rend au client ce que la liste
+   lui avait pris — voir ses choix ensemble, et retrouver d'un coup
+   d'oeil ce qu'il a deja coche.
+
+   `minmax(min(100%, 152px), 1fr)` : trois colonnes dans la fiche
+   (560 px), deux sur un telephone (375 px), une seule si la fiche
+   devenait plus etroite que 152 px. Le `min(100%, ...)` evite le
+   debordement classique de `auto-fill` quand le conteneur est plus
+   etroit que la piste demandee.
+   ================================================================= */
+.opts {
+  display: grid; gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 152px), 1fr));
 }
-.opts .opt:first-child { border-top: 0 }
-.opt:hover { background: var(--surface) }
-.opt input { flex: none; width: 20px; height: 20px; accent-color: var(--or); margin: 0; cursor: pointer }
-/* Le prix d'un supplement, aligne a droite : on compare d'un coup
-   d'oeil ce que coute chaque ajout, sans lire ligne a ligne. */
+.opt {
+  display: flex; align-items: center; gap: 10px;
+  /* 44 px, la cible tactile minimale. Mesure sur un telephone de
+     375 px : les tuiles tombaient a 42 px, deux de trop. Un
+     `min-height` plutot qu'un calcul de marge interne — il tient
+     quel que soit le corps du texte, et un nom sur deux lignes
+     agrandit la tuile au lieu de la faire deborder. */
+  min-height: 44px; padding: 10px 12px;
+  border: 1px solid var(--trait-fort); border-radius: 11px;
+  background: var(--carte);
+  cursor: pointer; font-size: 14.5px; line-height: 1.25;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+.opt:hover { border-color: var(--or-sourd) }
+
+/* La tuile choisie se voit SANS lire sa case. C'est ce qui permet de
+   verifier sa commande d'un coup d'oeil sur quarante options.
+
+   Le fond est un calque dore pose sur `--carte` plutot qu'une couleur
+   en dur : le jour ou le fond des cartes change, la teinte suit.
+
+   Si `:has()` n'est pas reconnu, la case cochee reste visible et
+   lisible : on perd le confort, jamais l'information. */
+.opt:has(input:checked) {
+  border-color: var(--or);
+  background: linear-gradient(rgba(212,175,55,.10), rgba(212,175,55,.10)), var(--carte);
+}
+/* Le focus clavier ne doit pas dependre de la couleur de bordure, que
+   la selection utilise deja. */
+.opt:has(input:focus-visible) { outline: 2px solid var(--or-vif); outline-offset: 2px }
+
+.opt input { flex: none; width: 17px; height: 17px; accent-color: var(--or); margin: 0; cursor: pointer }
+.opt > span:not(.opt-prix) { flex: 1; min-width: 0 }
+
+/* Le prix d'un supplement. Il passe sous le nom quand la tuile est
+   etroite plutot que de comprimer le nom : « Steak supplementaire »
+   coupe en deux se lit mal. */
 .opt-prix {
-  flex: none; font-family: var(--disp); font-weight: 700; font-size: 14px;
+  flex: none; font-family: var(--disp); font-weight: 700; font-size: 13px;
   color: var(--or); font-variant-numeric: tabular-nums;
 }
-.opt span { flex: 1 }
+
+/* --- L'etat d'un groupe, a droite de son titre -------------------
+   « 1 / 2 » ou « A choisir » : sur une fiche longue, c'est ce qui
+   dit ou l'on en est sans avoir a recompter les cases cochees. */
+/* Le titre d'un groupe reste en haut tant qu'on est dans ses
+   options. Sur une fiche de trois ecrans, c'est ce qui evite
+   d'arriver au milieu de douze sauces sans plus savoir si on
+   choisit une sauce ou une viande — et la pastille d'etat suit,
+   donc le « 1 / 2 » reste sous les yeux pendant qu'on coche.
+
+   Le fond est indispensable : sans lui, les tuiles defileraient
+   AU TRAVERS du titre. */
+.groupe-tete {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  position: sticky; top: 0; z-index: 1;
+  background: var(--carte); padding: 8px 0 6px;
+}
+.grp-etat {
+  flex: none; font-family: var(--texte); font-size: 12px; font-weight: 700;
+  letter-spacing: .04em; color: var(--gris);
+  border: 1px solid var(--trait-fort); border-radius: 999px;
+  padding: 3px 9px; font-variant-numeric: tabular-nums;
+  transition: color .15s ease, border-color .15s ease;
+}
+.grp-etat[data-plein] { color: var(--or); border-color: var(--or-sourd) }
 
 .fiche-pied {
   display: flex; align-items: center; gap: 14px; margin-top: 26px;
@@ -692,7 +765,7 @@ a { color: inherit }
 .modale-tete { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 18px }
 .modale-tete h2 { font-size: 25px }
 .fermer {
-  flex: none; width: 38px; height: 38px; border-radius: 999px; border: 1px solid var(--trait);
+  flex: none; width: 38px; height: 38px; border-radius: 999px;
   background: var(--surface); border: 1px solid var(--trait-fort);
   font-size: 20px; line-height: 1; cursor: pointer; color: var(--encre);
 }
@@ -915,6 +988,16 @@ a { color: inherit }
   /* « Commander » de l'entete tombait a 40 px. C'est LE bouton qui
      convertit : il ne peut pas etre celui qu'on rate. */
   .barre .pill, .pill-sm { height: 44px }
+
+  /* Trouves lors de la refonte des options, le 2026-09-08 : la
+     passe precedente avait traite le pas-a-pas des CARTES
+     (`.ligne-pas`) mais pas celui de la FICHE, ni sa croix de
+     fermeture. Tous deux a 38 px.
+
+     Ce sont les deux commandes d'une fiche de trois ecrans : celle
+     qui change la quantite, et celle qui permet d'en sortir. */
+  .pas button { width: 44px; height: 44px }
+  .fermer { width: 44px; height: 44px }
 
   /* Les liens telephone et reseaux restent du texte en ligne : la
      regle de taille de cible ne s'y applique pas (exception « inline »
