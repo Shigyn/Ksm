@@ -53,26 +53,62 @@
   // renseigne `image_url` depuis son espace.
   var U = 'https://images.unsplash.com/';
   var Q = '?w=320&h=320&fit=crop&q=75';
+  /* Les VRAIES photos du restaurant, fournies par Soso le 2026-09-07
+     et normalisees en 640 x 640 par `plats/fabriquer.sh`.
+
+     Elles remplacent des images Unsplash qui montraient la nourriture
+     d'autres restaurants — ce qui, sur une carte ou l'on commande,
+     revient a promettre un plat qu'on ne sert pas.
+
+     L'ORDRE COMPTE : la premiere expression qui accroche gagne. Les
+     noms composes passent donc avant les mots seuls — « tacos boursin »
+     avant « boursin » et avant « tacos », « triple julienas » avant
+     « julienas ». */
   var PHOTOS = [
-    // L'ordre compte : la premiere expression qui accroche gagne.
-    // « Salade Cesar » doit donc passer avant « salade » tout court.
-    [/tiramisu/i,            U + 'photo-1571877227200-a0d98ea607e9' + Q],
-    [/gaufre/i,              U + 'photo-1562376552-0d160a2f238d' + Q],
-    [/donut/i,               U + 'photo-1551024601-bec78aea704b' + Q],
-    [/tarte/i,               U + 'photo-1565958011703-44f9829ba187' + Q],
-    [/césar|cesar/i,         U + 'photo-1550304943-4f24f54ddde9' + Q],
-    [/salade/i,              U + 'photo-1546793665-c74683f339c1' + Q],
-    [/coca/i,                U + 'photo-1622483767028-3f66f32aef97' + Q],
-    [/ice tea/i,             U + 'photo-1499638673689-79a0b5115d87' + Q],
-    [/limonade/i,            U + 'photo-1621263764928-df1444c5e859' + Q],
-    [/eau/i,                 U + 'photo-1523362628745-0c100150b504' + Q],
-    [/tacos/i,               U + 'photo-1613514785940-daed07799d9b' + Q],
-    [/kebab/i,               U + 'photo-1633321088355-d0f81134ca3b' + Q],
-    [/frite (cheddar|gruy)/i, U + 'photo-1585109649139-366815a0d713' + Q],
-    [/frite/i,               U + 'photo-1573080496219-bb080dd4f877' + Q],
-    [/nugget|tenders|snack/i, U + 'photo-1562967914-608f82629710' + Q],
-    [/bowl/i,                U + 'photo-1546069901-ba9599a7e63c' + Q],
-    [/box/i,                 U + 'photo-1626082927389-6cd097cdc6ec' + Q]
+    /* `null` = AUCUNE photo, volontairement. La ligne affiche alors
+       l'initiale du plat.
+
+       Le filet o fish n'a pas de photo dans le lot du client, et la
+       regle « double » lui donnait celle d'un burger au boeuf. Sur une
+       carte ou l'on commande, montrer un plat qu'on ne sert pas est
+       pire que ne rien montrer : le client decouvre l'ecart au
+       retrait, et c'est le restaurant qui porte la reclamation. */
+    [/fish|colin/i,                 null],
+
+    // Burgers, du plus specifique au plus general
+    [/triple\s*juli/i,              'plats/le-triple-julienas.webp'],
+    [/triple\s*(cheese|bacon)/i,    'plats/le-triple-cheese-bacon.webp'],
+    [/bazooka/i,                    'plats/le-bazooka.webp'],
+    [/smash/i,                      'plats/smash-burger.webp'],
+    [/saint.?amour/i,               'plats/le-saint-amour.webp'],
+    [/moulin/i,                     'plats/le-moulin-a-vent.webp'],
+    [/chiroubl/i,                   'plats/le-chiroubles.webp'],
+    [/juli[eé]nas/i,                'plats/le-julienas.webp'],
+    [/morgon/i,                     'plats/le-morgon.webp'],
+    [/fleurie/i,                    'plats/le-fleurie.webp'],
+    [/beaujolais/i,                 'plats/le-beaujolais.webp'],
+    [/ch[eé]nas/i,                  'plats/double-cheddar.webp'],
+    [/r[eé]gni[eé]/i,               'plats/le-julienas.webp'],
+    [/double|cheddar/i,             'plats/double-cheddar.webp'],
+
+    // Tacos, paninis, box
+    [/tacos.*boursin|boursin.*tacos/i, 'plats/tacos-boursin.webp'],
+    [/crousty/i,                    'plats/ksm-crousty.webp'],
+    [/boursin/i,                    'plats/le-boursin.webp'],
+    [/tacos|kebab/i,                'plats/tacos.webp'],
+
+    // Accompagnements
+    [/frite.*(gruy|bacon)/i,        'plats/frite-gruyere-bacon.webp'],
+    [/tenders/i,                    'plats/tenders.webp'],
+    [/nugget/i,                     'plats/nuggets.webp'],
+    [/mozza|stick/i,                'plats/mozza-sticks.webp'],
+    [/jalape/i,                     'plats/jalapenos.webp'],
+    [/camembert|bouch[eé]e/i,       'plats/bouchees-camembert.webp'],
+    [/box/i,                        'plats/tenders.webp'],
+
+    // Salades et bowls
+    [/c[eé]sar/i,                   'plats/salade-cesar.webp'],
+    [/salade|bowl/i,                'plats/salade-cesar.webp']
   ];
 
   // Ordre d'apparition des categories. Ce qui fait venir les gens
