@@ -78,7 +78,12 @@
   --sombre:   #141416;   /* les sections qui alternent */
   --carte:    #1b1b1e;   /* listes, cartes, champs */
   --surface:  #232327;   /* le survol */
-  --trait:    #2c2c31;   /* les filets decoratifs : separer deux lignes */
+  /* CORRIGE le 2026-09-08. #2c2c31 tenait 1,36:1 sur le fond :
+     le separateur entre deux plats existait dans le code mais pas
+     a l'oeil, et la liste se lisait comme un bloc. #66666C est la
+     valeur la plus sombre qui tienne 3:1 des deux cotes, le seuil
+     des contours d'element (WCAG 1.4.11). */
+  --trait:    #66666C;   /* les filets : separer deux lignes */
   /* Le contour de ce qui se CLIQUE, et il est volontairement plus
      clair. Un bouton secondaire sur fond sombre ne peut pas compter
      sur son remplissage : #1b1b1e sur #141416 ne fait que 1,3:1, le
@@ -460,7 +465,11 @@ a { color: inherit }
    avant qu'on remplisse un panier pour rien, quand on rouvre. */
 .avis-ferme {
   display: flex; align-items: center; gap: 12px;
-  margin: 0 0 20px; padding: 14px 18px;
+  /* 24 px au-dessus, pas zero. Le bandeau etait colle au titre
+     « Composez votre commande » — mesure du 2026-09-08 : 0 px, puis
+     26, puis 40. Aucun rythme. La section respire desormais par pas
+     de 24 / 28 / 32. */
+  margin: 24px 0 28px; padding: 14px 18px;
   background: var(--carte); border: 1px solid var(--or-sourd);
   border-left: 4px solid var(--or); border-radius: var(--r-carte);
   font-size: 15px; color: var(--encre);
@@ -541,6 +550,33 @@ a { color: inherit }
   font-size: 13px; color: rgba(255,255,255,.5);
 }
 .ft-bas a { color: rgba(255,255,255,.72) }
+
+/* --- Ou est Fleurie ------------------------------------------------ */
+.ou-boite {
+  margin: 22px 0 24px;
+  background: var(--carte); border: 1px solid var(--trait);
+  border-radius: var(--r-carte); padding: 18px 18px 14px;
+}
+.ou-titre {
+  font-size: 12px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--or); font-weight: 700; margin: 0 0 12px;
+}
+.ou-carte { display: block; width: 100%; max-height: 330px; height: auto; margin: 0 auto }
+
+.ou-ville circle  { fill: #e8e8ea }
+.ou-ville text    { fill: #e8e8ea; font-size: 12px; font-weight: 600;
+                    text-anchor: middle; font-family: inherit }
+.ou-village circle{ fill: #66666C }
+.ou-village text  { fill: #9a9aa2; font-size: 10.5px; text-anchor: middle;
+                    font-family: inherit }
+.ou-ici {
+  fill: #fff; font-size: 15px; font-weight: 800; letter-spacing: .08em;
+  text-anchor: middle; font-family: inherit;
+}
+.ou-echelle line { stroke: #9a9aa2; stroke-width: 1.2 }
+.ou-echelle text { fill: #9a9aa2; font-size: 10px; text-anchor: middle;
+                   font-family: inherit }
+.ou-note { font-size: 13px; color: var(--gris); margin: 12px 0 0 }
 
 /* --- La barre panier ---------------------------------------------- */
 .barre {
@@ -680,6 +716,36 @@ a { color: inherit }
   html { scroll-behavior: auto }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important }
 }
+
+/* --- Cibles tactiles -------------------------------------------------
+   Audit du 2026-09-08 sur 375 x 812 : 82 commandes sous les 44 px
+   reglementaires. Les pastilles de categorie tombaient a 38, les
+   boutons + et - a 34.
+
+   Sur un ecran tactile, 34 px c'est la largeur d'un doigt moins la
+   marge d'erreur : on vise a cote, on ajoute un plat qu'on ne voulait
+   pas, et on desinstalle la confiance dans la commande.
+
+   La ZONE cliquable grandit, pas le dessin : le pseudo-element etend
+   la surface sans changer l'apparence de la pastille. */
+@media (pointer: coarse), (max-width: 760px) {
+  .cats button { height: 44px; padding: 0 18px }
+
+  .ligne-pas button { width: 44px; height: 44px; font-size: 22px }
+
+  /* La marque et les liens du pied restent du texte : on ne les
+     grossit pas, on leur donne de l'air autour. */
+  .ft a, .marque { display: inline-block; padding: 6px 0 }
+
+  /* « Commander » de l'entete tombait a 40 px. C'est LE bouton qui
+     convertit : il ne peut pas etre celui qu'on rate. */
+  .barre .pill, .pill-sm { height: 44px }
+
+  /* Les liens telephone et reseaux restent du texte en ligne : la
+     regle de taille de cible ne s'y applique pas (exception « inline »
+     de WCAG 2.2), et les grossir casserait le paragraphe. */
+}
+
 </style>
 </head>
 <body>
@@ -767,6 +833,80 @@ a { color: inherit }
             <a class="pill pill-clair" href="tel:+33950948815">09 50 94 88 15</a>
             <a class="pill pill-clair" href="https://www.instagram.com/le_ksm_burger_/"
                target="_blank" rel="noopener">Instagram</a>
+          </div>
+
+          <!-- ============ OU EST FLEURIE ============
+               Demande de Soso : « Là si tu peux rajouter une carte
+               voir où se localise fleurie ».
+
+               Tracee, pas embarquee. Un iframe Google aurait pose un
+               traceur tiers sur la page d'un commerce francais, donc un
+               bandeau de consentement a gerer, pour plusieurs centaines
+               de kilo-octets. Ici : quelques kilo-octets, aucune
+               requete, aucun cookie — et le bouton « Itineraire »
+               juste au-dessus ouvre la vraie navigation pour qui en a
+               besoin.
+
+               Les positions viennent des coordonnees reelles, projetees
+               en equirectangulaire corrigee du cosinus de la latitude.
+               Distances obtenues depuis Fleurie : Belleville 10 km,
+               Macon 16, Villefranche 23, Lyon 49. Conformes au reel. -->
+          <div class="ou-boite">
+            <p class="ou-titre">Où nous trouver</p>
+            <svg class="ou-carte" viewBox="86 88 178 286" role="img"
+                 aria-labelledby="ou-t ou-d">
+              <title id="ou-t">Fleurie dans le Beaujolais</title>
+              <desc id="ou-d">KSM Burger est à Fleurie, entre Mâcon au nord
+                à 16 km et Villefranche-sur-Saône au sud à 23 km. Lyon est
+                à 49 km.</desc>
+
+              <!-- La Saone, qui structure la vallee -->
+              <path d="M236,96 224,150 214,205 206,258 200,312 202,368"
+                    fill="none" stroke="#3f6f8f" stroke-opacity=".55"
+                    stroke-width="6" stroke-linecap="round"/>
+
+              <!-- Les routes depuis Fleurie -->
+              <g stroke="#66666C" stroke-width="1.4" stroke-dasharray="4 6">
+                <line x1="165.6" y1="193.5" x2="231.9" y2="110"/>
+                <line x1="165.6" y1="193.5" x2="192.2" y2="253.7"/>
+                <line x1="165.6" y1="193.5" x2="175.7" y2="343.7"/>
+                <line x1="165.6" y1="193.5" x2="110"   y2="222.4"/>
+              </g>
+
+              <!-- Les villages voisins, en retrait -->
+              <g class="ou-village">
+                <circle cx="192.9" cy="196.9" r="3"/>
+                <circle cx="143.4" cy="197.8" r="3"/>
+                <circle cx="171.3" cy="162.4" r="3"/>
+                <circle cx="155.4" cy="220.7" r="3"/>
+                <circle cx="110"   cy="222.4" r="3.5"/>
+                <text x="110" y="236">Beaujeu</text>
+              </g>
+
+              <!-- Les reperes -->
+              <g class="ou-ville">
+                <circle cx="231.9" cy="110"   r="4.5"/>
+                <text x="231.9" y="102">Mâcon</text>
+                <circle cx="192.2" cy="253.7" r="4.5"/>
+                <text x="192.2" y="268">Belleville</text>
+                <circle cx="175.7" cy="343.7" r="4.5"/>
+                <text x="175.7" y="358">Villefranche</text>
+              </g>
+
+              <!-- Fleurie -->
+              <circle cx="165.6" cy="193.5" r="15" fill="#d4af37" fill-opacity=".18"/>
+              <circle cx="165.6" cy="193.5" r="7"  fill="#e8c86a"/>
+              <text class="ou-ici" x="165.6" y="180">FLEURIE</text>
+
+              <!-- L'echelle -->
+              <g class="ou-echelle">
+                <line x1="222" y1="360" x2="255.3" y2="360"/>
+                <line x1="222" y1="355" x2="222" y2="365"/>
+                <line x1="255.3" y1="355" x2="255.3" y2="365"/>
+                <text x="238" y="352">5 km</text>
+              </g>
+            </svg>
+            <p class="ou-note">Mâcon à 16 km, Villefranche à 23 km, Lyon à 49 km.</p>
           </div>
           <p class="venir-note">Nous préparons votre commande dès sa réception. Comptez une vingtaine de minutes aux heures creuses, un peu plus le vendredi et le samedi soir. Nous vous appelons si le délai est plus long.</p>
         </div>
