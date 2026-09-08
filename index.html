@@ -500,6 +500,24 @@ a { color: inherit }
   color: var(--gris); margin: 18px 0 8px;
 }
 .sup-famille:first-of-type { margin-top: 4px }
+
+/* L'encadre de la formule menu.
+
+   C'est la seule option qui change la nature de la commande : un
+   plat devient un repas. Un filet dore et un fond legerement
+   releve suffisent a la distinguer des supplements sans en faire
+   une reclame — le reste de la fiche reste sobre, et c'est ce
+   contraste qui la fait remarquer. */
+.menu-bloc {
+  border: 1px solid var(--or-sourd); border-radius: 14px;
+  padding: 14px 14px 16px; background: var(--carte);
+}
+.menu-bloc > h3 { color: var(--or) }
+/* Les bords de la liste tombent : dans un encadre, un cadre dans
+   le cadre alourdit pour rien. */
+.menu-bloc .opts { border: 0; border-radius: 0 }
+.menu-bloc .opt { padding-left: 0; padding-right: 0 }
+.menu-boisson { margin-top: 4px }
 .opts { border: 1px solid var(--trait-fort); border-radius: 12px; overflow: hidden }
 .opt {
   display: flex; align-items: center; gap: 12px;

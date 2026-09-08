@@ -208,6 +208,7 @@
 
   var panier = Object.create(null);   // cle -> { produit, quantite, options }
   var supplements = [];               // produits de la categorie Supplements
+  var tousProduits = [];              // la carte entiere, boissons comprises
   /* Les supplements sont de vrais produits, avec leur prix en base —
      c'est ce qui permet au serveur de les facturer sans une ligne de
      code de plus. Mais on ne les parcourt pas comme des plats : on ne
@@ -256,6 +257,55 @@
   var VIANDE_BURGER = /steak|bacon/i;
 
   function ordreFr(a, b) { return String(a).localeCompare(String(b), 'fr'); }
+
+  /* =================================================================
+     LA FORMULE MENU
+
+     C'est un produit de la categorie « Suppléments », a 3 € (voir
+     `sql/28-ksm-formule-menu.sql`) : c'est ce qui la rend payante,
+     puisque le serveur recalcule le total depuis `produits` et
+     qu'une option inventee dans le navigateur ne coute rien.
+
+     Mais elle ne se PRESENTE pas comme un supplement :
+
+      - a 3 €, la regle de classement par prix la rangerait parmi les
+        VIANDES, coincee entre le bacon et le steak supplementaire ;
+
+      - c'est la seule option qui change la nature de la commande —
+        un plat devient un repas. Elle merite la tete de la fiche, pas
+        la quatrieme ligne d'une liste.
+     ================================================================= */
+  var MENU_SUP = /^formule\s*menu$/i;
+
+  function supplementMenu() {
+    for (var i = 0; i < supplements.length; i++) {
+      if (MENU_SUP.test(String(supplements[i].nom).trim())) return supplements[i];
+    }
+    return null;
+  }
+
+  /* Les boissons qu'on peut prendre DANS la formule.
+
+     Deux filtres, tous deux lus en base plutot qu'ecrits ici :
+     le 33cl, parce que c'est le format d'une canette, et le plafond a
+     2,50 € — sans lui, la limonade artisanale a 3 € partirait dans un
+     menu facture 3 €, et KSM offrirait la boisson.
+
+     Si la liste est vide (aucune boisson 33cl en base), le menu reste
+     proposable : la boisson se choisit alors au retrait, et la fiche
+     le dit. Mieux vaut ca qu'un menu impossible a commander. */
+  function boissonsDuMenu() {
+    return tousProduits
+      .filter(function (x) {
+        return String(x.categorie || '').trim() === 'Boissons'
+          && x.disponible !== false
+          && /33\s*cl/i.test(x.nom)
+          && Number(x.prix) <= 2.5;
+      })
+      .map(function (x) { return x.nom; })
+      .sort(ordreFr);
+  }
+
 
   /* Les sauces OFFERTES (0 €). Elles ne sont pas des supplements : les
      cocher ajoutait au panier une ligne a 0,00 € par sauce, et rien
@@ -467,6 +517,7 @@
   }
 
   function afficher(produits) {
+    tousProduits = produits;
     supplements = produits
       .filter(function (p) { return (p.categorie || '').trim() === CAT_SUP && p.disponible !== false; })
       .sort(function (x, y) { return Number(y.prix) - Number(x.prix); });   // la viande d'abord
@@ -657,7 +708,16 @@
   var ficheEtat = null;
 
   function ouvrirFiche(p) {
-    ficheEtat = { produit: p, quantite: 1, choisi: Object.create(null), sup: Object.create(null) };
+    /* `sup` et `menuBoisson` naissent ici, et NULLE PART ailleurs.
+       L'encadre menu et le bloc des supplements ecrivent tous les
+       deux dans `sup` ; si l'un des deux le recreait en s'affichant,
+       il effacerait ce que l'autre vient d'y mettre. */
+    ficheEtat = {
+      produit: p, quantite: 1,
+      choisi: Object.create(null),
+      sup: Object.create(null),
+      menuBoisson: null
+    };
 
     var boite = $('#fiche-boite');
     boite.innerHTML = '';
@@ -691,6 +751,7 @@
     var groupes = groupesOptions(p);
     groupes.forEach(function (grp, i) { boite.appendChild(blocOption(grp, i)); });
 
+    if (accepteMenu(p)) boite.appendChild(blocMenu(p));
     if (accepteSupplements(p)) boite.appendChild(blocSupplements(p));
 
     boite.appendChild(pied(groupes));
@@ -730,6 +791,8 @@
 
     var retenus = supplements.filter(function (sup) {
       if (Number(sup.prix) <= 0) return false;
+      // La formule menu a son propre encadre, en tete de fiche.
+      if (MENU_SUP.test(String(sup.nom).trim())) return false;
       if (burger && familleSup(sup) === 'viande' && !VIANDE_BURGER.test(sup.nom)) return false;
       return true;
     });
@@ -744,12 +807,81 @@
     }).filter(function (f) { return f.items.length > 0; });
   }
 
+  /* La formule menu s'applique a ce qui se mange en repas : un
+     burger, un sandwich, un tacos. Pas a une part de frites, pas a
+     un dessert, pas a une canette — un menu sur une canette n'est
+     pas une offre, c'est une faute de saisie. */
+  function accepteMenu(p) {
+    if (!supplementMenu()) return false;
+    var cat = (p.categorie || '').toLowerCase();
+    return /burger|sandwich|tacos/.test(cat);
+  }
+
+  function blocMenu(p) {
+    var menu = supplementMenu();
+    var bloc = creer('div', 'groupe-opt menu-bloc');
+    bloc.appendChild(creer('h3', null, 'En menu'));
+    bloc.appendChild(creer('p', 'aide', menu.description || 'Frites et une boisson.'));
+
+
+    var opts = creer('div', 'opts');
+    var label = creer('label', 'opt');
+    var input = document.createElement('input');
+    input.type = 'checkbox';
+    input.value = menu.id;
+    label.appendChild(input);
+    label.appendChild(creer('span', null, 'Ajouter frites et boisson'));
+    label.appendChild(creer('span', 'opt-prix', '+ ' + euros(menu.prix)));
+    opts.appendChild(label);
+    bloc.appendChild(opts);
+
+    /* Le choix de la boisson n'apparait qu'une fois le menu coche.
+       L'afficher d'emblee poserait une question a laquelle la
+       plupart des clients n'ont pas a repondre. */
+    var boissons = boissonsDuMenu();
+    var choixBoisson = null;
+    if (boissons.length) {
+      choixBoisson = creer('div', 'menu-boisson');
+      choixBoisson.hidden = true;
+      choixBoisson.appendChild(creer('h4', 'sup-famille', 'Votre boisson'));
+      var lb = creer('div', 'opts');
+      boissons.forEach(function (nom, i) {
+        var l = creer('label', 'opt');
+        var r = document.createElement('input');
+        r.type = 'radio';
+        r.name = 'menu-boisson';
+        r.value = nom;
+        if (i === 0) { r.checked = true; ficheEtat.menuBoisson = nom; }
+        r.addEventListener('change', function () {
+          if (r.checked) ficheEtat.menuBoisson = nom;
+        });
+        l.appendChild(r);
+        l.appendChild(creer('span', null, nom));
+        lb.appendChild(l);
+      });
+      choixBoisson.appendChild(lb);
+      bloc.appendChild(choixBoisson);
+    } else {
+      /* Aucune boisson 33cl en base : on ne bloque pas la commande,
+         on dit ou le choix se fera. */
+      bloc.appendChild(creer('p', 'aide', 'Boisson à choisir au retrait.'));
+    }
+
+    input.addEventListener('change', function () {
+      if (input.checked) ficheEtat.sup[menu.id] = menu;
+      else delete ficheEtat.sup[menu.id];
+      if (choixBoisson) choixBoisson.hidden = !input.checked;
+      majPied();
+    });
+
+    return bloc;
+  }
+
   function blocSupplements(p) {
     var bloc = creer('div', 'groupe-opt');
     bloc.appendChild(creer('h3', null, 'Suppléments'));
     bloc.appendChild(creer('p', 'aide', 'Facultatif, ajouté au prix.'));
 
-    ficheEtat.sup = Object.create(null);
 
     supplementsPour(p).forEach(function (fam) {
       /* Un intitule par famille. Sans lui, la fiche listait trente
@@ -926,7 +1058,14 @@
        Le nom du plat suit pour la cuisine : « Cheddar (Le Fleurie) »
        dit sur quoi le poser. */
     Object.keys(sup).forEach(function (id) {
-      ajouter(sup[id], qte, [plat.nom]);
+      var notes = [plat.nom];
+      /* La boisson choisie voyage sur la ligne du menu : sans elle,
+         la cuisine lit « Formule menu (Le Fleurie) » et doit
+         rappeler le client pour savoir quoi mettre dans le sac. */
+      if (MENU_SUP.test(String(sup[id].nom).trim()) && ficheEtat.menuBoisson) {
+        notes.push(ficheEtat.menuBoisson);
+      }
+      ajouter(sup[id], qte, notes);
     });
 
     fermerFiche();
