@@ -132,13 +132,13 @@ a { color: inherit }
 
 /* Uppercase reserve aux surtitres, jamais aux titres.
 
-   La couleur n'est ni --mute ni le var(--gris) d'origine : tous deux tombent
-   sous 3,5:1 sur le fond noir, sous le seuil du texte courant.
-   --gris mesure 6,7:1. --mute reste reserve aux traits et aux
-   bordures, ou le contraste ne se pose pas. */
+   La couleur n'est ni --mute ni le #666 d'origine : tous deux
+   tombent sous 3,5:1 sur le fond noir, sous le seuil du texte
+   courant. --gris mesure 6,7:1. --mute reste reserve aux traits
+   et aux bordures, ou le contraste ne se pose pas. */
 .eyebrow {
   font-size: 12px; font-weight: 600; text-transform: uppercase;
-  letter-spacing: .09em; color: var(--gris)666;
+  letter-spacing: .09em; color: var(--gris);
 }
 /* Sur le noir du hero, c'est l'inverse : il faut eclaircir. */
 .hero .eyebrow { color: rgba(255,255,255,.62) }
@@ -490,6 +490,16 @@ a { color: inherit }
 .groupe-opt { margin-top: 26px }
 .groupe-opt > h3 { font-size: 17px }
 .groupe-opt .aide { font-size: 13px; color: var(--gris); margin-bottom: 10px }
+/* L'intitule d'une famille de supplements (viandes, fromages,
+   garnitures, sauces). Plus discret que le titre du groupe qui le
+   surplombe : c'est un intercalaire dans une liste, pas une
+   nouvelle section. */
+.sup-famille {
+  font-family: var(--texte); font-size: 12px; font-weight: 700;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: var(--gris); margin: 18px 0 8px;
+}
+.sup-famille:first-of-type { margin-top: 4px }
 .opts { border: 1px solid var(--trait-fort); border-radius: 12px; overflow: hidden }
 .opt {
   display: flex; align-items: center; gap: 12px;

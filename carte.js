@@ -26,24 +26,22 @@
   }
 
   // =================================================================
-  //  A RELIRE AVEC KSM — les listes ci-dessous sont les seules choses
-  //  de ce fichier qui ne viennent pas de la base.
+  //  FILET DE SECOURS UNIQUEMENT.
   //
-  //  Les viandes et les sauces d'un tacos ne sont ecrites nulle part
-  //  dans Supabase : la description dit « viande au choix, sauce »
-  //  sans dire lesquelles. Ce sont donc les parfums habituels d'un
-  //  tacos francais, a confirmer avant la mise en ligne — un client
-  //  qui commande un cordon bleu que KSM ne fait pas, c'est un appel
-  //  et une commande a refaire.
+  //  Ces deux listes etaient devinees — les parfums habituels d'un
+  //  tacos francais — et elles etaient FAUSSES : elles proposaient un
+  //  kefta et un poulet pane que KSM ne fait pas, et oubliaient le
+  //  kebab et la viande hachee qu'il fait. Un client qui commande un
+  //  kefta, c'est un appel et une commande a refaire.
+  //
+  //  Les vraies listes sont desormais lues dans la categorie
+  //  « Suppléments » de la base (voir `viandesAuChoix` et
+  //  `saucesOffertes`), ou Soso les a saisies. On ne retombe ici que
+  //  si cette categorie est vide, pour qu'une fiche de tacos ne
+  //  s'ouvre jamais sans aucun choix.
   // =================================================================
-  var VIANDES = [
-    'Poulet pané', 'Cordon bleu', 'Kefta', 'Merguez',
-    'Steak haché', 'Escalope', 'Nuggets', 'Tenders'
-  ];
-  var SAUCES = [
-    'Algérienne', 'Blanche', 'Samouraï', 'Biggy', 'Barbecue',
-    'Andalouse', 'Curry', 'Harissa', 'Ketchup', 'Mayonnaise'
-  ];
+  var VIANDES = ['Steak haché', 'Escalope', 'Nuggets', 'Tenders'];
+  var SAUCES  = ['Algérienne', 'Blanche', 'Samouraï', 'Barbecue', 'Ketchup'];
 
   /* =================================================================
      LES PHOTOS DE LA CARTE
@@ -216,6 +214,72 @@
      commande pas un cheddar tout seul, il ne se choisit que dans la
      fiche d'un burger ou d'un tacos. */
   var CAT_SUP = 'Suppléments';
+
+  /* =================================================================
+     LES FAMILLES DE SUPPLEMENTS
+
+     La fiche affichait les trente supplements en une seule liste a
+     plat, dans l'ordre du prix : on y trouvait un kebab entre deux
+     fromages, et douze sauces a « + 0,00 € » qui ne disaient rien.
+
+     Le PRIX est le signal fiable pour les ranger, parce que c'est lui
+     que Soso a saisi avec intention : 3 € une viande, 1 € un fromage
+     ou une garniture, 0 € une sauce offerte. Le nom ne sert qu'a
+     couper le palier a 1 € en deux. Un supplement que Kassim ajoutera
+     plus tard depuis son espace tombe donc tout seul dans la bonne
+     famille, sans que personne touche a ce fichier.
+     ================================================================= */
+  var FROMAGES = /^(cheddar|raclette|boursin|kiri|ch[eè]vre|mozzarella|emmental|comt[eé]|bleu)/i;
+
+  function familleSup(sup) {
+    var prix = Number(sup.prix);
+    if (prix >= 3) return 'viande';
+    if (prix >= 1) return FROMAGES.test(sup.nom) ? 'fromage' : 'garniture';
+    return 'sauce';                       // 0 € offerte, 0,50 € la sauce en plus
+  }
+
+  var FAMILLES = [
+    { cle: 'viande',    titre: 'Une viande en plus' },
+    { cle: 'fromage',   titre: 'Un fromage en plus' },
+    { cle: 'garniture', titre: 'Une garniture en plus' },
+    { cle: 'sauce',     titre: 'Une sauce en plus' }
+  ];
+
+  /* Ce qui se met HABITUELLEMENT dans un burger.
+
+     Le kebab, la merguez, le cordon bleu, l'escalope, les nuggets, les
+     tenders et la viande hachee sont les viandes du TACOS — c'est la
+     liste que Soso a donnee pour le choix de garniture d'un tacos. Les
+     proposer sur un burger, c'est offrir sept plats que personne ne
+     commande, et noyer au milieu les deux seules lignes qui comptent :
+     un steak de plus, et du bacon. */
+  var VIANDE_BURGER = /steak|bacon/i;
+
+  function ordreFr(a, b) { return String(a).localeCompare(String(b), 'fr'); }
+
+  /* Les sauces OFFERTES (0 €). Elles ne sont pas des supplements : les
+     cocher ajoutait au panier une ligne a 0,00 € par sauce, et rien
+     n'empechait d'en prendre huit. C'est un CHOIX, et un choix se fait
+     une fois. */
+  function saucesOffertes() {
+    var l = supplements
+      .filter(function (x) { return Number(x.prix) === 0; })
+      .map(function (x) { return x.nom; })
+      .sort(ordreFr);
+    return l.length ? l : SAUCES;
+  }
+
+  /* Les viandes au choix d'un tacos ou d'un bowl : celles a 3 € en
+     base, moins le « steak supplementaire » qui n'est pas une
+     garniture au choix mais un ajout payant. */
+  function viandesAuChoix() {
+    var l = supplements
+      .filter(function (x) { return Number(x.prix) >= 3 && !/suppl[eé]mentaire/i.test(x.nom); })
+      .map(function (x) { return x.nom; })
+      .sort(ordreFr);
+    return l.length ? l : VIANDES;
+  }
+
   var neAvant = Date.now();           // sert au filtre anti-robot
 
   var $ = function (s) { return document.querySelector(s); };
@@ -261,6 +325,10 @@
         if (SOCLE.test(x)) return false;
         // « frite ou salade » est un choix, pas un ingredient a retirer.
         if (/\bou\b/i.test(x)) return false;
+        /* « sauce » a son propre groupe de choix juste au-dessus.
+           L'offrir aussi en « retirer » ferait deux lignes qui se
+           contredisent dans la meme fiche. */
+        if (/^sauces?$/i.test(x)) return false;
         return true;
       })
       .map(function (x) { return x.charAt(0).toUpperCase() + x.slice(1); });
@@ -282,11 +350,11 @@
         type: double ? 'multi' : 'unique',
         max: double ? 2 : 1,
         requis: true,
-        choix: VIANDES
+        choix: viandesAuChoix()
       });
       groupes.push({
-        titre: 'Votre sauce', aide: 'Une seule.',
-        type: 'unique', max: 1, requis: true, choix: SAUCES
+        titre: 'Votre sauce', aide: 'Une seule, offerte.',
+        type: 'unique', max: 1, requis: true, choix: saucesOffertes()
       });
     }
 
@@ -297,7 +365,7 @@
       });
       groupes.push({
         titre: 'Votre viande', aide: 'Choisissez-en une.',
-        type: 'unique', max: 1, requis: true, choix: VIANDES
+        type: 'unique', max: 1, requis: true, choix: viandesAuChoix()
       });
       groupes.push({
         titre: 'Votre sauce', aide: 'Une seule.',
@@ -310,6 +378,20 @@
         titre: 'Le plat', aide: 'Au choix.',
         type: 'unique', max: 1, requis: true,
         choix: ['4 nuggets', 'Mini burger']
+      });
+    }
+
+    /* Le burger et le sandwich arrivent avec une sauce (leur
+       description finit par « sauce ») sans que le client sache
+       laquelle. Les douze sauces de la base etaient jusqu'ici des
+       cases a cocher a « + 0,00 € » au milieu des supplements
+       PAYANTS : on pouvait en prendre huit, et chacune ajoutait au
+       panier sa propre ligne a 0,00 €. Une sauce se choisit, elle
+       ne s'empile pas. */
+    if (/burger|sandwich/.test(cat)) {
+      groupes.push({
+        titre: 'Votre sauce', aide: 'Une seule, offerte.',
+        type: 'unique', max: 1, requis: false, choix: saucesOffertes()
       });
     }
 
@@ -609,7 +691,7 @@
     var groupes = groupesOptions(p);
     groupes.forEach(function (grp, i) { boite.appendChild(blocOption(grp, i)); });
 
-    if (accepteSupplements(p)) boite.appendChild(blocSupplements());
+    if (accepteSupplements(p)) boite.appendChild(blocSupplements(p));
 
     boite.appendChild(pied(groupes));
     elFiche.setAttribute('data-ouvert', '1');
@@ -623,36 +705,79 @@
   function accepteSupplements(p) {
     if (!supplements.length) return false;
     var cat = (p.categorie || '').toLowerCase();
-    return cat.indexOf('burger') !== -1 || cat.indexOf('tacos') !== -1;
+    if (cat.indexOf('burger') === -1 && cat.indexOf('tacos') === -1) return false;
+    // Une fois les filtres passes, il peut ne rien rester : pas de titre
+    // « Suppléments » au-dessus du vide.
+    return supplementsPour(p).length > 0;
   }
 
-  function blocSupplements() {
+  /* Les supplements PAYANTS que ce plat accepte, ranges par famille.
+
+     Deux filtres, et chacun repond a un vrai probleme vu sur la fiche :
+
+      - les sauces OFFERTES sortent d'ici. Elles ont leur groupe de
+        choix plus haut ; les laisser en cases a cocher affichait
+        douze lignes a « + 0,00 € » au milieu des ajouts payants, et
+        chaque case cochee ajoutait au panier une ligne a 0,00 €.
+
+      - sur un BURGER, seules les viandes qu'on met habituellement
+        dans un burger restent : un steak de plus, du bacon. Le kebab,
+        la merguez, le cordon bleu, l'escalope, les nuggets, les
+        tenders et la viande hachee sont les garnitures du TACOS. */
+  function supplementsPour(p) {
+    var cat = (p.categorie || '').toLowerCase();
+    var burger = cat.indexOf('burger') !== -1 || cat.indexOf('sandwich') !== -1;
+
+    var retenus = supplements.filter(function (sup) {
+      if (Number(sup.prix) <= 0) return false;
+      if (burger && familleSup(sup) === 'viande' && !VIANDE_BURGER.test(sup.nom)) return false;
+      return true;
+    });
+
+    return FAMILLES.map(function (f) {
+      return {
+        titre: f.titre,
+        items: retenus
+          .filter(function (sup) { return familleSup(sup) === f.cle; })
+          .sort(function (a, b) { return ordreFr(a.nom, b.nom); })
+      };
+    }).filter(function (f) { return f.items.length > 0; });
+  }
+
+  function blocSupplements(p) {
     var bloc = creer('div', 'groupe-opt');
     bloc.appendChild(creer('h3', null, 'Suppléments'));
     bloc.appendChild(creer('p', 'aide', 'Facultatif, ajouté au prix.'));
 
-    var opts = creer('div', 'opts');
     ficheEtat.sup = Object.create(null);
 
-    supplements.forEach(function (sup) {
-      var label = creer('label', 'opt');
-      var input = document.createElement('input');
-      input.type = 'checkbox';
-      input.value = sup.id;
-      input.addEventListener('change', function () {
-        if (input.checked) ficheEtat.sup[sup.id] = sup;
-        else delete ficheEtat.sup[sup.id];
-        majPied();
+    supplementsPour(p).forEach(function (fam) {
+      /* Un intitule par famille. Sans lui, la fiche listait trente
+         lignes d'affilee ou un kebab tombait entre deux fromages :
+         personne ne lit une liste pareille jusqu'au bout. */
+      bloc.appendChild(creer('h4', 'sup-famille', fam.titre));
+
+      var opts = creer('div', 'opts');
+      fam.items.forEach(function (sup) {
+        var label = creer('label', 'opt');
+        var input = document.createElement('input');
+        input.type = 'checkbox';
+        input.value = sup.id;
+        input.addEventListener('change', function () {
+          if (input.checked) ficheEtat.sup[sup.id] = sup;
+          else delete ficheEtat.sup[sup.id];
+          majPied();
+        });
+        label.appendChild(input);
+        label.appendChild(creer('span', null, sup.nom));
+        // Le prix a droite, aligne : on compare d'un coup d'oeil ce que
+        // coute chaque ajout sans lire ligne a ligne.
+        label.appendChild(creer('span', 'opt-prix', '+ ' + euros(sup.prix)));
+        opts.appendChild(label);
       });
-      label.appendChild(input);
-      label.appendChild(creer('span', null, sup.nom));
-      // Le prix a droite, aligne : on compare d'un coup d'oeil ce que
-      // coute chaque ajout sans lire ligne a ligne.
-      label.appendChild(creer('span', 'opt-prix', '+ ' + euros(sup.prix)));
-      opts.appendChild(label);
+      bloc.appendChild(opts);
     });
 
-    bloc.appendChild(opts);
     return bloc;
   }
 
