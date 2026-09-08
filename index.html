@@ -517,8 +517,42 @@ a { color: inherit }
 .carte-vide, .carte-erreur { padding: 28px 0; color: var(--gris) }
 
 /* --- Venir la chercher -------------------------------------------- */
-.venir { padding: 64px 0 }
+/* ====================================================================
+   LE RETRAIT  —  refonte du 2026-09-08
+
+   La section empilait trois blocs sans hierarchie : une adresse en
+   texte courant, trois pastilles de la meme taille, un tableau
+   d'horaires a bords vifs. Rien ne disait ce qu'il fallait regarder
+   en premier, et l'ensemble se lisait comme un pied de page.
+
+   Le principe retenu : UN SEUL PANNEAU, pose sur le fond, avec une
+   hierarchie franche. L'adresse est le sujet et prend la taille d'un
+   titre. L'itineraire est l'action principale et il est seul en dore
+   — deux boutons dores cote a cote, c'est deux fois aucun. Le
+   telephone et l'Instagram passent en second rang.
+   ==================================================================== */
+.venir { padding: 84px 0 }
 .venir h2 { font-size: clamp(28px, 5vw, 40px); line-height: 1.12; margin-top: 8px }
+
+.venir-panneau {
+  margin-top: 38px;
+  background: linear-gradient(160deg, var(--carte) 0%, var(--sombre) 100%);
+  border: 1px solid var(--trait);
+  border-radius: 22px;
+  padding: clamp(24px, 4vw, 44px);
+  /* Une ombre portee large et douce : c'est elle qui detache le
+     panneau du fond et donne la profondeur qui manquait. */
+  box-shadow: 0 24px 60px rgba(0,0,0,.45);
+}
+
+/* Un filet dore court en haut du panneau, sur un tiers de la largeur.
+   Un rappel de la couleur de marque qui ne coute pas un aplat. */
+.venir-panneau { position: relative; overflow: hidden }
+.venir-panneau::before {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 34%; height: 3px;
+  background: linear-gradient(to right, var(--or), transparent);
+}
 .venir-grid { display: grid; gap: 40px; grid-template-columns: 1fr; margin-top: 34px }
 /* `align-items: start` : sans lui, les deux colonnes s'etirent sur la
    plus haute. Depuis que la carte de Fleurie occupe la colonne de
@@ -527,9 +561,21 @@ a { color: inherit }
 @media (min-width: 860px) {
   .venir-grid { grid-template-columns: 1.05fr .95fr; gap: 56px; align-items: start }
 }
-.adresse { font-size: 19px; font-weight: 500; line-height: 1.5 }
-.venir-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px }
-.venir-note { margin-top: 26px; font-size: 14px; color: var(--gris); max-width: 42ch }
+/* L'adresse est le sujet de la section : elle prend la taille d'un
+   titre, pas celle d'un paragraphe. La ville en dore, parce que c'est
+   l'information qu'on cherche quand on ne connait pas le lieu. */
+.adresse {
+  font-family: var(--disp); font-weight: 700;
+  font-size: clamp(22px, 3vw, 30px); line-height: 1.28;
+  letter-spacing: -.01em;
+}
+.adresse .ville { color: var(--or) }
+
+.venir-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px }
+.venir-note {
+  margin-top: 26px; font-size: 14px; color: var(--gris); max-width: 42ch;
+  padding-top: 20px; border-top: 1px solid var(--trait);
+}
 
 .horaires { border: 1px solid var(--trait); border-radius: var(--r-carte); overflow: hidden }
 .hrow { display: flex; justify-content: space-between; gap: 16px; padding: 13px 18px; border-top: 1px solid var(--trait); font-size: 15px }
@@ -723,6 +769,90 @@ a { color: inherit }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important }
 }
 
+/* ====================================================================
+   LA CARTE EN CARTES  (2026-09-08)
+
+   La liste etait en LIGNES : texte a gauche, vignette de 96 px a
+   droite. C'est le motif de l'application Uber Eats. Sur le web, leur
+   menu passe en CARTES — photo en grand au-dessus, texte dessous — et
+   c'est ce qui est demande ici.
+
+   Tout se fait en CSS, sans toucher a `ligne()` dans carte.js : la
+   structure DOM ne bouge pas, donc le panier, la fiche de
+   personnalisation et le pas-a-pas de quantite continuent de
+   fonctionner a l'identique. Reecrire le rendu pour changer une mise
+   en page, c'est risquer une regression sur la prise de commande pour
+   un gain visuel.
+   ==================================================================== */
+
+/* La liste devient une grille. Elle perd son fond et son cadre : ce
+   sont les cartes qui portent desormais la matiere. */
+.liste {
+  background: none; border: 0; border-radius: 0; overflow: visible;
+  display: grid; gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.ligne {
+  border-top: 0;
+  background: var(--carte);
+  border: 1px solid var(--trait);
+  border-radius: var(--r-carte);
+  overflow: hidden;
+  transition: border-color .18s ease, transform .18s ease;
+}
+.ligne:hover { border-color: var(--or-sourd); transform: translateY(-2px) }
+.liste .ligne:first-child { border-top: 0 }
+
+/* Le corps passe en colonne : la photo au-dessus, le texte dessous. */
+.ligne-corps {
+  display: flex; flex-direction: column; align-items: stretch;
+  gap: 0; padding: 0; height: 100%;
+}
+.ligne-corps:hover { background: var(--carte) }
+
+/* La photo occupe toute la largeur, en CARRE.
+   Le 4:3 d'Uber Eats etait le premier choix, mais les visuels du
+   restaurant sont tous en 640 x 640 : un cadre 4:3 aurait rogne un
+   quart de chaque photo pour rien. Le carre les montre entieres.
+   `order: -1` la fait passer devant le texte sans toucher au HTML. */
+.ligne-media {
+  order: -1; width: 100%; height: auto; aspect-ratio: 1 / 1;
+  flex: none;
+}
+.ligne-photo, .ligne-vide { border-radius: 0 }
+.ligne-vide { border: 0; border-bottom: 1px solid var(--trait) }
+
+/* La reserve a droite laisse passer le pas-a-pas sans que le prix
+   coure dessous. */
+.ligne-txt { flex: 1; padding: 13px 14px 15px; display: flex; flex-direction: column }
+.ligne-nom { font-size: 15px }
+/* Deux lignes RESERVEES, remplies ou non : sans hauteur minimale, une
+   carte sans description remonte son prix et la grille se desaligne
+   d'une carte a l'autre. */
+.ligne-desc { -webkit-line-clamp: 2; font-size: 13.5px; min-height: 2.7em }
+/* Le prix descend au bas de la carte : sur une grille, des prix
+   alignes se comparent d'un coup d'oeil, alors qu'un prix qui suit
+   une description de longueur variable danse d'une carte a l'autre. */
+.ligne-prix { margin-top: auto; padding-top: 9px; font-size: 17px }
+.ligne-perso { margin-top: 5px }
+
+/* Le pas-a-pas se pose au BAS DE LA CARTE, pas sur la photo.
+   Premiere version calee en pourcentage sur une photo en 4:3 : passee
+   au carre, elle atterrissait au milieu du texte. Une position depuis
+   le bas ne depend d'aucune hypothese sur la hauteur de l'image. */
+.ligne-pas { right: 10px; bottom: 10px; top: auto }
+.ligne-prix { padding-right: 86px }
+
+.epuise { top: 10px; left: 10px; right: auto }
+
+/* Une carte a besoin de plus de place qu'une ligne : sous 380 px on
+   repasse a une colonne pleine largeur plutot que deux cartes
+   illisibles cote a cote. */
+@media (max-width: 380px) {
+  .liste { grid-template-columns: 1fr }
+}
+
 /* --- Cibles tactiles -------------------------------------------------
    Audit du 2026-09-08 sur 375 x 812 : 82 commandes sous les 44 px
    reglementaires. Les pastilles de categorie tombaient a 38, les
@@ -831,13 +961,17 @@ a { color: inherit }
       <p class="eyebrow">Le retrait</p>
       <h2>Venir la chercher</h2>
 
+      <div class="venir-panneau">
       <div class="venir-grid">
         <div>
-          <p class="adresse">KSM Burger<br>10 rue du Beaujolais<br>69820 Fleurie</p>
+          <p class="adresse">10 rue du Beaujolais<br><span class="ville">69820 Fleurie</span></p>
+          <!-- UN SEUL bouton dore : l'itineraire. C'est l'action que
+               vient chercher quelqu'un qui lit cette section. Deux
+               boutons dores cote a cote, c'est deux fois aucun. -->
           <div class="venir-cta">
-            <a class="pill pill-noir" href="https://www.google.com/maps/dir/?api=1&destination=10+rue+du+Beaujolais+69820+Fleurie" target="_blank" rel="noopener">Itinéraire</a>
-            <a class="pill pill-clair" href="tel:+33950948815">09 50 94 88 15</a>
-            <a class="pill pill-clair" href="https://www.instagram.com/le_ksm_burger_/"
+            <a class="pill pill-vin" href="https://www.google.com/maps/dir/?api=1&destination=10+rue+du+Beaujolais+69820+Fleurie" target="_blank" rel="noopener">Ouvrir l'itinéraire</a>
+            <a class="pill pill-ligne" href="tel:+33950948815">09 50 94 88 15</a>
+            <a class="pill pill-ligne" href="https://www.instagram.com/le_ksm_burger_/"
                target="_blank" rel="noopener">Instagram</a>
           </div>
 
@@ -926,6 +1060,7 @@ a { color: inherit }
           <div class="hrow" data-jour="6"><span>Samedi</span><span data-editable-zone="horaires_samedi">12h–14h · 18h30–22h</span></div>
           <div class="hrow" data-jour="0"><span>Dimanche</span><span data-editable-zone="horaires_dimanche">12h–14h · 18h30–21h30</span></div>
         </div>
+      </div>
       </div>
     </div>
   </section>
