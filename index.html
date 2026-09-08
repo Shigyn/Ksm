@@ -207,6 +207,32 @@ a { color: inherit }
 .hero-clip, .hero-fixe {
   position: absolute; inset: 0;
   width: 100%; height: 100%; object-fit: cover;
+  /* Le sujet est dans le tiers superieur du cadre : sans ce reglage,
+     le rognage de `cover` coupe le burger et laisse le plan de travail.
+     Mesure du 2026-09-08 : hero au rapport 2,73 pour une video en
+     1,74, soit 36 % de l'image perdue en hauteur. */
+  object-position: center 38%;
+}
+
+/* Le hero suit la hauteur de l'ecran au lieu d'un minimum fixe.
+   A 580 px sur un ecran large, le rapport montait a 2,73 : la video
+   etait agrandie 1,31 fois, d'ou le flou sur les cotes. En suivant la
+   fenetre, le rapport redescend vers 2,1 et l'agrandissement vers 1,1
+   — la difference se voit a l'oeil nu sur les bords. */
+@media (min-width: 900px) {
+  .hero { min-height: min(84vh, 860px) }
+}
+
+/* Les bords, assombris.
+   Meme mieux cadree, une video 16:9 dans un cadre plus large perd ses
+   cotes. Plutot que de laisser deviner du flou etire, on les eteint :
+   le regard va au centre, et le bord devient une intention. */
+.hero-fond::after {
+  content: ''; position: absolute; inset: 0; z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(to right, rgba(9,9,9,.85) 0, transparent 22%),
+    linear-gradient(to left,  rgba(9,9,9,.85) 0, transparent 22%);
 }
 .hero-clip { opacity: 0; transition: opacity .8s ease }
 .hero-clip[data-on] { opacity: 1 }
