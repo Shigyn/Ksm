@@ -45,37 +45,54 @@
     'Andalouse', 'Curry', 'Harissa', 'Ketchup', 'Mayonnaise'
   ];
 
-  // Photos de remplacement, en attendant celles de KSM. Choisies par
-  // mot-cle du nom du plat : une photo generique n'est honnete que
-  // pour un produit generique (un Coca est un Coca). Pour les burgers
-  // nommes d'apres les crus, aucune photo de banque ne montre le vrai
-  // plat — ils restent sur la tuile sobre tant que Kassim n'a pas
-  // renseigne `image_url` depuis son espace.
+  /* =================================================================
+     LES PHOTOS DE LA CARTE
+
+     Deux origines, dans cet ordre de preference :
+
+      1. les VRAIES photos du restaurant, fournies par Soso le
+         2026-09-07 et normalisees en 640 x 640 par
+         `plats/fabriquer.sh` ;
+      2. a defaut, une photo Unsplash qui montre LE MEME PLAT.
+
+     La regle qui tranche : une photo de banque ne rentre que si elle
+     montre le meme plat. Un Coca est un Coca, des donuts sont des
+     donuts — la montrer n'induit personne en erreur. Mais mettre un
+     burger au boeuf sur un filet de colin, c'est promettre au
+     comptoir un plat qu'on ne sert pas, et c'est le restaurant qui
+     porte la reclamation.
+
+     Quand rien d'honnete n'existe, `null` : la carte affiche
+     l'initiale du plat, et le plat part sur `PHOTOS-A-DEMANDER.md`
+     pour la prochaine seance photo de KSM.
+
+     L'ORDRE COMPTE : la premiere expression qui accroche gagne. D'ou
+     le classement du plus specifique au plus general, et surtout les
+     FRITES AVANT LES BURGERS — « Frites cheddar » tombait sinon sur
+     /double|cheddar/ et s'affichait avec la photo d'un double
+     cheddar. Constate le 2026-09-08 sur trois lignes de la categorie
+     Frites.
+     ================================================================= */
   var U = 'https://images.unsplash.com/';
-  var Q = '?w=320&h=320&fit=crop&q=75';
-  /* Les VRAIES photos du restaurant, fournies par Soso le 2026-09-07
-     et normalisees en 640 x 640 par `plats/fabriquer.sh`.
+  var Q = '?w=640&h=640&fit=crop&q=75';   // meme format que les photos maison
 
-     Elles remplacent des images Unsplash qui montraient la nourriture
-     d'autres restaurants — ce qui, sur une carte ou l'on commande,
-     revient a promettre un plat qu'on ne sert pas.
-
-     L'ORDRE COMPTE : la premiere expression qui accroche gagne. Les
-     noms composes passent donc avant les mots seuls — « tacos boursin »
-     avant « boursin » et avant « tacos », « triple julienas » avant
-     « julienas ». */
   var PHOTOS = [
-    /* `null` = AUCUNE photo, volontairement. La ligne affiche alors
-       l'initiale du plat.
-
-       Le filet o fish n'a pas de photo dans le lot du client, et la
-       regle « double » lui donnait celle d'un burger au boeuf. Sur une
-       carte ou l'on commande, montrer un plat qu'on ne sert pas est
-       pire que ne rien montrer : le client decouvre l'ecart au
-       retrait, et c'est le restaurant qui porte la reclamation. */
+    /* --- Ce qu'on ne montre PAS, volontairement ------------------
+       Le filet o fish n'existe dans aucune photo du client, et aucune
+       banque d'images ne propose un burger au poisson credible. Le
+       laisser vide vaut mieux que de montrer un burger au boeuf. */
     [/fish|colin/i,                 null],
 
-    // Burgers, du plus specifique au plus general
+    /* --- Frites : AVANT les burgers, voir l'entete --------------- */
+    [/frites?.*(gruy|bacon).*(bacon|gruy)/i, 'plats/frite-gruyere-bacon.webp'],
+    [/frites?.*gruy/i,              U + 'photo-1576107232684-1279f390859f' + Q],
+    [/frites?.*bacon/i,             U + 'photo-1598679253544-2c97992403ea' + Q],
+    [/frites?.*cheddar/i,           U + 'photo-1573080496219-bb080dd4f877' + Q],
+    [/frites?.*jalape/i,            U + 'photo-1541592106381-b31e9677c0e5' + Q],
+    [/frites?.*oignons/i,           U + 'photo-1585109649139-366815a0d713' + Q],
+    [/^frites?$/i,                  U + 'photo-1630431341973-02e1b662ec35' + Q],
+
+    /* --- Burgers, du plus specifique au plus general ------------- */
     [/triple\s*juli/i,              'plats/le-triple-julienas.webp'],
     [/triple\s*(cheese|bacon)/i,    'plats/le-triple-cheese-bacon.webp'],
     [/bazooka/i,                    'plats/le-bazooka.webp'],
@@ -88,27 +105,81 @@
     [/fleurie/i,                    'plats/le-fleurie.webp'],
     [/beaujolais/i,                 'plats/le-beaujolais.webp'],
     [/ch[eé]nas/i,                  'plats/double-cheddar.webp'],
-    [/r[eé]gni[eé]/i,               'plats/le-julienas.webp'],
+    /* Le Regnie n'a pas de photo a lui. `smash-burger.webp` est la
+       seule photo du lot qui ne porte le nom d'aucun cru : un burger
+       simple, anonyme, qui correspond a sa composition (steak,
+       salade, cheddar). Lui donner celle du Julienas afficherait un
+       AUTRE burger de la carte, a 14 € au lieu de 9 €. */
+    [/r[eé]gni[eé]/i,               'plats/smash-burger.webp'],
+    /* Le « Cheeseburger » a 2,50 € du snacking : c'est un petit
+       burger simple, une photo de burger simple ne ment pas. */
+    [/cheeseburger/i,               U + 'photo-1568901346375-23c9450c58cd' + Q],
     [/double|cheddar/i,             'plats/double-cheddar.webp'],
 
-    // Tacos, paninis, box
+    /* --- Tacos, sandwichs, box ----------------------------------- */
     [/tacos.*boursin|boursin.*tacos/i, 'plats/tacos-boursin.webp'],
     [/crousty/i,                    'plats/ksm-crousty.webp'],
     [/boursin/i,                    'plats/le-boursin.webp'],
-    [/tacos|kebab/i,                'plats/tacos.webp'],
+    /* Le Maxi prend la photo du tacos OUVERT : c'est celle qui
+       montre la garniture, donc celle qui correspond au « double
+       viande ». Sans cette ligne, le Maxi et le Tacos simple
+       affichaient la meme vignette cote a cote. */
+    [/maxi.*tacos|tacos.*maxi/i,    'plats/tacos-boursin.webp'],
+    [/tacos/i,                      'plats/tacos.webp'],
+    [/kebab/i,                      U + 'photo-1561651823-34feb02250e4' + Q],
+    [/le\s*chef/i,                  U + 'photo-1509722747041-616f39b57569' + Q],
 
-    // Accompagnements
-    [/frite.*(gruy|bacon)/i,        'plats/frite-gruyere-bacon.webp'],
+    /* --- Accompagnements ----------------------------------------- */
     [/tenders/i,                    'plats/tenders.webp'],
     [/nugget/i,                     'plats/nuggets.webp'],
     [/mozza|stick/i,                'plats/mozza-sticks.webp'],
     [/jalape/i,                     'plats/jalapenos.webp'],
     [/camembert|bouch[eé]e/i,       'plats/bouchees-camembert.webp'],
-    [/box/i,                        'plats/tenders.webp'],
+    /* La box contient QUATRE choses (tenders, nuggets, bouchees
+       camembert, jalapenos). Lui donner la photo des tenders la
+       reduisait a un seul de ses composants — et affichait la
+       meme vignette que « Tenders maison », juste a cote. Une
+       planchette de fritures se lit comme ce qu'elle est : un
+       plat a partager. */
+    [/box/i,                        U + 'photo-1626082927389-6cd097cdc6ec' + Q],
+    [/menu\s*enfant|kids/i,         U + 'photo-1610614819513-58e34989848b' + Q],
 
-    // Salades et bowls
+    /* --- Salades et bowls ---------------------------------------- */
     [/c[eé]sar/i,                   'plats/salade-cesar.webp'],
-    [/salade|bowl/i,                'plats/salade-cesar.webp']
+    [/ch[eè]vre\s*chaud/i,           U + 'photo-1512621776951-a57141f2eefd' + Q],
+    /* Le bowl de KSM est a base de RIZ (« riz, viande au choix,
+       fromage, sauce, frites, oignons frits »). La photo maison
+       montre une salade au poulet : ce n'est pas le meme plat, et
+       c'etait deja la vignette de la Salade Cesar juste au-dessus. */
+    [/bowl/i,                       U + 'photo-1546069901-ba9599a7e63c' + Q],
+    [/salade/i,                     'plats/salade-cesar.webp'],
+
+    /* --- Desserts ------------------------------------------------
+       La tarte au Daim n'a pas d'equivalent honnete en banque
+       d'images : un gateau au chocolat n'est pas une tarte au Daim. */
+    [/daim/i,                       null],
+    [/milkshake.*gourmand|gourmand.*milkshake/i, U + 'photo-1572490122747-3968b75cc699' + Q],
+    [/milkshake/i,                  U + 'photo-1553787499-6f9133860278' + Q],
+    [/donut/i,                      U + 'photo-1551024601-bec78aea704b' + Q],
+    [/gaufre/i,                     U + 'photo-1562376552-0d160a2f238d' + Q],
+    [/tiramisu/i,                   U + 'photo-1571877227200-a0d98ea607e9' + Q],
+    [/confiserie|bonbon/i,          U + 'photo-1582058091505-f87a2e55a40f' + Q],
+
+    /* --- Boissons ------------------------------------------------ */
+    [/coca/i,                       U + 'photo-1554866585-cd94860890b7' + Q],
+    [/ice\s*tea|th[eé]\s*glac/i,     U + 'photo-1499638673689-79a0b5115d87' + Q],
+    [/limonade/i,                   U + 'photo-1621263764928-df1444c5e859' + Q],
+    [/eau/i,                        U + 'photo-1523362628745-0c100150b504' + Q],
+    /* « Canette 33cl » (1,50 €) et « Bouteille » (2,00 €) ne disent
+       pas leur parfum : seul KSM sait ce qu'il a en frigo. Toute
+       photo de MARQUE y ferait donc une promesse — et la marque
+       la plus evidente, le Coca, est vendue 1 € de plus sur la
+       ligne d'a cote : le client croirait payer son Coca moins
+       cher ici. La canette recoit un verre de soda sans marque ;
+       pour la bouteille, aucune photo sans marque n'a ete
+       trouvee, donc rien. Les deux sont sur PHOTOS-A-DEMANDER.md. */
+    [/canette/i,                    U + 'photo-1581636625402-29b2a704ef13' + Q],
+    [/bouteille/i,                  null]
   ];
 
   // Ordre d'apparition des categories. Ce qui fait venir les gens
@@ -402,6 +473,16 @@
       img.alt = '';
       img.loading = 'lazy';
       img.decoding = 'async';
+      /* Si la source ne se decode pas, on retombe sur la tuile sobre
+         plutot que de laisser l'icone d'image brisee du navigateur.
+         Constate le 2026-09-08 sur Maxi Tacos : son `image_url`
+         pointait un .HEIC, format qu'aucun navigateur ne lit. Le cas
+         se reproduira des que le restaurateur televersera une photo
+         prise avec un iPhone. */
+      img.addEventListener('error', function () {
+        if (img.parentNode !== media) return;
+        media.replaceChild(creer('div', 'ligne-vide', p.nom.charAt(0).toUpperCase()), img);
+      });
       media.appendChild(img);
     } else {
       // Initiale du plat plutot qu'une photo d'un autre restaurant.

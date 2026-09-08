@@ -816,10 +816,21 @@ a { color: inherit }
    restaurant sont tous en 640 x 640 : un cadre 4:3 aurait rogne un
    quart de chaque photo pour rien. Le carre les montre entieres.
    `order: -1` la fait passer devant le texte sans toucher au HTML. */
+/* `min-height: 0` et `overflow: hidden` : sans eux, le carre n'en est
+   pas un. `.ligne-media` est un element flex, dont la hauteur
+   minimale vaut `auto` par defaut — autrement dit son contenu peut le
+   pousser plus haut que le rapport demande. Une photo en portrait
+   (les affiches du client font 1024 x 1536) etirait donc sa carte
+   d'un tiers, et la grille se cassait ligne apres ligne. Constate le
+   2026-09-08 sur le Chiroubles, le Morgon, le Moulin a Vent et les
+   deux Triples. C'est la garantie STRUCTURELLE : quelle que soit la
+   photo envoyee plus tard depuis l'espace client, la vignette reste
+   carree. */
 .ligne-media {
   order: -1; width: 100%; height: auto; aspect-ratio: 1 / 1;
-  flex: none;
+  flex: none; min-height: 0; overflow: hidden;
 }
+.ligne-photo { display: block }
 .ligne-photo, .ligne-vide { border-radius: 0 }
 .ligne-vide { border: 0; border-bottom: 1px solid var(--trait) }
 

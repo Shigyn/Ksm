@@ -42,7 +42,7 @@ mozza-sticks|9e5af501-e76d-4c4d-80f7-31b09a204f96.jpg|50|50|94
 le-beaujolais|ad013db4-432f-426d-9ce3-ce8241cd8054.jpg|50|50|75
 le-triple-cheese-bacon|b0218c31-4e16-4c51-bea5-9fffce782592.jpg|50|48|100
 tenders|b594c10d-b242-451d-bd55-fe8a8c0987c7.jpg|50|50|100
-tacos|c9f0f095-251e-46db-9893-e3ae6ede527b.jpg|50|50|75
+tacos|c9f0f095-251e-46db-9893-e3ae6ede527b.jpg|50|50|100
 nuggets|d3300aac-b947-407b-9c63-3a51dab02721.jpg|50|50|67
 smash-burger|ff892155-181c-440e-a2ec-429510dace40.jpg|50|51|61
 TAB
