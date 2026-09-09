@@ -365,7 +365,21 @@ a { color: inherit }
   background: var(--carte); border: 1px solid var(--trait);
   border-radius: var(--r-carte); padding: 22px 24px 24px;
 }
-.avis-texte { color: var(--gris); font-size: 15px; line-height: 1.62 }
+/* Sept lignes affichees, pas plus. Trois avis complets faisaient
+   2 050 px sur telephone, soit deux ecrans et demi de texte a la
+   suite : personne ne lit ca. Le texte reste ENTIER dans la page —
+   c'est son affichage qui est replie, et le lien juste dessous ouvre
+   l'avis d'origine sur Google. On ne coupe pas, on plie. */
+.avis-texte {
+  color: var(--gris); font-size: 15px; line-height: 1.62;
+  display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: 7; overflow: hidden;
+}
+.avis-plus {
+  display: inline-block; margin-top: 10px; font-size: 13.5px;
+  color: var(--or); text-decoration: none; padding: 4px 0;
+}
+.avis-plus:hover { text-decoration: underline }
 .avis-nom { margin-top: 14px; font-weight: 700; color: #fff; font-size: 15px }
 .avis-src { margin-top: 2px; color: var(--gris); font-size: 13px }
 
@@ -1093,6 +1107,9 @@ a { color: inherit }
     margin: -12px 0;
   }
 
+  /* Le lien vers l'avis entier tombait a 29 px. */
+  .avis-plus { padding: 12px 0 }
+
   /* Un pixel manquait a la marque de l'entete : 43 au lieu de 44. */
   .ft a, .marque { padding: 7px 0 }
 }
@@ -1296,6 +1313,7 @@ a { color: inherit }
         <article class="avis-carte">
           <div class="avis-etoiles" role="img" aria-label="Noté 5 sur 5">★★★★★</div>
           <p class="avis-texte" data-editable-zone="avis_1_texte">Testé et approuvé hier soir. Nous venons de Mâcon et nous avons donc mangé sur place. Premier point positif, un accueil chaleureux et tellement agréable. Second point positif et pas des moindres, je me suis rarement autant régalée avec un burger. Des ingrédients frais et d’excellente qualité, une harmonie des ingrédients plus que parfaite et une sauce absolument sublime. La cuisson de la viande est également parfaite. Pour ce qui est de la quantité, c’est plus que généreux ! J’ai choisi le Chirouble avec frites cheddar et oignons frits. Les frites aussi sont très bonnes. Et je me suis également laissée tenter par quelques nuggets qui étaient également très bons. Pour finir avec le dernier point positif, l’établissement est vraiment très propre de l’entrée jusqu’au fin fond de la cuisine. Bref, vous pouvez y aller les yeux fermés, vous ne serez pas déçu.</p>
+          <a class="avis-plus" href="https://www.google.com/search?q=KSM+Burger+Fleurie+avis" target="_blank" rel="noopener">Lire l’avis entier sur Google ›</a>
           <p class="avis-nom" data-editable-zone="avis_1_nom">Aline Lainé</p>
           <p class="avis-src">Avis Google</p>
         </article>
@@ -1303,6 +1321,7 @@ a { color: inherit }
         <article class="avis-carte">
           <div class="avis-etoiles" role="img" aria-label="Noté 5 sur 5">★★★★★</div>
           <p class="avis-texte" data-editable-zone="avis_2_texte">Quelle bonne surprise de découvrir un burger proche de chez moi et qui me fait oublier mes préjugés. Trop déçu par les grandes marques, je viens de découvrir un endroit où il fait bon aller. Accueil très chaleureux et local très propre. Pour la nourriture, c’est du très copieux et très bon, le steack frais fait la différence. Je vous souhaite de continuer longtemps et de maintenir cette qualité d’accueil et de fraicheur.</p>
+          <a class="avis-plus" href="https://www.google.com/search?q=KSM+Burger+Fleurie+avis" target="_blank" rel="noopener">Lire l’avis entier sur Google ›</a>
           <p class="avis-nom" data-editable-zone="avis_2_nom">Philippe Berge</p>
           <p class="avis-src">Avis Google</p>
         </article>
@@ -1310,6 +1329,7 @@ a { color: inherit }
         <article class="avis-carte">
           <div class="avis-etoiles" role="img" aria-label="Noté 5 sur 5">★★★★★</div>
           <p class="avis-texte" data-editable-zone="avis_3_texte">Nous y sommes allés tout à l’heure, pleins d’impatience suite à toutes les critiques et d’envie de délicieux burgers ! Nos attentes ont encore été dépassées : un gérant et une cuisinière très sympathiques. Tout est préparé avec des ingrédients très frais et la meilleure viande. Nos enfants, ma femme et moi sommes totalement enthousiastes et nous y retournerons. À recommander absolument ! Nous ne savons pas encore si mon fils et moi mangerons à nouveau un triple burger demain, nous attendrons demain… actuellement, nous sommes très rassasiés. Merci beaucoup ! Le rapport qualité/prix est également excellent.</p>
+          <a class="avis-plus" href="https://www.google.com/search?q=KSM+Burger+Fleurie+avis" target="_blank" rel="noopener">Lire l’avis entier sur Google ›</a>
           <p class="avis-nom" data-editable-zone="avis_3_nom">Matthias Förtsch</p>
           <p class="avis-src">Avis Google</p>
         </article>
