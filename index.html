@@ -1031,9 +1031,32 @@ a { color: inherit }
   .pas button { width: 44px; height: 44px }
   .fermer { width: 44px; height: 44px }
 
-  /* Les liens telephone et reseaux restent du texte en ligne : la
-     regle de taille de cible ne s'y applique pas (exception « inline »
-     de WCAG 2.2), et les grossir casserait le paragraphe. */
+  /* Les liens telephone et reseaux DANS UN PARAGRAPHE restent du
+     texte en ligne : la regle de taille de cible ne s'y applique pas
+     (exception « inline » de WCAG 2.2), et les grossir casserait le
+     paragraphe.
+
+     LE NUMERO DU HERO EST UN AUTRE CAS, et la premiere passe l'avait
+     range a tort avec les precedents. Son `dd` ne contient QUE le
+     lien : ce n'est pas un numero au milieu d'une phrase, c'est une
+     commande posee dans une case. L'exception ne le couvre pas, et il
+     mesurait 114 x 20 — la moitie de la hauteur exigee, pour le geste
+     qui compte le plus sur un site de restaurant. Celui du pied de
+     page etait dans le meme cas, seul dans son paragraphe, a 36 px.
+     La regle vise donc TOUT lien telephone, sauf ceux deja habilles
+     en bouton (`.pill`), qui mesurent deja 48.
+
+     La zone grandit, le dessin ne bouge pas : le remplissage etend la
+     surface tactile, la marge negative annule l'effet sur la mise en
+     page. Mesure avant/apres : le bloc des faits garde sa hauteur. */
+  a[href^="tel:"]:not(.pill) {
+    display: inline-block;
+    padding: 12px 0;
+    margin: -12px 0;
+  }
+
+  /* Un pixel manquait a la marque de l'entete : 43 au lieu de 44. */
+  .ft a, .marque { padding: 7px 0 }
 }
 
 </style>
@@ -1220,7 +1243,7 @@ a { color: inherit }
     <div class="ft-haut">
       <div>
         <span class="marque">KSM <span>Burger</span></span>
-        <p class="ft-desc" data-editable-zone="footer_description">Le fast-food artisanal du Beaujolais. Burgers frais, faits maison, nommés d&rsquo;après les crus locaux. Commande à emporter, à récupérer sur place.</p>
+        <p class="ft-desc" data-editable-zone="footer_description">KSM, ce sont Kassim, Sofiane et Mel. Le fast-food artisanal du Beaujolais : burgers frais, faits maison, nommés d&rsquo;après les crus locaux. Commande à emporter, à récupérer sur place.</p>
       </div>
       <div class="ft-col">
         <p><strong style="color:#fff">Nous trouver</strong></p>
