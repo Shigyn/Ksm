@@ -188,18 +188,16 @@ a { color: inherit }
 @media (max-width: 430px) { .hd-actions .pill-clair { display: none } }
 
 /* --- Hero --------------------------------------------------------- */
-/* Le heros : quatre plans de cuisine qui se relaient en fondu.
+/* Le heros : UN SEUL plan, en boucle.
 
-   Les quatre viennent d'une seule video de 864 x 496 ou ils tenaient
-   en mosaique : chacun ne faisait donc que 432 x 248 et moins d'une
-   seconde. Ils ont ete decoupes, agrandis en Lanczos a l'encodage
-   (bien meilleur que l'etirement du navigateur) et ralentis de moitie
-   avec interpolation, sinon le ralenti tombait a 12 images par seconde
-   et saccadait.
+   Il y en avait quatre — pose, cuisson, montage, table — qui se
+   relayaient en fondu. Les trois plans de cuisine venaient d'une
+   mosaique de 864 x 496, soit 432 x 248 chacun : agrandis six fois
+   pour remplir un hero, ils ne tenaient que grace au voile qui les
+   couvre. La vue de table est une vraie source, et elle se suffit.
 
-   Un seul effet : le fondu. Pas de glissement ni de zoom par-dessus —
-   trois mouvements simultanes, c'est ce qui fait « site charge » au
-   lieu de « site soigne ». */
+   Aucun effet : ni fondu, ni glissement, ni zoom. Un plan qui boucle,
+   c'est tout. */
 .hero {
   position: relative; overflow: hidden; isolation: isolate;
   background: var(--noir); color: var(--encre);
@@ -1026,18 +1024,9 @@ a { color: inherit }
 
   <section class="hero">
     <div class="hero-fond" aria-hidden="true">
-      <video class="hero-clip clip-table" data-on data-boucles="1"
+      <video class="hero-clip clip-table" data-on loop
              src="videos/0-table.mp4" poster="videos/0-table.jpg"
              muted playsinline preload="auto"></video>
-      <video class="hero-clip" data-boucles="1"
-             src="videos/1-pose.mp4" poster="videos/1-pose.jpg"
-             muted playsinline preload="metadata"></video>
-      <video class="hero-clip" data-boucles="2" loop
-             src="videos/2-cuisson.mp4" poster="videos/2-cuisson.jpg"
-             muted playsinline preload="metadata"></video>
-      <video class="hero-clip" data-boucles="1"
-             src="videos/3-montage.mp4" poster="videos/3-montage.jpg"
-             muted playsinline preload="metadata"></video>
       <img class="hero-fixe clip-table" src="videos/0-table.jpg" alt="">
     </div>
     <div class="hero-voile" aria-hidden="true"></div>
@@ -1294,7 +1283,7 @@ a { color: inherit }
      MEME version : les deux sont toujours d'accord. A incrementer des
      que le HTML produit par le script change de forme. -->
 <script src="contenu-loader.js?v=6" defer></script>
-<script src="carte.js?v=7" defer></script>
+<script src="carte.js?v=8" defer></script>
 <script src="mesure.js?v=6" defer></script>
 
 </body>

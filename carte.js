@@ -1905,6 +1905,28 @@
       }
     });
 
+    /* Un seul plan : il porte `loop`, il tourne tout seul. Surtout,
+       on ne lance PAS la rotation — `suivant()` prendrait le meme
+       element comme sortant et comme entrant, retirerait le `data-on`
+       qu'il vient de poser, et le heros deviendrait noir sans qu'aucun
+       repli ne se declenche, puisque rien n'aurait echoue. */
+    if (clips.length < 2) {
+      var seul = clips[0];
+      jouer(seul);
+
+      /* Le filet de securite que le minuteur assurait quand il y avait
+         plusieurs plans. `play()` peut resoudre sans que rien ne
+         demarre — economie de donnees, batterie faible, onglet
+         deprioritise — et on se retrouve alors avec une premiere image
+         figee que rien ne signale. Si au bout de deux secondes la
+         lecture n'a pas bouge d'un millieme de seconde, on passe a
+         l'image fixe : elle est identique, mais elle, c'est un choix. */
+      setTimeout(function () {
+        if (seul.currentTime === 0 && !hero.hasAttribute('data-sans-video')) replier();
+      }, 2500);
+      return;
+    }
+
     jouer(clips[0]);
     programmer();
   }
