@@ -6,7 +6,7 @@
 <title>KSM Burger — Commander à emporter à Fleurie (69820)</title>
   <!-- Le premier clip est ce qu'on voit en arrivant : le precharger
        evite que le heros reste noir une seconde. -->
-  <link rel="preload" as="video" href="videos/1-pose.mp4" type="video/mp4">
+  <link rel="preload" as="video" href="videos/0-table.mp4" type="video/mp4">
 <meta name="description" content="Burgers faits maison à Fleurie, en plein Beaujolais. Commandez en ligne et récupérez sur place. 10 rue du Beaujolais, 69820 Fleurie — 09 50 94 88 15.">
 <link rel="canonical" href="https://shigyn.github.io/Ksm/">
 <meta name="theme-color" content="#121212">
@@ -218,6 +218,10 @@ a { color: inherit }
      1,74, soit 36 % de l'image perdue en hauteur. */
   object-position: center 38%;
 }
+/* Vue de table, sujet au centre et non en haut : le burger est a 57 %
+   de la hauteur du cadre. Avec le 38 % commun, `cover` lui coupait
+   l'assiette par le bas. */
+.clip-table { object-position: center 55% }
 
 /* Le hero suit la hauteur de l'ecran au lieu d'un minimum fixe.
    A 580 px sur un ecran large, le rapport montait a 2,73 : la video
@@ -1022,16 +1026,19 @@ a { color: inherit }
 
   <section class="hero">
     <div class="hero-fond" aria-hidden="true">
-      <video class="hero-clip" data-on data-boucles="1"
-             src="videos/1-pose.mp4" poster="videos/1-pose.jpg"
+      <video class="hero-clip clip-table" data-on data-boucles="1"
+             src="videos/0-table.mp4" poster="videos/0-table.jpg"
              muted playsinline preload="auto"></video>
+      <video class="hero-clip" data-boucles="1"
+             src="videos/1-pose.mp4" poster="videos/1-pose.jpg"
+             muted playsinline preload="metadata"></video>
       <video class="hero-clip" data-boucles="2" loop
              src="videos/2-cuisson.mp4" poster="videos/2-cuisson.jpg"
              muted playsinline preload="metadata"></video>
       <video class="hero-clip" data-boucles="1"
              src="videos/3-montage.mp4" poster="videos/3-montage.jpg"
              muted playsinline preload="metadata"></video>
-      <img class="hero-fixe" src="videos/3-montage.jpg" alt="">
+      <img class="hero-fixe clip-table" src="videos/0-table.jpg" alt="">
     </div>
     <div class="hero-voile" aria-hidden="true"></div>
     <div class="wrap">
