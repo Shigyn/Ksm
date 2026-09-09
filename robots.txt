@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# L'ecran de service n'a rien a faire dans un resultat de recherche :
+# il n'apporte rien a personne et il expose une porte d'entree.
+Disallow: /restaurant.html
+
+Sitemap: https://ksmburger.fr/sitemap.xml

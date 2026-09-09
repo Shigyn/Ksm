@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Une seule page : le site tient en une seule adresse, tout le
+     reste est une ancre. Y lister #carte ou #venir n'ajouterait rien
+     pour Google, qui ne les indexe pas separement. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://ksmburger.fr/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
