@@ -130,6 +130,23 @@ a { color: inherit }
 
 .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 20px }
 
+/* Au-dela de 1500 px, le couloir central s'elargit.
+
+   Mesure a 1905 px avec les 1120 d'origine : la grille tenait 4
+   colonnes de 258 et laissait 393 px de vide DE CHAQUE COTE, soit
+   la place de trois cartes produit. Ce n'etait plus une marge,
+   c'etait un trou — d'autant plus visible que le hero, juste
+   au-dessus, va bord a bord.
+
+   A 1400, la grille passe a cinq colonnes sans que les cartes
+   retrecissent (262 px contre 258), et le vide tombe a 252. On
+   remplit donc avec des PRODUITS, pas avec de la decoration.
+
+   Le seuil est a 1500 et non plus bas : en dessous, les 1120
+   d'origine sont deja le bon compromis, et rien ne bouge pour la
+   grande majorite des ecrans. */
+@media (min-width: 1500px) { :root { --wrap: 1400px } }
+
 /* Uppercase reserve aux surtitres, jamais aux titres.
 
    La couleur n'est ni --mute ni le #666 d'origine : tous deux
