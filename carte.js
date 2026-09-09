@@ -1312,10 +1312,38 @@
     return plages.length ? { plages: plages } : { inconnu: true };
   }
 
+  /* MODE TEST : commander en dehors des horaires.
+
+     Il s'active avec `?test=1` dans l'adresse et se coupe avec
+     `?test=0`. Il vit dans `sessionStorage` et NON dans
+     `localStorage` : il disparait a la fermeture de l'onglet. C'est
+     volontaire — un mode test qu'on oublie d'eteindre et qui survit
+     des semaines sur le telephone d'un client est pire que pas de
+     mode test du tout.
+
+     Il ne fabrique rien de faux : la commande part vraiment au
+     comptoir, avec le meme trajet et la meme notification. Il
+     n'enleve que la verification de l'heure. D'ou le bandeau, qui
+     reste visible tant qu'il est actif. */
+  var MODE_TEST = (function () {
+    try {
+      if (/[?&]test=1/.test(location.search)) sessionStorage.setItem('ksm_test', '1');
+      if (/[?&]test=0/.test(location.search)) sessionStorage.removeItem('ksm_test');
+      return sessionStorage.getItem('ksm_test') === '1';
+    } catch (e) {
+      return /[?&]test=1/.test(location.search);
+    }
+  })();
+
   /* Les creneaux de retrait possibles aujourd'hui, en minutes.
      Rend aussi `inconnu` : dans ce cas on retombe sur l'ancien
      comportement, trois heures de creneaux sans contrainte. */
   function creneauxDuJour() {
+    // En test, on emprunte exactement le chemin de l'horaire illisible :
+    // creneaux libres, bandeau de fermeture eteint, modale qui s'ouvre.
+    // Un seul point de passage a detourner, pas trois.
+    if (MODE_TEST) return { inconnu: true, creneaux: [] };
+
     var maintenant = new Date();
     var h = analyserHoraire(texteHoraire(maintenant.getDay()));
     if (h.inconnu) return { inconnu: true, creneaux: [] };
@@ -1356,6 +1384,14 @@
   function majAvisFermeture() {
     var el = $('#avis-ferme');
     if (!el) return;
+    if (MODE_TEST) {
+      el.innerHTML = '<span><b>MODE TEST.</b> Les horaires sont ignor\u00e9s. '
+        + 'La commande partira quand m\u00eame au comptoir, comme une vraie. '
+        + 'Fermez l\u2019onglet pour revenir \u00e0 la normale.</span>';
+      el.hidden = false;
+      return;
+    }
+
     var d = creneauxDuJour();
 
     if (d.inconnu || d.creneaux.length) { el.hidden = true; return; }
