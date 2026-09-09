@@ -903,7 +903,22 @@ a { color: inherit }
    fonctionner a l'identique. Reecrire le rendu pour changer une mise
    en page, c'est risquer une regression sur la prise de commande pour
    un gain visuel.
+
+   MOBILE EXCLU DEPUIS LE 2026-09-09. Mesure sur 375 x 812 : une carte
+   faisait 487 px de haut, dont 333 de photo — 60 % de l'ecran pour UN
+   produit, 1,67 produit visible a la fois, et 7 010 px a faire defiler
+   pour les seuls burgers. On ne peut pas comparer deux burgers sans
+   les faire defiler l'un apres l'autre, ce qui est exactement ce
+   qu'une carte doit permettre.
+
+   C'est d'ailleurs ce que fait Uber Eats : des CARTES sur le web, des
+   LIGNES dans l'application. Le motif en lignes n'a jamais ete
+   supprime d'ici — il etait seulement recouvert. Il suffit donc de
+   poser une condition de largeur pour qu'il reprenne la main, sans
+   ecrire une seule regle de plus.
    ==================================================================== */
+
+@media (min-width: 761px) {
 
 /* La liste devient une grille. Elle perd son fond et son cadre : ce
    sont les cartes qui portent desormais la matiere. */
@@ -977,12 +992,10 @@ a { color: inherit }
 
 .epuise { top: 10px; left: 10px; right: auto }
 
-/* Une carte a besoin de plus de place qu'une ligne : sous 380 px on
-   repasse a une colonne pleine largeur plutot que deux cartes
-   illisibles cote a cote. */
-@media (max-width: 380px) {
-  .liste { grid-template-columns: 1fr }
 }
+/* Fin de la mise en cartes. Sous 761 px, la mise en lignes d'origine
+   s'applique : texte a gauche, vignette de 96 px a droite, environ
+   124 px par produit au lieu de 487. */
 
 /* --- Cibles tactiles -------------------------------------------------
    Audit du 2026-09-08 sur 375 x 812 : 82 commandes sous les 44 px
