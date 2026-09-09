@@ -495,9 +495,12 @@
     if (!pushPossible()) return;
     majBoutonPush('attente');
 
+    var reg = null;
+
     navigator.serviceWorker.register('sw-resto.js')
       .then(function (r) { return navigator.serviceWorker.ready.then(function () { return r; }); })
       .then(function (r) {
+        reg = r;
         return Notification.requestPermission().then(function (perm) {
           if (perm !== 'granted') throw new Error('refus');
           return r.pushManager.subscribe({
@@ -507,22 +510,43 @@
         });
       })
       .then(function (ab) {
-        return appel('abonner_push', { abonnement: ab.toJSON() });
+        /* On distingue les deux echecs possibles, parce qu'ils ne se
+           reparent pas au meme endroit : l'appareil s'est abonne
+           aupres d'Apple ou de Google, mais si l'enregistrement chez
+           nous echoue, personne ne saura ou envoyer la notification.
+           Le message le dit, au lieu d'un << reessayez >> generique. */
+        return appel('abonner_push', { abonnement: ab.toJSON() })
+          .catch(function (e) { throw new Error('serveur:' + (e && e.message ? e.message : '')); });
       })
       .then(function () {
         majBoutonPush('actif');
-        // Un abonnement qu'on ne voit pas fonctionner n'inspire aucune
-        // confiance : on montre tout de suite a quoi ca ressemble.
-        new Notification('Alertes activées', {
+        /* `new Notification(...)` N'EXISTE PAS dans une application iOS
+           ajoutee a l'ecran d'accueil : le constructeur y est absent et
+           leve une erreur. Elle tombait dans le `catch` ci-dessous, qui
+           affichait << les alertes n'ont pas pu etre activees >> ALORS
+           QUE L'ABONNEMENT VENAIT DE REUSSIR. De quoi appuyer dix fois
+           sur le bouton en croyant que rien ne marche.
+           `registration.showNotification()` marche partout, iOS compris,
+           et c'est deja ce qu'utilise le service worker. */
+        return reg.showNotification('Alertes activées', {
           body: 'Vous serez prévenu ici à chaque nouvelle commande.',
-          icon: 'videos/4-burger.jpg'
+          icon: 'icone-resto-192.png',
+          badge: 'icone-resto-192.png',
+          tag: 'bienvenue'
         });
       })
       .catch(function (err) {
+        var m = String(err && err.message);
         console.warn('Abonnement push impossible', err);
         etatPush();
-        if (String(err.message) !== 'refus') {
-          alert('Les alertes n’ont pas pu être activées. Réessayez, ou prévenez LocWeb.');
+        if (m === 'refus') return;
+        if (m.indexOf('serveur:') === 0) {
+          alert('Cet appareil est bien inscrit, mais l’enregistrement chez '
+              + 'LocWeb a échoué. Les commandes ne déclencheront pas d’alerte '
+              + 'tant que ce n’est pas réglé. Prévenez LocWeb.\n\n' + m.slice(8));
+        } else {
+          alert('Les alertes n’ont pas pu être activées sur cet appareil. '
+              + 'Réessayez, ou prévenez LocWeb.');
         }
       });
   }
