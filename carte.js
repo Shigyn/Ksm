@@ -458,14 +458,21 @@
       });
     }
 
-    /* Le burger et le sandwich arrivent avec une sauce (leur
-       description finit par « sauce ») sans que le client sache
-       laquelle. Les douze sauces de la base etaient jusqu'ici des
-       cases a cocher a « + 0,00 € » au milieu des supplements
-       PAYANTS : on pouvait en prendre huit, et chacune ajoutait au
-       panier sa propre ligne a 0,00 €. Une sauce se choisit, elle
-       ne s'empile pas. */
-    if (/burger|sandwich/.test(cat)) {
+    /* LE BURGER N'A PLUS DE CHOIX DE SAUCE (2026-09-09).
+
+       Il vient avec la sauce burger de la maison, point. C'est la
+       recette, pas une option : elle est desormais ecrite dans la
+       description de chaque burger, la ou le client la lit avant de
+       commander, au lieu d'etre une question de plus a trancher.
+
+       Le sandwich, lui, garde le choix : il n'a pas de sauce
+       attitree.
+
+       (Le groupe existait parce que les douze sauces de la base
+       trainaient dans les supplements PAYANTS a « + 0,00 € » : on
+       pouvait en cocher huit, chacune ajoutant sa ligne a 0,00 € au
+       panier. Le probleme est regle autrement pour le burger.) */
+    if (/sandwich/.test(cat)) {
       groupes.push({
         titre: 'Votre sauce', aide: 'Une seule, offerte.',
         type: 'unique', max: 1, requis: false, choix: saucesOffertes()
