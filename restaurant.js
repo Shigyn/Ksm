@@ -448,6 +448,8 @@
   function majBoutonPush(etat) {
     var b = $('#push-btn');
     if (!b) return;
+    var t = $('#test-btn');
+    if (t) t.hidden = (etat === 'absent' || etat === 'refuse');
     if (etat === 'absent') {
       b.hidden = true;
       note(surIOS() && !installee()
@@ -533,6 +535,48 @@
     if (e.key === 'Enter') valider();
   });
   $('#son-btn').addEventListener('click', basculerSon);
+  /* Un bouton de test, parce qu'un comptoir qui ne recoit rien a
+     besoin de savoir OU ca casse, et tout de suite.
+
+     Il affiche une notification en local, sans passer par le serveur.
+     Ce qu'il prouve, et c'est deja beaucoup :
+       - la page est bien lancee depuis l'ecran d'accueil ;
+       - l'autorisation est accordee ;
+       - le service worker est actif et sait afficher un bandeau.
+     Ce qu'il NE prouve PAS : que la notification arrive tablette en
+     veille. Ca, seul un vrai push venu du serveur le dit — c'est le
+     trajet suivant, et c'est la qu'il faut chercher si ce test-ci
+     passe et que les commandes ne sonnent toujours pas. */
+  function testerAlerte() {
+    var b = $('#test-btn');
+    if (!('Notification' in window)) return;
+
+    Notification.requestPermission().then(function (perm) {
+      if (perm !== 'granted') {
+        b.textContent = 'Refus\u00e9';
+        return;
+      }
+      return navigator.serviceWorker.ready.then(function (r) {
+        return r.showNotification('Test KSM', {
+          body: 'Si vous lisez ceci, les alertes fonctionnent sur cet appareil.',
+          icon: 'icone-resto-192.png',
+          badge: 'icone-resto-192.png',
+          tag: 'test',
+          renotify: true,
+          vibrate: [180, 90, 180],
+          data: { url: 'restaurant.html' }
+        });
+      }).then(function () {
+        b.textContent = 'Envoy\u00e9e \u2713';
+        setTimeout(function () { b.textContent = 'Tester l\u2019alerte'; }, 4000);
+      });
+    }).catch(function (e) {
+      b.textContent = 'Erreur';
+      console.warn('Test d alerte impossible', e);
+    });
+  }
+
+  $('#test-btn').addEventListener('click', testerAlerte);
   $('#push-btn').addEventListener('click', activerPush);
 
   // Code deja connu : on entre directement, mais on verifie d'abord
