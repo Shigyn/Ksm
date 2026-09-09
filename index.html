@@ -34,7 +34,7 @@
   "servesCuisine": ["Burger", "Fast-food", "Tacos"],
   "priceRange": "€€",
   "currenciesAccepted": "EUR",
-  "paymentAccepted": "Espèces, Carte bancaire, Titres restaurant",
+  "paymentAccepted": "Espèces, Carte bancaire, Carte titre-restaurant (titres papier non acceptés)",
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "10 rue du Beaujolais",
@@ -330,6 +330,44 @@ a { color: inherit }
 .fait dd { margin: 0; font-size: 16px; font-weight: 500; line-height: 1.4 }
 .fait dd a { text-decoration: none }
 .fait dd a:hover { text-decoration: underline }
+
+/* --- Les avis Google ----------------------------------------------
+   Sous la carte de localisation, en bas du site : c'est la derniere
+   chose qu'on lit avant de decider, et c'est la que la preuve sert.
+
+   Les trois avis sont RELEVES SUR LA FICHE GOOGLE le 2026-09-09 et
+   recopies mot pour mot, fautes de frappe de leurs auteurs comprises.
+   On n'ecrit pas d'avis a la place des clients, et on n'en corrige
+   pas l'orthographe : un temoignage retouche n'est plus un
+   temoignage. SEULE RETOUCHE, et elle est enoncee ici : les
+   emoticones ont ete retirees du troisieme avis. Aucun mot n'a
+   ete change, ajoute ni deplace. Le lien vers la fiche est la pour qu'on puisse
+   verifier. */
+.avis { background: var(--sombre); padding: 84px 0 }
+.avis-tete { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px }
+.avis h2 { font-size: clamp(28px, 5vw, 40px); line-height: 1.12; margin-top: 8px }
+
+/* La note globale. Le chiffre porte le poids, le reste l'explique. */
+.avis-note { display: flex; align-items: baseline; gap: 10px; margin-top: 10px }
+.avis-chiffre { font-family: 'Archivo', sans-serif; font-size: 34px; font-weight: 800; color: var(--or) }
+.avis-etoiles { color: var(--or); letter-spacing: .16em; font-size: 15px }
+.avis-nb { color: var(--gris); font-size: 14px }
+
+.avis-liste {
+  display: grid; gap: 16px; margin-top: 34px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  /* Les avis n'ont pas la meme longueur et on ne les coupe pas : les
+     cartes s'alignent en haut plutot que de s'etirer toutes a la
+     hauteur de la plus bavarde. */
+  align-items: start;
+}
+.avis-carte {
+  background: var(--carte); border: 1px solid var(--trait);
+  border-radius: var(--r-carte); padding: 22px 24px 24px;
+}
+.avis-texte { color: var(--gris); font-size: 15px; line-height: 1.62 }
+.avis-nom { margin-top: 14px; font-weight: 700; color: #fff; font-size: 15px }
+.avis-src { margin-top: 2px; color: var(--gris); font-size: 13px }
 
 /* --- La carte ----------------------------------------------------- */
 .carte { background: var(--sombre); padding: 56px 0 64px }
@@ -1117,7 +1155,7 @@ a { color: inherit }
           <p class="eyebrow">La carte</p>
           <h2>Composez votre commande</h2>
         </div>
-        <p class="carte-note">Règlement sur place, au retrait. Espèces, carte et titres restaurant acceptés.</p>
+        <p class="carte-note">Règlement sur place, au retrait. Espèces, carte bancaire et <strong>carte</strong> titre-restaurant. Les titres <strong>papier</strong> ne sont pas acceptés.</p>
       </div>
 
       <p class="avis-ferme" id="avis-ferme" hidden></p>
@@ -1232,6 +1270,49 @@ a { color: inherit }
           <div class="hrow" data-jour="0"><span>Dimanche</span><span data-editable-zone="horaires_dimanche">12h–14h · 18h30–21h30</span></div>
         </div>
       </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================= LES AVIS ==========================
+       Demande du 2026-09-09 : trois avis de la fiche Google, sous la
+       carte, en bas du site. -->
+  <section class="avis" id="avis">
+    <div class="wrap">
+      <div class="avis-tete">
+        <div>
+          <p class="eyebrow">Ce qu&rsquo;on en dit</p>
+          <h2 data-editable-zone="avis_titre">Les avis de nos clients</h2>
+          <div class="avis-note">
+            <span class="avis-chiffre" data-editable-zone="avis_note">4,9</span>
+            <span class="avis-etoiles" role="img" aria-label="Noté 4,9 sur 5">★★★★★</span>
+            <span class="avis-nb" data-editable-zone="avis_nombre">179 avis Google</span>
+          </div>
+        </div>
+        <a class="pill pill-ligne" href="https://www.google.com/search?q=KSM+Burger+Fleurie+avis" target="_blank" rel="noopener" data-editable-zone="avis_lien">Voir tous les avis</a>
+      </div>
+
+      <div class="avis-liste">
+        <article class="avis-carte">
+          <div class="avis-etoiles" role="img" aria-label="Noté 5 sur 5">★★★★★</div>
+          <p class="avis-texte" data-editable-zone="avis_1_texte">Testé et approuvé hier soir. Nous venons de Mâcon et nous avons donc mangé sur place. Premier point positif, un accueil chaleureux et tellement agréable. Second point positif et pas des moindres, je me suis rarement autant régalée avec un burger. Des ingrédients frais et d’excellente qualité, une harmonie des ingrédients plus que parfaite et une sauce absolument sublime. La cuisson de la viande est également parfaite. Pour ce qui est de la quantité, c’est plus que généreux ! J’ai choisi le Chirouble avec frites cheddar et oignons frits. Les frites aussi sont très bonnes. Et je me suis également laissée tenter par quelques nuggets qui étaient également très bons. Pour finir avec le dernier point positif, l’établissement est vraiment très propre de l’entrée jusqu’au fin fond de la cuisine. Bref, vous pouvez y aller les yeux fermés, vous ne serez pas déçu.</p>
+          <p class="avis-nom" data-editable-zone="avis_1_nom">Aline Lainé</p>
+          <p class="avis-src">Avis Google</p>
+        </article>
+
+        <article class="avis-carte">
+          <div class="avis-etoiles" role="img" aria-label="Noté 5 sur 5">★★★★★</div>
+          <p class="avis-texte" data-editable-zone="avis_2_texte">Quelle bonne surprise de découvrir un burger proche de chez moi et qui me fait oublier mes préjugés. Trop déçu par les grandes marques, je viens de découvrir un endroit où il fait bon aller. Accueil très chaleureux et local très propre. Pour la nourriture, c’est du très copieux et très bon, le steack frais fait la différence. Je vous souhaite de continuer longtemps et de maintenir cette qualité d’accueil et de fraicheur.</p>
+          <p class="avis-nom" data-editable-zone="avis_2_nom">Philippe Berge</p>
+          <p class="avis-src">Avis Google</p>
+        </article>
+
+        <article class="avis-carte">
+          <div class="avis-etoiles" role="img" aria-label="Noté 5 sur 5">★★★★★</div>
+          <p class="avis-texte" data-editable-zone="avis_3_texte">Nous y sommes allés tout à l’heure, pleins d’impatience suite à toutes les critiques et d’envie de délicieux burgers ! Nos attentes ont encore été dépassées : un gérant et une cuisinière très sympathiques. Tout est préparé avec des ingrédients très frais et la meilleure viande. Nos enfants, ma femme et moi sommes totalement enthousiastes et nous y retournerons. À recommander absolument ! Nous ne savons pas encore si mon fils et moi mangerons à nouveau un triple burger demain, nous attendrons demain… actuellement, nous sommes très rassasiés. Merci beaucoup ! Le rapport qualité/prix est également excellent.</p>
+          <p class="avis-nom" data-editable-zone="avis_3_nom">Matthias Förtsch</p>
+          <p class="avis-src">Avis Google</p>
+        </article>
       </div>
     </div>
   </section>
