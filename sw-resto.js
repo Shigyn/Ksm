@@ -29,8 +29,12 @@ self.addEventListener('push', (e) => {
     // le site vit aujourd'hui sous /Ksm/ et vivra peut-etre demain a la
     // racine de ksm-burger.fr. Un chemin absolu casserait ce jour-la,
     // en silence.
-    icon: new URL('videos/4-burger.jpg', self.registration.scope).href,
-    badge: new URL('videos/4-burger.jpg', self.registration.scope).href,
+    // L'icone de l'application (2 Ko) et non la photo de burger de la
+    // page d'accueil (86 Ko) : une notification n'a que quelques
+    // dizaines de pixels a remplir, et elle doit s'afficher tout de
+    // suite meme sur un reseau lent.
+    icon: new URL('icone-resto-192.png', self.registration.scope).href,
+    badge: new URL('icone-resto-192.png', self.registration.scope).href,
     tag: d.etiquette || 'commande',
     // Deux commandes coup sur coup n'empilent pas deux bandeaux, mais
     // le telephone vibre quand meme la seconde fois.

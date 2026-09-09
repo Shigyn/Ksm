@@ -10,6 +10,20 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0b0b0c">
 
+<!-- SANS CE BLOC, PAS D'ALERTES SUR IPAD NI SUR IPHONE.
+     Sur iOS, `window.PushManager` n'existe que dans une page
+     ouverte depuis l'ecran d'accueil, jamais dans un onglet
+     Safari — et l'ajout a l'ecran d'accueil ne produit une vraie
+     application (donc pas un simple marque-page) que s'il trouve
+     un manifeste en `standalone` et une icone. Constate le
+     2026-09-09 : le bouton << Activer les alertes >> etait present
+     sur ordinateur et absent sur iPad, sans rien pour l'expliquer. -->
+<link rel="manifest" href="manifeste-resto.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KSM Commandes">
+<link rel="apple-touch-icon" href="icone-resto-180.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -120,6 +134,12 @@
   }
   .son-btn[data-on] { color: var(--encre); border-color: var(--vert-vif) }
   .son-btn[disabled] { opacity: .55; cursor: default }
+  .note-push {
+    margin: 0 0 14px; padding: 12px 15px; font-size: 14.5px; line-height: 1.5;
+    color: var(--or); background: var(--carte);
+    border: 1px solid var(--or-sourd); border-radius: 10px;
+  }
+  .note-push b { color: #fff }
   /* Tant que les alertes ne sont pas actives, ce bouton est le seul
      dore de l'entete : c'est la seule chose qui empeche une commande
      de passer inapercue, telephone dans la poche. */
@@ -253,6 +273,10 @@
       <button class="son-btn" id="son-btn" type="button">Son coupé</button>
       <span class="pouls" id="pouls"><i></i><span id="pouls-txt">À jour</span></span>
     </div>
+    <!-- Ce qu'il faut faire quand les alertes sont impossibles la ou
+         on se trouve. Vide et masque tant qu'il n'y a rien a dire :
+         c'est le script qui le remplit. -->
+    <div class="wrap"><p class="note-push" id="note-push" hidden></p></div>
   </div>
 
   <div class="wrap">
@@ -286,6 +310,6 @@
      Avec le numero, un index.html en cache demande le carte.js de la
      MEME version : les deux sont toujours d'accord. A incrementer des
      que le HTML produit par le script change de forme. -->
-<script src="restaurant.js?v=4" defer></script>
+<script src="restaurant.js?v=5" defer></script>
 </body>
 </html>

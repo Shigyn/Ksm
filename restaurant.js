@@ -426,10 +426,43 @@
     return Uint8Array.from(brut, function (c) { return c.charCodeAt(0); });
   }
 
+  /* Un iPad n'expose PushManager que dans une page lancee depuis
+     l'ecran d'accueil. Dans un onglet Safari le bouton disparaissait
+     donc sans un mot, et personne ne pouvait deviner pourquoi son
+     collegue l'avait et pas lui. On explique a la place. */
+  function surIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+           (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }
+  function installee() {
+    return window.navigator.standalone === true ||
+           (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+  }
+  function note(html) {
+    var n = $('#note-push');
+    if (!n) return;
+    n.innerHTML = html || '';
+    n.hidden = !html;
+  }
+
   function majBoutonPush(etat) {
     var b = $('#push-btn');
     if (!b) return;
-    if (etat === 'absent') { b.hidden = true; return; }
+    if (etat === 'absent') {
+      b.hidden = true;
+      note(surIOS() && !installee()
+        ? 'Pour recevoir les alertes sur cet appareil, ajoutez cet \u00e9cran \u00e0 ' +
+          'votre \u00e9cran d\'accueil : bouton <b>Partager</b> en haut, puis ' +
+          '<b>Sur l\'\u00e9cran d\'accueil</b>. Ouvrez-le ensuite depuis l\'ic\u00f4ne ' +
+          'KSM, et le bouton \u00ab Activer les alertes \u00bb appara\u00eetra.'
+        : 'Les alertes ne sont pas disponibles sur ce navigateur. Le son ' +
+          'des nouvelles commandes fonctionne, lui, tant que cet \u00e9cran reste ouvert.');
+      return;
+    }
+    note(etat === 'refuse'
+      ? 'Les notifications ont \u00e9t\u00e9 refus\u00e9es sur cet appareil. Il faut les ' +
+        'r\u00e9autoriser dans les r\u00e9glages du navigateur pour ce site.'
+      : '');
     b.hidden = false;
     b.textContent = ({
       actif: 'Alertes activées',
