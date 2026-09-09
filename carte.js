@@ -1857,6 +1857,19 @@
        fait qu'attendre plus longtemps avant de passer au suivant. */
     function programmer() {
       clearTimeout(minuteur);
+
+      /* Avec un seul plan, il n'y a rien a programmer : `suivant()`
+         prendrait le meme element comme sortant et comme entrant et
+         retirerait le `data-on` qu'il vient de poser — hero noir.
+
+         Le garde-fou est ICI et non au demarrage, parce que le
+         demarrage n'est pas le seul appelant : le retour d'onglet en
+         avant-plan rappelle `programmer()` lui aussi. C'est par la
+         que le bug passait — l'ecran devenait noir non pas au
+         chargement, mais une longueur de clip apres etre revenu sur
+         l'onglet. Constate le 2026-09-09. */
+      if (clips.length < 2) return;
+
       var v = clips[i];
       var duree = (v.duration && isFinite(v.duration)) ? v.duration * 1000 : 1800;
       var boucles = Number(v.getAttribute('data-boucles')) || 1;
