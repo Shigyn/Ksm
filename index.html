@@ -521,8 +521,22 @@ a { color: inherit }
      40 px approchent les 44 px recommandes sans que la pastille
      deborde de la photo. */
   .ligne-pas button { width: 40px; height: 40px }
-  .ligne-pas { right: 8px; bottom: 4px }
   .ligne-media { width: 80px; height: 80px }
+}
+
+/* LE PAS-A-PAS SORT DE LA PHOTO, sur telephone uniquement (2026-09-12).
+   Pose sur le coin de la vignette, il cachait le plat qu'il sert a
+   commander. Il passe juste a sa gauche, cale en bas de la ligne : la
+   photo reste entiere, et le prix garde sa place a gauche grace a la
+   reserve. La position se calcule depuis la vignette (marge + largeur
+   + un ecart), pour suivre ses deux tailles : 96 px, puis 80 px sous
+   480 px. */
+@media (max-width: 760px) {
+  .ligne-pas { right: calc(18px + 96px + 10px); bottom: 12px }
+  .ligne-prix { padding-right: 104px }
+}
+@media (max-width: 480px) {
+  .ligne-pas { right: calc(14px + 80px + 10px) }
 }
 
 /* Le pas-a-pas de quantite, utilise dans la fiche d'un plat. */
@@ -1449,7 +1463,7 @@ a { color: inherit }
      MEME version : les deux sont toujours d'accord. A incrementer des
      que le HTML produit par le script change de forme. -->
 <script src="contenu-loader.js?v=6" defer></script>
-<script src="carte.js?v=9" defer></script>
+<script src="carte.js?v=11" defer></script>
 <script src="mesure.js?v=6" defer></script>
 
 </body>

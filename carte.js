@@ -193,8 +193,10 @@
   // que de disparaitre — le restaurateur peut en creer depuis son
   // espace sans que personne ait a toucher au code.
   var ORDRE = [
-    // Les plats d'abord, du plus commande au moins.
-    'Burgers', 'Tacos', 'Sandwichs', 'Bowls', 'Salades',
+    // Les plats d'abord, du plus commande au moins. Le KSM Crousty a
+    // sa propre section depuis le 2026-09-12, juste apres les burgers :
+    // c'est le plat qui porte le nom de la maison.
+    'Burgers', 'KSM Crousty', 'Tacos', 'Sandwichs', 'Bowls', 'Salades',
     // Puis ce qui accompagne.
     'Snacking', 'Frites',
     // Puis la fin de repas, dans l'ordre ou on la commande.
@@ -407,6 +409,22 @@
     var nom = (p.nom || '').toLowerCase();
     var groupes = [];
 
+    /* LE KSM CROUSTY (2026-09-12) : riz, poulet croustillant, sauce
+       Tasty, et UNE sauce au choix en plus — c'est sa recette.
+
+       Il etait range dans « Tacos », et heritait donc des questions
+       d'un tacos : « Votre viande », alors que le poulet est la
+       recette, et deux sauces au lieu d'une. Il a desormais sa propre
+       section. On le reconnait au NOM et non a la categorie, pour que
+       la fiche soit juste avant comme apres le changement en base. */
+    if (/crousty/.test(nom)) {
+      groupes.push({
+        titre: 'Votre sauce en plus', aide: 'Une seule, offerte.',
+        type: 'unique', max: 1, requis: true, choix: saucesOffertes()
+      });
+      return groupes;
+    }
+
     if (cat.indexOf('tacos') !== -1) {
       var double = /maxi|double/.test(nom);
       groupes.push({
@@ -558,7 +576,13 @@
 
     var groupes = Object.create(null);
     produits.forEach(function (p) {
-      var cat = (p.categorie || 'Autres').trim();
+      /* Un produit SANS CATEGORIE est un brouillon de l'espace client,
+         pas un plat. Il tombait dans une section « Autres » en bas de
+         la carte : le 2026-09-12, les clients y voyaient « Nouveau
+         produit » et un second « KSM CROUSTY » vide. Il reapparait des
+         que le restaurateur lui donne une categorie. */
+      if (!String(p.categorie || '').trim()) return;
+      var cat = p.categorie.trim();
       if (cat === CAT_SUP) return;
       (groupes[cat] || (groupes[cat] = [])).push(p);
     });
@@ -800,7 +824,11 @@
   function accepteSupplements(p) {
     if (!supplements.length) return false;
     var cat = (p.categorie || '').toLowerCase();
-    if (cat.indexOf('burger') === -1 && cat.indexOf('tacos') === -1) return false;
+    /* Le KSM Crousty garde ses supplements en sortant des tacos :
+       sa nouvelle section ne devait lui retirer que la question de
+       viande, pas le fromage ou la garniture en plus. */
+    var crousty = /crousty/i.test(p.nom || '');
+    if (!crousty && cat.indexOf('burger') === -1 && cat.indexOf('tacos') === -1) return false;
     // Une fois les filtres passes, il peut ne rien rester : pas de titre
     // « Suppléments » au-dessus du vide.
     return supplementsPour(p).length > 0;
@@ -848,7 +876,7 @@
   function accepteMenu(p) {
     if (!supplementMenu()) return false;
     var cat = (p.categorie || '').toLowerCase();
-    return /burger|sandwich|tacos/.test(cat);
+    return /burger|sandwich|tacos/.test(cat) || /crousty/i.test(p.nom || '');
   }
 
   function blocMenu(p) {
