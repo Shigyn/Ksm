@@ -487,7 +487,17 @@
     // Ecrire '/Ksm/' marchait en ligne et echouait partout ailleurs.
     navigator.serviceWorker.getRegistration()
       .then(function (r) { return r ? r.pushManager.getSubscription() : null; })
-      .then(function (ab) { majBoutonPush(ab ? 'actif' : 'inactif'); })
+      .then(function (ab) {
+        majBoutonPush(ab ? 'actif' : 'inactif');
+        /* L'ecran disait « Alertes activees » des que l'APPAREIL avait
+           un abonnement, meme si le serveur ne l'avait plus : personne
+           ne pouvait voir que plus rien n'etait envoye. On renvoie donc
+           l'abonnement a chaque ouverture — c'est sans effet s'il est
+           deja connu, et ca repare tout seul s'il avait disparu. */
+        if (ab) appel('abonner_push', { abonnement: ab.toJSON() }).catch(function (e) {
+          console.warn('Reenregistrement des alertes impossible', e);
+        });
+      })
       .catch(function () { majBoutonPush('inactif'); });
   }
 
@@ -571,33 +581,39 @@
      veille. Ca, seul un vrai push venu du serveur le dit — c'est le
      trajet suivant, et c'est la qu'il faut chercher si ce test-ci
      passe et que les commandes ne sonnent toujours pas. */
+  /* LE TEST PASSE PAR LE SERVEUR (2026-09-13). L'ancien test affichait
+     la notification depuis la page : il reussissait sur l'iPad de KSM
+     alors que les vraies alertes n'arrivaient pas. Celui-ci demande au
+     serveur d'envoyer une vraie notification a CET appareil, dix
+     secondes plus tard : on verrouille l'ecran et on attend. */
   function testerAlerte() {
     var b = $('#test-btn');
-    if (!('Notification' in window)) return;
+    if (!pushPossible()) return;
 
-    Notification.requestPermission().then(function (perm) {
-      if (perm !== 'granted') {
-        b.textContent = 'Refus\u00e9';
-        return;
-      }
-      return navigator.serviceWorker.ready.then(function (r) {
-        return r.showNotification('Test KSM', {
-          body: 'Si vous lisez ceci, les alertes fonctionnent sur cet appareil.',
-          icon: 'icone-resto-192.png',
-          badge: 'icone-resto-192.png',
-          tag: 'test',
-          renotify: true,
-          vibrate: [180, 90, 180],
-          data: { url: 'restaurant.html' }
+    navigator.serviceWorker.getRegistration()
+      .then(function (r) { return r ? r.pushManager.getSubscription() : null; })
+      .then(function (ab) {
+        if (!ab) {
+          alert('Les alertes ne sont pas activ\u00e9es sur cet appareil. Appuyez d\u2019abord sur \u00ab Activer les alertes \u00bb.');
+          return;
+        }
+        b.disabled = true;
+        b.textContent = 'Envoi\u2026';
+        return appel('tester_push', { abonnement: ab.toJSON(), delai: 10 }).then(function () {
+          b.textContent = 'Verrouillez l\u2019\u00e9cran\u2026';
+          note('Test envoy\u00e9 par le serveur. <b>Verrouillez l\u2019appareil maintenant</b> : ' +
+               'une notification \u00ab Test KSM \u00bb doit arriver dans 10 secondes. ' +
+               'Si rien n\u2019arrive, allez dans R\u00e9glages \u2192 Notifications \u2192 KSM et ' +
+               'v\u00e9rifiez que tout est autoris\u00e9 (\u00e9cran verrouill\u00e9, banni\u00e8res, sons), ' +
+               'et qu\u2019aucun mode Concentration n\u2019est actif.');
+          setTimeout(function () { b.disabled = false; b.textContent = 'Tester l\u2019alerte'; }, 15000);
         });
-      }).then(function () {
-        b.textContent = 'Envoy\u00e9e \u2713';
-        setTimeout(function () { b.textContent = 'Tester l\u2019alerte'; }, 4000);
+      })
+      .catch(function (e) {
+        b.disabled = false;
+        b.textContent = 'Tester l\u2019alerte';
+        alert('Le test n\u2019a pas pu partir : ' + (e && e.message ? e.message : 'erreur inconnue'));
       });
-    }).catch(function (e) {
-      b.textContent = 'Erreur';
-      console.warn('Test d alerte impossible', e);
-    });
   }
 
   $('#test-btn').addEventListener('click', testerAlerte);
