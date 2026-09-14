@@ -234,6 +234,32 @@
      ================================================================= */
   var FROMAGES = /^(cheddar|raclette|boursin|kiri|ch[eè]vre|mozzarella|emmental|comt[eé]|bleu)/i;
 
+  /* SUPPLEMENTS RESERVES A UN PLAT (2026-09-15, demandes de Kassim
+     relayees par Nicolas). Ils vivent dans la meme categorie
+     « Suppléments » pour garder leur prix en base (le serveur recalcule
+     le total depuis `produits`), mais ne s'affichent que sur leur plat :
+      - le riz et les tenders en plus, a 2 €, sur le KSM Crousty ;
+      - le Nutella, le Kinder Bueno et la chantilly, sur la gaufre ;
+     Et trois supplements que le burger ne propose plus. */
+  var SUP_CROUSTY = /^(riz|tenders) en plus$/i;
+  var SUP_GAUFRE = /^(nutella|kinder bueno|chantilly)$/i;
+  var SUP_PAS_BURGER = /^(cornichons|oignons frits|sauce suppl[eé]mentaire)$/i;
+  var SAUCE_EN_PLUS = /^sauce suppl[eé]mentaire$/i;
+
+  function supParNom(re) {
+    for (var i = 0; i < supplements.length; i++) {
+      if (re.test(String(supplements[i].nom).trim())) return supplements[i];
+    }
+    return null;
+  }
+
+  function fromagesAuChoix() {
+    return supplements
+      .filter(function (x) { return FROMAGES.test(x.nom) && Number(x.prix) >= 1; })
+      .map(function (x) { return x.nom; })
+      .sort(ordreFr);
+  }
+
   function familleSup(sup) {
     var prix = Number(sup.prix);
     if (prix >= 3) return 'viande';
@@ -301,7 +327,8 @@
       .filter(function (x) {
         return String(x.categorie || '').trim() === 'Boissons'
           && x.disponible !== false
-          && /33\s*cl/i.test(x.nom)
+          //  L'eau en bouteille (50 cl) entre aussi dans le menu (2026-09-15).
+          && (/33\s*cl/i.test(x.nom) || /\beau\b/i.test(x.nom))
           && Number(x.prix) <= 2.5;
       })
       .map(function (x) { return x.nom; })
@@ -384,9 +411,25 @@
      son espace, les options suivent sans que personne y touche. */
   function retirables(p) {
     if (!p.description) return [];
+    /* Les descriptions redigees en phrases (« genereusement garnis de
+       cheddar fondant, de salade fraiche, de confit d'oignons et de
+       cornichons ») donnaient « Sans de salade fraiche » sur le Bazooka
+       (2026-09-15). On coupe aussi sur « et de », on retire les
+       articles et les tournures d'annonce, et la phrase de fin. */
     return p.description
-      .split(/[,;]|·/)
-      .map(function (x) { return x.replace(/[.…]+$/, '').trim(); })
+      .split(/\.\s/)[0]
+      .split(/[,;]|·|\s+et\s+/)
+      .map(function (x) {
+        return x
+          .trim()
+          .replace(/[.…]+$/, '')
+          .replace(/^.*\bgarni(e|s|es)?\s+de\s+/i, '')
+          .replace(/^(le tout\s+)?(relev[ée]s?|accompagn[ée]s?)\s+(par|de)\s+/i, '')
+          .replace(/^(de la|de l’|de l'|des|du|de|d’|d'|avec)\s*/i, '')
+          .trim();
+      })
+      // « notre sauce burger » est la recette annoncee, pas un ingredient a retirer.
+      .filter(function (x) { return !/\bnotre\b/i.test(x); })
       .filter(function (x) {
         if (x.length < 3 || x.length > 28) return false;
         if (SOCLE.test(x)) return false;
@@ -425,6 +468,31 @@
       return groupes;
     }
 
+    /* LA GAUFRE (2026-09-15) : sucre 4 €, Nutella 4,50 €, Kinder Bueno
+       5 €, chantilly + 0,50 €. Le prix de base en base est celui de la
+       gaufre au sucre ; Nutella, Kinder Bueno et chantilly sont des
+       supplements a 0,50 €, 1 € et 0,50 €, ajoutes selon le choix. */
+    if (/gaufre/.test(nom)) {
+      var nutella = supParNom(/^nutella$/i);
+      var bueno = supParNom(/^kinder bueno$/i);
+      var chantilly = supParNom(/^chantilly$/i);
+      var garnitures = ['Sucre'];
+      var prixGarniture = Object.create(null);
+      if (nutella) { garnitures.push('Nutella'); prixGarniture.Nutella = nutella; }
+      if (bueno) { garnitures.push('Kinder Bueno'); prixGarniture['Kinder Bueno'] = bueno; }
+      groupes.push({
+        titre: 'Votre gaufre', aide: 'Au choix.',
+        type: 'unique', max: 1, requis: true, choix: garnitures, defaut: 'Sucre', prixSup: prixGarniture
+      });
+      if (chantilly) {
+        groupes.push({
+          titre: 'En plus', aide: 'Facultatif.',
+          type: 'multi', max: 1, requis: false, choix: ['Chantilly'], prixSup: { Chantilly: chantilly }
+        });
+      }
+      return groupes;
+    }
+
     if (cat.indexOf('tacos') !== -1) {
       var double = /maxi|double/.test(nom);
       groupes.push({
@@ -447,10 +515,30 @@
          bloque a l'attendre. La ligne payante a 0,50 € reste dans
          les supplements pour une TROISIEME sauce ou un pot en
          plus. */
-      groupes.push({
-        titre: 'Vos sauces', aide: 'Une ou deux, offertes.',
-        type: 'multi', min: 1, max: 2, requis: true, choix: saucesOffertes()
-      });
+      /* LE MAXI TACOS (2026-09-15) : UNE sauce offerte, la deuxieme a
+         0,50 € — c'est la « Sauce supplementaire » de la base, et le
+         client choisit laquelle. Le tacos simple garde ses deux
+         sauces offertes. */
+      var sauceEnPlus = double ? supParNom(SAUCE_EN_PLUS) : null;
+      if (sauceEnPlus) {
+        groupes.push({
+          titre: 'Votre sauce', aide: 'Une seule, offerte.',
+          type: 'unique', max: 1, requis: true, choix: saucesOffertes()
+        });
+        var prixDeuxieme = Object.create(null);
+        saucesOffertes().forEach(function (x) { prixDeuxieme[x] = sauceEnPlus; });
+        groupes.push({
+          titre: 'Une deuxième sauce', aide: '+ ' + euros(sauceEnPlus.prix) + ', facultatif.',
+          type: 'unique', max: 1, requis: false,
+          choix: ['Pas de deuxième sauce'].concat(saucesOffertes()),
+          defaut: 'Pas de deuxième sauce', muet: ['Pas de deuxième sauce'], prixSup: prixDeuxieme
+        });
+      } else {
+        groupes.push({
+          titre: 'Vos sauces', aide: 'Une ou deux, offertes.',
+          type: 'multi', min: 1, max: 2, requis: true, choix: saucesOffertes()
+        });
+      }
     }
 
     if (nom.indexOf('bowl') !== -1) {
@@ -465,6 +553,21 @@
       groupes.push({
         titre: 'Votre sauce', aide: 'Une seule, offerte.',
         type: 'unique', max: 1, requis: true, choix: saucesOffertes()
+      });
+      /* Fromage au choix et oignons crispy avec ou sans (2026-09-15),
+         compris dans le prix du bowl. */
+      var fromagesBowl = fromagesAuChoix();
+      if (fromagesBowl.length) {
+        groupes.push({
+          titre: 'Votre fromage', aide: 'Un au choix, compris.',
+          type: 'unique', max: 1, requis: true, choix: fromagesBowl
+        });
+      }
+      groupes.push({
+        titre: 'Oignons crispy', aide: 'Compris.',
+        type: 'unique', max: 1, requis: true,
+        choix: ['Avec oignons crispy', 'Sans oignons crispy'],
+        defaut: 'Avec oignons crispy', muet: ['Avec oignons crispy']
       });
     }
 
@@ -774,6 +877,7 @@
       produit: p, quantite: 1,
       choisi: Object.create(null),
       sup: Object.create(null),
+      supNote: Object.create(null),     // la sauce choisie, sur la ligne « Sauce supplementaire »
       menuBoisson: null
     };
 
@@ -850,11 +954,24 @@
   function supplementsPour(p) {
     var cat = (p.categorie || '').toLowerCase();
     var burger = cat.indexOf('burger') !== -1 || cat.indexOf('sandwich') !== -1;
+    var crousty = /crousty/i.test(p.nom || '');
+    var maxi = cat.indexOf('tacos') !== -1 && /maxi|double/i.test(p.nom || '');
 
     var retenus = supplements.filter(function (sup) {
+      var n = String(sup.nom).trim();
       if (Number(sup.prix) <= 0) return false;
       // La formule menu a son propre encadre, en tete de fiche.
-      if (MENU_SUP.test(String(sup.nom).trim())) return false;
+      if (MENU_SUP.test(n)) return false;
+      // Les supplements de la gaufre passent par ses propres choix.
+      if (SUP_GAUFRE.test(n)) return false;
+      /* LE KSM CROUSTY (2026-09-15) : seulement le riz et les tenders
+         en plus, et les fromages. */
+      if (crousty) return SUP_CROUSTY.test(n) || familleSup(sup) === 'fromage';
+      if (SUP_CROUSTY.test(n)) return false;
+      // Le burger ne propose plus cornichons, oignons frits ni sauce en plus.
+      if (burger && SUP_PAS_BURGER.test(n)) return false;
+      // Sur le maxi tacos, la deuxieme sauce a son propre choix.
+      if (maxi && SAUCE_EN_PLUS.test(n)) return false;
       if (burger && familleSup(sup) === 'viande' && !VIANDE_BURGER.test(sup.nom)) return false;
       return true;
     });
@@ -876,7 +993,9 @@
   function accepteMenu(p) {
     if (!supplementMenu()) return false;
     var cat = (p.categorie || '').toLowerCase();
-    return /burger|sandwich|tacos/.test(cat) || /crousty/i.test(p.nom || '');
+    // Le KSM Crousty ne se prend plus en menu (2026-09-15).
+    if (/crousty/i.test(p.nom || '')) return false;
+    return /burger|sandwich|tacos/.test(cat);
   }
 
   function blocMenu(p) {
@@ -1040,6 +1159,22 @@
 
       input.addEventListener('change', function () {
         var liste = ficheEtat.choisi[index];
+        /* Un choix qui a un prix (gaufre au Nutella, deuxieme sauce du
+           maxi tacos) ajoute son supplement ; on retire d'abord ceux
+           du meme groupe, pour qu'un changement d'avis ne facture pas
+           deux fois. */
+        if (grp.prixSup) {
+          var suivant = grp.type === 'unique' ? [valeur]
+            : (input.checked ? liste.concat([valeur]) : liste.filter(function (v) { return v !== valeur; }));
+          Object.keys(grp.prixSup).forEach(function (k) {
+            delete ficheEtat.sup[grp.prixSup[k].id];
+            delete ficheEtat.supNote[grp.prixSup[k].id];
+          });
+          suivant.forEach(function (v) {
+            var s = grp.prixSup[v];
+            if (s) { ficheEtat.sup[s.id] = s; ficheEtat.supNote[s.id] = v; }
+          });
+        }
         if (grp.type === 'unique') {
           ficheEtat.choisi[index] = [valeur];
         } else if (input.checked) {
@@ -1057,8 +1192,16 @@
         majPied();
       });
 
+      if (grp.defaut === valeur) {
+        input.checked = true;
+        ficheEtat.choisi[index] = [valeur];
+      }
+
       label.appendChild(input);
       label.appendChild(creer('span', null, grp.type === 'sans' ? 'Sans ' + valeur.toLowerCase() : valeur));
+      if (grp.prixSup && grp.prixSup[valeur]) {
+        label.appendChild(creer('span', 'opt-prix', '+ ' + euros(grp.prixSup[valeur].prix)));
+      }
       opts.appendChild(label);
     });
 
@@ -1140,6 +1283,11 @@
       var choisis = ficheEtat.choisi[i];
       if (!choisis.length) return;
       choisis.forEach(function (v) {
+        // « Pas de deuxième sauce », « Avec oignons crispy » : rien a dire a la cuisine.
+        if (grp.muet && grp.muet.indexOf(v) !== -1) return;
+        /* La deuxieme sauce part sur SA ligne payante, pas dans les
+           options du plat : sinon la cuisine lirait deux fois la meme. */
+        if (grp.prixSup && grp.prixSup[v] && SAUCE_EN_PLUS.test(String(grp.prixSup[v].nom))) return;
         options.push(grp.type === 'sans' ? 'sans ' + v.toLowerCase() : v);
       });
     });
@@ -1168,6 +1316,9 @@
          rappeler le client pour savoir quoi mettre dans le sac. */
       if (MENU_SUP.test(String(sup[id].nom).trim()) && ficheEtat.menuBoisson) {
         notes.push(ficheEtat.menuBoisson);
+      }
+      if (ficheEtat.supNote && ficheEtat.supNote[id] && SAUCE_EN_PLUS.test(String(sup[id].nom))) {
+        notes.push(ficheEtat.supNote[id]);
       }
       ajouter(sup[id], qte, notes);
     });
