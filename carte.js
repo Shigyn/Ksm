@@ -149,6 +149,9 @@
        fromage, sauce, frites, oignons frits »). La photo maison
        montre une salade au poulet : ce n'est pas le meme plat, et
        c'etait deja la vignette de la Salade Cesar juste au-dessus. */
+    /* Le Maxi Bowl attend sa vraie photo (2026-09-16) : emplacement
+       vide plutot qu'une photo de banque qui passerait pour la sienne. */
+    [/maxi\s*bowl/i,               null],
     [/bowl/i,                       U + 'photo-1546069901-ba9599a7e63c' + Q],
     [/salade/i,                     'plats/salade-cesar.webp'],
 
@@ -245,6 +248,14 @@
   var SUP_GAUFRE = /^(nutella|kinder bueno|chantilly)$/i;
   var SUP_PAS_BURGER = /^(cornichons|oignons frits|sauce suppl[eé]mentaire)$/i;
   var SAUCE_EN_PLUS = /^sauce suppl[eé]mentaire$/i;
+
+  /* « Riz en plus » et « Tenders en plus » gardent leur nom en base :
+     il existe deja un supplement « Tenders » a 3 € (viande du tacos),
+     et deux produits du meme nom se confondraient. Le client, lui, lit
+     « Riz » et « Tenders » sous l'intitule Supplements (2026-09-16). */
+  function nomSupplement(nom) {
+    return String(nom).replace(/\s+en plus$/i, '');
+  }
 
   function supParNom(re) {
     for (var i = 0; i < supplements.length; i++) {
@@ -542,13 +553,18 @@
     }
 
     if (nom.indexOf('bowl') !== -1) {
+      // Le Maxi Bowl (2026-09-16) : le meme bowl, double portion et
+      // DEUX viandes au choix — comme le maxi tacos.
+      var maxiBowl = /maxi/.test(nom);
       groupes.push({
         titre: 'Votre base', aide: 'Frite ou salade.',
         type: 'unique', max: 1, requis: true, choix: ['Frite', 'Salade']
       });
       groupes.push({
-        titre: 'Votre viande', aide: 'Choisissez-en une.',
-        type: 'unique', max: 1, requis: true, choix: viandesAuChoix()
+        titre: maxiBowl ? 'Vos deux viandes' : 'Votre viande',
+        aide: maxiBowl ? 'Choisissez-en deux.' : 'Choisissez-en une.',
+        type: maxiBowl ? 'multi' : 'unique', max: maxiBowl ? 2 : 1,
+        requis: true, choix: viandesAuChoix()
       });
       groupes.push({
         titre: 'Votre sauce', aide: 'Une seule, offerte.',
@@ -1082,7 +1098,7 @@
           majPied();
         });
         label.appendChild(input);
-        label.appendChild(creer('span', null, sup.nom));
+        label.appendChild(creer('span', null, nomSupplement(sup.nom)));
         // Le prix a droite, aligne : on compare d'un coup d'oeil ce que
         // coute chaque ajout sans lire ligne a ligne.
         label.appendChild(creer('span', 'opt-prix', '+ ' + euros(sup.prix)));
@@ -1641,7 +1657,7 @@
     lignesPanier().forEach(function (l) {
       var d = creer('div', 'recap-l');
       var g = document.createElement('span');
-      g.appendChild(document.createTextNode(l.quantite + ' × ' + l.produit.nom));
+      g.appendChild(document.createTextNode(l.quantite + ' × ' + nomSupplement(l.produit.nom)));
       if (l.options.length) {
         var o = creer('span', 'ligne-perso', l.options.join(', '));
         o.style.display = 'block';
@@ -1725,6 +1741,7 @@
     var nom = $('#f-nom').value.trim();
     var tel = $('#f-tel').value.trim();
     var heure = $('#f-heure').value;
+    var commentaire = $('#f-commentaire').value.trim();
 
     if (nom.length < 2) return erreur('Merci d’indiquer votre nom.');
     // Un numero francais fait dix chiffres ; on compte les chiffres
@@ -1757,6 +1774,7 @@
         nom_client: nom,
         telephone_client: tel,
         heure_retrait: heure,
+        commentaire: commentaire,
         panier: lignesPanier().map(function (l) {
           return { produit_id: l.produit.id, quantite: l.quantite, options: l.options };
         })

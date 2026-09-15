@@ -875,13 +875,15 @@ a { color: inherit }
 
 .champ { margin-bottom: 15px }
 .champ label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px }
-.champ input, .champ select {
+.champ .facultatif { font-weight: 400; color: var(--gris) }
+.champ textarea { resize: vertical; min-height: 84px; font-family: inherit; line-height: 1.45 }
+.champ input, .champ select, .champ textarea {
   width: 100%; height: 48px; padding: 0 15px;
   border: 1px solid var(--trait); border-radius: 12px;
   font-family: var(--texte); font-size: 16px; color: var(--encre); background: var(--sombre);
   border-color: var(--trait-fort);
 }
-.champ input:focus, .champ select:focus { outline: none; border-color: var(--or); box-shadow: 0 0 0 3px rgba(212,175,55,.18) }
+.champ input:focus, .champ select:focus, .champ textarea:focus { outline: none; border-color: var(--or); box-shadow: 0 0 0 3px rgba(212,175,55,.18) }
 .champ-aide { font-size: 13px; color: var(--gris); margin-top: 5px }
 /* Piege a robots : jamais affiche, jamais lu par un lecteur d'ecran. */
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden }
@@ -1429,6 +1431,10 @@ a { color: inherit }
         <label for="f-heure">À récupérer</label>
         <select id="f-heure" name="heure"></select>
       </div>
+      <div class="champ">
+        <label for="f-commentaire">Un message pour le restaurant <span class="facultatif">(facultatif)</span></label>
+        <textarea id="f-commentaire" name="commentaire" rows="3" maxlength="300" placeholder="Une allergie, une précision…"></textarea>
+      </div>
       <div class="hp" aria-hidden="true">
         <label for="f-site">Ne pas remplir</label>
         <input id="f-site" name="site" type="text" tabindex="-1" autocomplete="off">
@@ -1463,7 +1469,7 @@ a { color: inherit }
      MEME version : les deux sont toujours d'accord. A incrementer des
      que le HTML produit par le script change de forme. -->
 <script src="contenu-loader.js?v=6" defer></script>
-<script src="carte.js?v=12" defer></script>
+<script src="carte.js?v=13" defer></script>
 <script src="mesure.js?v=6" defer></script>
 
 </body>

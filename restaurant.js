@@ -265,6 +265,14 @@
     });
     d.appendChild(arts);
 
+    // --- le message du client : a lire avant de preparer
+    if (c.commentaire) {
+      var msg = el('p', 'cmd-message');
+      msg.appendChild(el('b', null, 'Message : '));
+      msg.appendChild(document.createTextNode(c.commentaire));
+      d.appendChild(msg);
+    }
+
     // --- ce qu'on peut faire
     if (c.statut === 'recue') d.appendChild(zoneAcceptation(c));
     else d.appendChild(actions(c));
