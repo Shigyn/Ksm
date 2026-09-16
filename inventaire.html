@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inventaire — KSM Burger</title>
+<!-- Outil interne du restaurant : jamais dans un resultat de recherche. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0b0c">
+<link rel="icon" href="icone-resto-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="icone-resto-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* Meme noir et meme dore que l'ecran du comptoir. Un pense-bete pour
+     les courses : un nom, un nombre, un moins, un plus. */
+  :root {
+    --noir: #0b0b0c; --sombre: #141416; --carte: #1b1b1e; --trait: #2c2c31;
+    --trait-fort: #70707d; --encre: #f5f3ef; --gris: #9a968e; --or: #d4af37;
+    --rouge: #ff7b8f;
+  }
+  * { box-sizing: border-box }
+  body {
+    margin: 0; background: var(--noir); color: var(--encre);
+    font: 16px/1.4 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+    padding: 0 0 60px;
+  }
+  button { font: inherit; cursor: pointer }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px }
+
+  .tete {
+    position: sticky; top: 0; z-index: 5; background: rgba(11, 11, 12, .94);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--trait); padding: 14px 0;
+  }
+  .tete-ligne { display: flex; align-items: center; gap: 12px }
+  h1 { font: 800 21px/1.1 'Archivo', system-ui, sans-serif; margin: 0; flex: 1 }
+  h1 span { color: var(--gris); font-weight: 700 }
+  .tete a { color: var(--gris); font-size: 14px; text-decoration: none; border: 1px solid var(--trait-fort); border-radius: 999px; padding: 7px 13px }
+  .aide { color: var(--gris); font-size: 13.5px; margin: 8px 0 0 }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 8px }
+  th.famille {
+    text-align: left; padding: 26px 4px 8px; font: 700 12px 'Inter', sans-serif;
+    text-transform: uppercase; letter-spacing: .1em; color: var(--or);
+  }
+  td { border-bottom: 1px solid var(--trait); padding: 8px 4px; vertical-align: middle }
+  td.nom { font-weight: 500 }
+  td.qte { width: 1%; white-space: nowrap }
+  tr[data-vide] td.nom { color: var(--rouge) }
+
+  .pas { display: flex; align-items: center; gap: 6px }
+  .pas button {
+    width: 46px; height: 46px; border-radius: 12px; border: 1px solid var(--trait-fort);
+    background: var(--sombre); color: var(--encre); font-size: 24px; line-height: 1;
+    display: grid; place-items: center; touch-action: manipulation;
+  }
+  .pas button:active { background: var(--carte); transform: scale(.96) }
+  .pas .plus { border-color: var(--or); color: var(--or) }
+  .n { min-width: 42px; text-align: center; font: 700 20px 'Archivo', sans-serif; font-variant-numeric: tabular-nums }
+  tr[data-vide] .n { color: var(--rouge) }
+</style>
+</head>
+<body>
+
+<header class="tete">
+  <div class="wrap">
+    <div class="tete-ligne">
+      <h1>KSM <span>Inventaire</span></h1>
+      <a href="restaurant.html">Commandes</a>
+    </div>
+    <p class="aide">Pense-bête pour les courses. Les nombres restent enregistrés sur cet appareil. En rouge : il n'en reste plus.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <table>
+    <tbody id="liste"></tbody>
+  </table>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  /* Les ingredients, tires de la carte en ligne (2026-09-16).
+     Pour en ajouter ou en retirer un : modifier cette liste. */
+  var FAMILLES = [
+    ['Pains et bases', ['Pains burger', 'Pains sandwich', 'Galettes tacos', 'Riz', 'Frites', 'Rösti de pomme de terre']],
+    ['Viandes et poissons', ['Steaks hachés 120 g', 'Steaks végétariens', 'Poulet pané (burger)', 'Poulet croustillant (Crousty)', 'Filets de colin panés', 'Bacon', 'Lardons', 'Escalopes', 'Kebab', 'Viande hachée', 'Merguez', 'Cordons bleus', 'Tenders', 'Nuggets']],
+    ['Fromages', ['Cheddar', 'Raclette', 'Chèvre', 'Boursin', 'Kiri']],
+    ['Légumes et garnitures', ['Salade verte', 'Tomates cerises', 'Confit d’oignons', 'Cornichons', 'Oignons frits', 'Œufs', 'Miel', 'Noix', 'Persil']],
+    ['Sauces', ['Sauce burger', 'Sauce Filet-o-Fish', 'Sauce Tasty', 'Sauce gruyère', 'Algérienne', 'Barbecue', 'Curry', 'Harissa', 'Ketchup', 'Mayonnaise', 'Moutarde', 'Samouraï', 'Sauce blanche', 'Tartare']],
+    ['Snacking', ['Bouchées camembert', 'Chili cheese', 'Jalapeños', 'Sticks de mozzarella']],
+    ['Desserts', ['Gaufres', 'Sucre', 'Nutella', 'Kinder Bueno', 'Chantilly', 'Donuts', 'Tartes au Daim', 'Tiramisus']],
+    ['Boissons', ['Coca-Cola 33 cl', 'Coca-Cola cherry 33 cl', 'Coca-Cola zero 33 cl', 'Eau minérale 50 cl', 'Ice Tea 33 cl', 'Orangina 33 cl']],
+    ['Menu enfant', ['Eau aromatisée', 'Compotes']]
+  ];
+
+  var CLE = 'ksm_inventaire_v1';
+  var stock = {};
+  try { stock = JSON.parse(localStorage.getItem(CLE)) || {}; } catch (e) { stock = {}; }
+
+  function enregistrer() {
+    try { localStorage.setItem(CLE, JSON.stringify(stock)); } catch (e) { /* stockage indisponible */ }
+  }
+
+  function el(balise, classe, texte) {
+    var e = document.createElement(balise);
+    if (classe) e.className = classe;
+    if (texte != null) e.textContent = texte;
+    return e;
+  }
+
+  var liste = document.getElementById('liste');
+
+  FAMILLES.forEach(function (famille) {
+    var titre = el('tr');
+    var th = el('th', 'famille', famille[0]);
+    th.colSpan = 2;
+    titre.appendChild(th);
+    liste.appendChild(titre);
+
+    famille[1].forEach(function (nom) {
+      var tr = el('tr');
+      var n = el('span', 'n');
+
+      function peindre() {
+        var q = stock[nom] || 0;
+        n.textContent = q;
+        if (q === 0) tr.setAttribute('data-vide', ''); else tr.removeAttribute('data-vide');
+      }
+      function changer(delta) {
+        stock[nom] = Math.max(0, (stock[nom] || 0) + delta);
+        enregistrer();
+        peindre();
+      }
+
+      var moins = el('button', 'moins', '−');
+      moins.type = 'button';
+      moins.setAttribute('aria-label', 'Un de moins : ' + nom);
+      moins.addEventListener('click', function () { changer(-1); });
+
+      var plus = el('button', 'plus', '+');
+      plus.type = 'button';
+      plus.setAttribute('aria-label', 'Un de plus : ' + nom);
+      plus.addEventListener('click', function () { changer(1); });
+
+      var pas = el('div', 'pas');
+      pas.appendChild(moins); pas.appendChild(n); pas.appendChild(plus);
+
+      var tdNom = el('td', 'nom', nom);
+      var tdQte = el('td', 'qte');
+      tdQte.appendChild(pas);
+      tr.appendChild(tdNom);
+      tr.appendChild(tdQte);
+      liste.appendChild(tr);
+      peindre();
+    });
+  });
+})();
+</script>
+</body>
+</html>
