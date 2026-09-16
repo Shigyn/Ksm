@@ -977,7 +977,6 @@
     var burger = cat.indexOf('burger') !== -1 || cat.indexOf('sandwich') !== -1;
     var crousty = /crousty/i.test(p.nom || '');
     var maxi = cat.indexOf('tacos') !== -1 && /maxi|double/i.test(p.nom || '');
-    var tacos = cat.indexOf('tacos') !== -1;
     var bowlOuSandwich = cat.indexOf('bowl') !== -1 || cat.indexOf('sandwich') !== -1;
 
     var retenus = supplements.filter(function (sup) {
@@ -991,10 +990,10 @@
          en plus, et les fromages. */
       if (crousty) return SUP_CROUSTY.test(n) || familleSup(sup) === 'fromage';
       if (SUP_CROUSTY.test(n)) return false;
-      /* LA SAUCE GRUYERE (2026-09-16) : 1 €, sur les tacos, les bowls et
-         les sandwichs — et rien d'autre sur les bowls et les sandwichs. */
+      /* LA SAUCE GRUYERE (2026-09-16) : 1 €. Deja sur les burgers et les
+         tacos (ex « Gruyère maison », renommee), ajoutee aux bowls et aux
+         sandwichs — ou c'est le seul supplement. */
       if (bowlOuSandwich) return SUP_GRUYERE.test(n);
-      if (SUP_GRUYERE.test(n) && !tacos) return false;
       // Le burger ne propose plus cornichons, oignons frits ni sauce en plus.
       if (burger && SUP_PAS_BURGER.test(n)) return false;
       // Sur le maxi tacos, la deuxieme sauce a son propre choix.
