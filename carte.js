@@ -619,6 +619,18 @@
       });
     }
 
+    /* Tacos et maxi tacos : on peut retirer la salade (2026-09-16).
+       Seulement elle : la viande, la frite et la sauce ont deja leurs
+       propres choix. EN TETE de fiche, au-dessus des viandes : c'est
+       la premiere chose que le client lit. */
+    if (/tacos/.test(cat)) {
+      groupes.unshift({
+        titre: 'Retirer un ingrédient',
+        aide: 'Facultatif, sans supplément.',
+        type: 'sans', max: 1, requis: false, choix: ['Salade']
+      });
+    }
+
     var sans = retirables(p);
     if (sans.length && /burger|sandwich/.test(cat)) {
       groupes.push({
@@ -845,17 +857,16 @@
     return boite;
   }
 
-  /* Un « + » sur un plat a options ne peut pas deviner la recette.
-     Deux cas, et un seul est ambigu :
-      - rien de ce plat au panier : on ouvre la fiche, il faut bien
-        choisir une viande avant de commander un tacos ;
-      - deja au panier : on refait le MEME, c'est « la meme chose »
-        et c'est ce qu'on attend d'un bouton +. Pour une autre
-        composition, on ouvre la fiche en touchant la ligne. */
+  /* Un « + » sur un plat personnalisable ouvre TOUJOURS sa fiche
+     (2026-09-16, demande de Kassim). Avant, un plat deja au panier
+     etait refait a l'identique : le client croyait commander un
+     deuxieme tacos « normal » et recevait une copie du premier, sans
+     salade et avec ses deux viandes. Chaque exemplaire se compose
+     donc a nouveau. Les plats sans choix (boissons, desserts)
+     gardent l'ajout direct. */
   function ajouterUn(p, aOptions) {
-    var derniere = derniereVariante(p.id);
-    if (aOptions && !derniere) { ouvrirFiche(p); return; }
-    ajouter(p, 1, derniere ? derniere.options : []);
+    if (aOptions) { ouvrirFiche(p); return; }
+    ajouter(p, 1, []);
   }
 
   function retirerUn(p) {
@@ -1258,7 +1269,8 @@
       majPied();
     });
     pas.appendChild(moins); pas.appendChild(n); pas.appendChild(plus);
-    p.appendChild(pas);
+    // Plat personnalisable : un exemplaire a la fois, chacun se compose.
+    if (!groupes.length) p.appendChild(pas);
 
     var btn = creer('button', 'pill pill-vin');
     btn.type = 'button';
