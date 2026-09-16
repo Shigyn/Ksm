@@ -61,6 +61,24 @@
   .pas .plus { border-color: var(--or); color: var(--or) }
   .n { min-width: 42px; text-align: center; font: 700 20px 'Archivo', sans-serif; font-variant-numeric: tabular-nums }
   tr[data-vide] .n { color: var(--rouge) }
+
+  td.suppr { width: 1%; padding-left: 10px }
+  .suppr button {
+    width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--trait);
+    background: none; color: var(--gris); font-size: 20px; line-height: 1;
+  }
+  .suppr button:active { color: var(--rouge); border-color: var(--rouge) }
+
+  .ajout { margin-top: 34px; padding: 16px; background: var(--sombre); border: 1px solid var(--trait); border-radius: 14px }
+  .ajout h2 { font: 700 15px 'Inter', sans-serif; margin: 0 0 12px }
+  .ajout-ligne { display: flex; flex-wrap: wrap; gap: 8px }
+  .ajout input, .ajout select {
+    font: inherit; color: var(--encre); background: var(--noir); border: 1px solid var(--trait-fort);
+    border-radius: 10px; padding: 12px; min-height: 46px;
+  }
+  .ajout input { flex: 1 1 180px }
+  .ajout select { flex: 1 1 150px }
+  .ajout button { min-height: 46px; padding: 0 20px; border-radius: 10px; border: 0; background: var(--or); color: var(--noir); font-weight: 700 }
 </style>
 </head>
 <body>
@@ -79,15 +97,25 @@
   <table>
     <tbody id="liste"></tbody>
   </table>
+
+  <form class="ajout" id="ajout">
+    <h2>Ajouter un produit</h2>
+    <div class="ajout-ligne">
+      <input id="ajout-nom" type="text" placeholder="Nom du produit" autocomplete="off" required>
+      <select id="ajout-famille" aria-label="Rubrique"></select>
+      <button type="submit">Ajouter</button>
+    </div>
+  </form>
 </main>
 
 <script>
 (function () {
   'use strict';
 
-  /* Les ingredients, tires de la carte en ligne (2026-09-16).
-     Pour en ajouter ou en retirer un : modifier cette liste. */
-  var FAMILLES = [
+  /* La liste DE DEPART, tiree de la carte en ligne (2026-09-16).
+     Des que Kassim ajoute ou supprime un produit, sa liste a lui est
+     enregistree sur l'appareil et remplace celle-ci. */
+  var DEPART = [
     ['Pains et bases', ['Pains burger', 'Pains sandwich', 'Galettes tacos', 'Riz', 'Frites', 'Rösti de pomme de terre']],
     ['Viandes et poissons', ['Steaks hachés 120 g', 'Steaks végétariens', 'Poulet pané (burger)', 'Poulet croustillant (Crousty)', 'Filets de colin panés', 'Bacon', 'Lardons', 'Escalopes', 'Kebab', 'Viande hachée', 'Merguez', 'Cordons bleus', 'Tenders', 'Nuggets']],
     ['Fromages', ['Cheddar', 'Raclette', 'Chèvre', 'Boursin', 'Kiri']],
@@ -100,11 +128,20 @@
   ];
 
   var CLE = 'ksm_inventaire_v1';
+  var CLE_LISTE = 'ksm_inventaire_liste_v1';
   var stock = {};
   try { stock = JSON.parse(localStorage.getItem(CLE)) || {}; } catch (e) { stock = {}; }
 
+  // [[rubrique, [produits]], ...] : la liste enregistree, sinon celle de depart.
+  var FAMILLES = null;
+  try { FAMILLES = JSON.parse(localStorage.getItem(CLE_LISTE)); } catch (e) { FAMILLES = null; }
+  if (!Array.isArray(FAMILLES)) FAMILLES = JSON.parse(JSON.stringify(DEPART));
+
   function enregistrer() {
-    try { localStorage.setItem(CLE, JSON.stringify(stock)); } catch (e) { /* stockage indisponible */ }
+    try {
+      localStorage.setItem(CLE, JSON.stringify(stock));
+      localStorage.setItem(CLE_LISTE, JSON.stringify(FAMILLES));
+    } catch (e) { /* stockage indisponible */ }
   }
 
   function el(balise, classe, texte) {
@@ -115,11 +152,15 @@
   }
 
   var liste = document.getElementById('liste');
+  var choixFamille = document.getElementById('ajout-famille');
 
+  function dessiner() {
+  liste.textContent = '';
   FAMILLES.forEach(function (famille) {
+    if (!famille[1].length) return;
     var titre = el('tr');
     var th = el('th', 'famille', famille[0]);
-    th.colSpan = 2;
+    th.colSpan = 3;
     titre.appendChild(th);
     liste.appendChild(titre);
 
@@ -151,15 +192,55 @@
       var pas = el('div', 'pas');
       pas.appendChild(moins); pas.appendChild(n); pas.appendChild(plus);
 
+      var suppr = el('button', null, '×');
+      suppr.type = 'button';
+      suppr.setAttribute('aria-label', 'Supprimer : ' + nom);
+      suppr.addEventListener('click', function () {
+        if (!confirm('Supprimer « ' + nom + ' » de la liste ?')) return;
+        famille[1] = famille[1].filter(function (x) { return x !== nom; });
+        delete stock[nom];
+        enregistrer();
+        dessiner();
+      });
+
       var tdNom = el('td', 'nom', nom);
       var tdQte = el('td', 'qte');
       tdQte.appendChild(pas);
+      var tdSuppr = el('td', 'suppr');
+      tdSuppr.appendChild(suppr);
       tr.appendChild(tdNom);
       tr.appendChild(tdQte);
+      tr.appendChild(tdSuppr);
       liste.appendChild(tr);
       peindre();
     });
   });
+  }
+
+  /* Ajouter un produit : dans la rubrique choisie, a la fin. Un nom deja
+     present n'est pas ajoute deux fois (le stock serait partage). */
+  FAMILLES.forEach(function (f, i) {
+    var o = el('option', null, f[0]);
+    o.value = i;
+    choixFamille.appendChild(o);
+  });
+
+  document.getElementById('ajout').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var champ = document.getElementById('ajout-nom');
+    var nom = champ.value.trim();
+    if (!nom) return;
+    var existe = FAMILLES.some(function (f) {
+      return f[1].some(function (x) { return x.toLowerCase() === nom.toLowerCase(); });
+    });
+    if (existe) { alert('« ' + nom + ' » est déjà dans la liste.'); return; }
+    FAMILLES[Number(choixFamille.value)][1].push(nom);
+    enregistrer();
+    dessiner();
+    champ.value = '';
+  });
+
+  dessiner();
 })();
 </script>
 </body>
