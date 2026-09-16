@@ -248,6 +248,7 @@
   var SUP_GAUFRE = /^(nutella|kinder bueno|chantilly)$/i;
   var SUP_PAS_BURGER = /^(cornichons|oignons frits|sauce suppl[eé]mentaire)$/i;
   var SAUCE_EN_PLUS = /^sauce suppl[eé]mentaire$/i;
+  var SUP_GRUYERE = /^sauce gruy[eè]re$/i;
 
   /* « Riz en plus » et « Tenders en plus » gardent leur nom en base :
      il existe deja un supplement « Tenders » a 3 € (viande du tacos),
@@ -273,6 +274,8 @@
 
   function familleSup(sup) {
     var prix = Number(sup.prix);
+    // 1 € comme un fromage, mais c'est une sauce : rangee avec les sauces.
+    if (SUP_GRUYERE.test(String(sup.nom).trim())) return 'sauce';
     if (prix >= 3) return 'viande';
     if (prix >= 1) return FROMAGES.test(sup.nom) ? 'fromage' : 'garniture';
     return 'sauce';                       // 0 € offerte, 0,50 € la sauce en plus
@@ -948,7 +951,9 @@
        sa nouvelle section ne devait lui retirer que la question de
        viande, pas le fromage ou la garniture en plus. */
     var crousty = /crousty/i.test(p.nom || '');
-    if (!crousty && cat.indexOf('burger') === -1 && cat.indexOf('tacos') === -1) return false;
+    // Bowls et sandwichs : seulement la sauce gruyere (2026-09-16).
+    var gruyere = cat.indexOf('bowl') !== -1 || cat.indexOf('sandwich') !== -1;
+    if (!crousty && !gruyere && cat.indexOf('burger') === -1 && cat.indexOf('tacos') === -1) return false;
     // Une fois les filtres passes, il peut ne rien rester : pas de titre
     // « Suppléments » au-dessus du vide.
     return supplementsPour(p).length > 0;
@@ -972,6 +977,8 @@
     var burger = cat.indexOf('burger') !== -1 || cat.indexOf('sandwich') !== -1;
     var crousty = /crousty/i.test(p.nom || '');
     var maxi = cat.indexOf('tacos') !== -1 && /maxi|double/i.test(p.nom || '');
+    var tacos = cat.indexOf('tacos') !== -1;
+    var bowlOuSandwich = cat.indexOf('bowl') !== -1 || cat.indexOf('sandwich') !== -1;
 
     var retenus = supplements.filter(function (sup) {
       var n = String(sup.nom).trim();
@@ -984,6 +991,10 @@
          en plus, et les fromages. */
       if (crousty) return SUP_CROUSTY.test(n) || familleSup(sup) === 'fromage';
       if (SUP_CROUSTY.test(n)) return false;
+      /* LA SAUCE GRUYERE (2026-09-16) : 1 €, sur les tacos, les bowls et
+         les sandwichs — et rien d'autre sur les bowls et les sandwichs. */
+      if (bowlOuSandwich) return SUP_GRUYERE.test(n);
+      if (SUP_GRUYERE.test(n) && !tacos) return false;
       // Le burger ne propose plus cornichons, oignons frits ni sauce en plus.
       if (burger && SUP_PAS_BURGER.test(n)) return false;
       // Sur le maxi tacos, la deuxieme sauce a son propre choix.

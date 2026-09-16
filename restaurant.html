@@ -213,6 +213,10 @@
      ligne derriere le nom du plat. */
   .cmd-message { margin: 12px 18px 0; padding: 10px 12px; border-radius: 10px; background: rgba(212,175,55,.12); border: 1px solid rgba(212,175,55,.35); font-size: 15px; line-height: 1.4 }
   .art-opt { display: block; color: var(--or); font-size: 13.5px; font-weight: 600; margin-top: 2px }
+  /* Supplements et menu sous leur plat : une ligne chacun, pas un
+     bloc par ajout. */
+  .art-sup { display: block; color: var(--encre); font-size: 13.5px; font-weight: 600; margin-top: 2px }
+  .art-menu { display: block; color: var(--encre); font-size: 13.5px; font-weight: 600; margin-top: 2px }
 
   .cmd-actions { display: flex; gap: 10px; flex-wrap: wrap; padding: 16px 18px 18px }
   .b {
@@ -313,6 +317,6 @@
      Avec le numero, un index.html en cache demande le carte.js de la
      MEME version : les deux sont toujours d'accord. A incrementer des
      que le HTML produit par le script change de forme. -->
-<script src="restaurant.js?v=9" defer></script>
+<script src="restaurant.js?v=10" defer></script>
 </body>
 </html>

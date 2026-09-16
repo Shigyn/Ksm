@@ -243,29 +243,8 @@
     meta.appendChild(el('span', null, 'Reçue à ' + heureDe(c.date_creation)));
     d.appendChild(meta);
 
-    // --- les plats
-    var arts = el('div', 'cmd-articles');
-    (c.articles || []).forEach(function (a) {
-      var l = el('div', 'art');
-      l.appendChild(el('span', 'art-q', '×' + a.quantite));
-
-      var nom = el('span', 'art-n');
-      // Les options sont accolees au nom par le serveur, entre
-      // parentheses. On les detache pour les mettre en evidence :
-      // « sans oignons » doit se voir, pas se lire.
-      var m = String(a.nom).match(/^(.*?)\s*\((.+)\)$/);
-      if (m) {
-        nom.appendChild(document.createTextNode(m[1]));
-        nom.appendChild(el('span', 'art-opt', m[2]));
-      } else {
-        nom.textContent = a.nom;
-      }
-      l.appendChild(nom);
-      arts.appendChild(l);
-    });
-    d.appendChild(arts);
-
-    // --- le message du client : a lire avant de preparer
+    // --- le message du client, AVANT les plats (2026-09-16) : il se lit
+    // avant de preparer, pas une fois le sac ferme.
     if (c.commentaire) {
       var msg = el('p', 'cmd-message');
       msg.appendChild(el('b', null, 'Message : '));
@@ -273,11 +252,81 @@
       d.appendChild(msg);
     }
 
+    d.appendChild(listePlats(c.articles || []));
+
     // --- ce qu'on peut faire
     if (c.statut === 'recue') d.appendChild(zoneAcceptation(c));
     else d.appendChild(actions(c));
 
     return d;
+  }
+
+  /* Les plats, regroupes (2026-09-16).
+
+     Un supplement ou une formule menu est une LIGNE A PART de la
+     commande (c'est ce qui le rend payant), avec le nom du plat en
+     premiere option : « Cheddar (Le Fleurie) ». Affichees telles
+     quelles, un seul menu burger prenait quatre lignes. On les range
+     donc sous leur plat :
+
+       ×1 Le Fleurie
+          sans miel, sans salade fraiche
+          + Steak supplementaire · + Cheddar
+          Menu : Orangina 33 cl */
+  function listePlats(articles) {
+    var lignes = articles.map(function (a) {
+      // Les options sont accolees au nom par le serveur, entre parentheses.
+      var m = String(a.nom).match(/^(.*?)\s*\((.+)\)$/);
+      return {
+        a: a,
+        nom: m ? m[1] : String(a.nom),
+        options: m ? m[2].split(', ') : [],
+        ajouts: [],
+        rattachee: false
+      };
+    });
+
+    lignes.forEach(function (l) {
+      if (!l.options.length) return;
+      var plat = null;
+      for (var i = 0; i < lignes.length; i++) {
+        var p = lignes[i];
+        if (p !== l && !p.rattachee && p.nom === l.options[0]) { plat = p; break; }
+      }
+      if (!plat) return;
+      plat.ajouts.push(l);
+      l.rattachee = true;
+    });
+
+    var arts = el('div', 'cmd-articles');
+    lignes.forEach(function (l) {
+      if (l.rattachee) return;
+      var ligne = el('div', 'art');
+      ligne.appendChild(el('span', 'art-q', '×' + l.a.quantite));
+
+      var nom = el('span', 'art-n');
+      nom.appendChild(document.createTextNode(l.nom));
+      // « sans oignons » doit se voir, pas se lire.
+      if (l.options.length) nom.appendChild(el('span', 'art-opt', l.options.join(', ')));
+
+      var sups = [];
+      var menus = [];
+      l.ajouts.forEach(function (s) {
+        var qte = s.a.quantite !== l.a.quantite ? s.a.quantite + '× ' : '';
+        var precision = s.options.slice(1).join(', ');
+        if (/^formule menu$/i.test(s.nom)) {
+          menus.push(qte + 'Menu' + (precision ? ' : ' + precision : ''));
+        } else {
+          sups.push('+ ' + qte + s.nom + (precision ? ' (' + precision + ')' : ''));
+        }
+      });
+      if (sups.length) nom.appendChild(el('span', 'art-sup', sups.join(' · ')));
+      menus.forEach(function (t) { nom.appendChild(el('span', 'art-menu', t)); });
+
+      ligne.appendChild(nom);
+      arts.appendChild(ligne);
+    });
+    return arts;
   }
 
   function heureDe(iso) {
