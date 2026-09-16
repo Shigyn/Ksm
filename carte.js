@@ -988,7 +988,8 @@
       if (SUP_GAUFRE.test(n)) return false;
       /* LE KSM CROUSTY (2026-09-15) : seulement le riz et les tenders
          en plus, et les fromages. */
-      if (crousty) return SUP_CROUSTY.test(n) || familleSup(sup) === 'fromage';
+      // + la sauce gruyere (2026-09-16).
+      if (crousty) return SUP_CROUSTY.test(n) || SUP_GRUYERE.test(n) || familleSup(sup) === 'fromage';
       if (SUP_CROUSTY.test(n)) return false;
       /* LA SAUCE GRUYERE (2026-09-16) : 1 €. Deja sur les burgers et les
          tacos (ex « Gruyère maison », renommee), ajoutee aux bowls et aux
