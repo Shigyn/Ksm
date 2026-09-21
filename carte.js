@@ -1827,7 +1827,7 @@
     recue: {
       rond: '<i></i><i></i><i></i>',
       titre: 'Commande envoyée en cuisine',
-      texte: 'En attente de validation par le restaurant. Restez sur cette page : la réponse s’affiche ici toute seule, sans recharger.',
+      texte: 'En attente de validation par le restaurant. Restez sur cette page.',
       libelleHeure: 'Heure demandée'
     },
     acceptee: {
