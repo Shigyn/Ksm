@@ -1639,33 +1639,37 @@
     /* Hors horaires, on ne montre pas un formulaire dont on sait qu'il
        ne menera nulle part. Le panier n'est pas vide pour autant : il
        attend la reouverture. */
-    var d = creneauxDuJour();
-    if (!d.inconnu && !d.creneaux.length) {
-      var suite = prochaineOuverture();
-      $('#modale-boite').innerHTML =
-        '<div class="modale-tete" style="border:0;padding:0">'
-        + '<span></span><button class="fermer" type="button" data-fermer aria-label="Fermer">&times;</button></div>'
-        + '<div class="ok-bloc">'
-        + '<div class="ok-rond" data-s="recue" aria-hidden="true">⏱</div>'
-        + '<h2>C’est fermé pour aujourd’hui</h2>'
-        + (suite
-            ? '<p>Nous rouvrons <strong>' + suite.jour + ' à ' + enHeure(suite.minute) + '</strong>.</p>'
-              + '<p>Votre panier vous attend d’ici là.</p>'
-            : '<p>Les commandes en ligne sont momentanément fermées.</p>')
-        + '<a class="pill pill-vin" style="margin-top:18px" href="tel:+33950948815">Appeler le restaurant</a>'
-        + '</div>';
-      var x = $('#modale-boite [data-fermer]');
-      if (x) x.addEventListener('click', fermerModale);
-      elModale.setAttribute('data-ouvert', '1');
-      document.body.style.overflow = 'hidden';
-      return;
-    }
+    if (estFerme()) { montrerFerme(); return; }
 
     remplirRecap();
     remplirHeures();
     elModale.setAttribute('data-ouvert', '1');
     document.body.style.overflow = 'hidden';
     $('#f-nom').focus();
+  }
+
+  function estFerme() {
+    var d = creneauxDuJour();
+    return !d.inconnu && !d.creneaux.length;
+  }
+
+  function montrerFerme() {
+      var suite = prochaineOuverture();
+      $('#modale-boite').innerHTML =
+        '<div class="modale-tete" style="border:0;padding:0">'
+        + '<span></span><button class="fermer" type="button" data-fermer aria-label="Fermer">&times;</button></div>'
+        + '<div class="ok-bloc">'
+        + '<div class="ok-rond" data-s="recue" aria-hidden="true">⏱</div>'
+        + '<h2>Le restaurant est fermé</h2>'
+        + (suite
+            ? '<p>Reprise des commandes <strong>' + suite.jour + ' à ' + enHeure(suite.minute) + '</strong>.</p>'
+              + '<p>Votre panier vous attend d’ici là.</p>'
+            : '<p>Les commandes en ligne sont momentanément fermées.</p>')
+        + '</div>';
+      var x = $('#modale-boite [data-fermer]');
+      if (x) x.addEventListener('click', fermerModale);
+      elModale.setAttribute('data-ouvert', '1');
+      document.body.style.overflow = 'hidden';
   }
 
   function fermerModale() {
@@ -1781,6 +1785,10 @@
       return erreur('Un instant, votre commande part dans quelques secondes.');
     }
 
+    // Formulaire ouvert avant la fermeture et envoye apres : on dit
+    // que c'est ferme et quand ca rouvre, pas « appelez-nous ».
+    if (estFerme()) { montrerFerme(); return; }
+
     var btn = $('#f-envoyer');
     btn.disabled = true;
     btn.textContent = 'Envoi en cours…';
@@ -1805,7 +1813,11 @@
     })
       .then(function (r) {
         return r.json().then(function (corps) {
-          if (!r.ok) throw new Error(corps && corps.error ? corps.error : 'Erreur ' + r.status);
+          if (!r.ok) {
+            var e = new Error(corps && corps.error ? corps.error : 'Erreur ' + r.status);
+            e.statut = r.status;
+            throw e;
+          }
           return corps;
         });
       })
@@ -1814,6 +1826,11 @@
         console.warn(err);
         btn.disabled = false;
         btn.textContent = 'Envoyer la commande';
+        if (err.statut === 429) {
+          return erreur('Vous avez déjà envoyé plusieurs commandes il y a quelques minutes. '
+            + 'Pour en ajouter une, appelez-nous au 09 50 94 88 15.');
+        }
+        if (estFerme()) return montrerFerme();
         erreur('Votre commande n’a pas pu être envoyée. '
           + 'Appelez-nous au 09 50 94 88 15, nous la prenons tout de suite.');
       });
