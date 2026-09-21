@@ -1826,15 +1826,15 @@
   var ETAPES = {
     recue: {
       rond: '<i></i><i></i><i></i>',
-      titre: 'Commande envoyée',
-      texte: 'Le restaurant va la confirmer dans un instant.',
-      libelleHeure: 'Vous avez demandé'
+      titre: 'Commande envoyée en cuisine',
+      texte: 'En attente de validation par le restaurant. Restez sur cette page : la réponse s’affiche ici toute seule, sans recharger.',
+      libelleHeure: 'Heure demandée'
     },
     acceptee: {
       rond: '🔥',
-      titre: 'Commande acceptée',
-      texte: 'Elle est en cours de préparation.',
-      libelleHeure: 'À récupérer à'
+      titre: 'Commande acceptée !',
+      texte: 'Elle est en préparation.',
+      libelleHeure: 'Venez la chercher à'
     },
     prete: {
       rond: '✓',
@@ -1902,7 +1902,7 @@
       + '<span></span>'
       + '<button class="fermer" type="button" data-fermer aria-label="Fermer">&times;</button>'
       + '</div>'
-      + '<div class="ok-bloc">'
+      + '<div class="ok-bloc" data-s="' + statut + '">'
       + '<div class="ok-rond" data-s="' + statut + '" aria-hidden="true">' + e.rond + '</div>'
       + '<h2>' + e.titre + '</h2>'
       + '<p>' + e.texte + '</p>';
@@ -1926,7 +1926,7 @@
      pour que « c'est prêt » arrive vite, assez rare pour ne pas vider
      la batterie de quelqu'un qui attend vingt minutes. */
   function lancerSuivi(id) {
-    clearInterval(suiviId);
+    clearTimeout(suiviId);
 
     function voir() {
       // Onglet en arriere-plan : personne ne regarde, on ne demande
@@ -1945,6 +1945,10 @@
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (d) {
           if (!d || !d.statut) return;
+          // Le passage a « acceptee » est LE moment attendu : une
+          // vibration previent celui qui a pose son telephone.
+          if (commandeEnCours && commandeEnCours.statut === 'recue' && d.statut === 'acceptee'
+              && navigator.vibrate) navigator.vibrate([180, 90, 180]);
           commandeEnCours = { id: id, heure: d.heure, statut: d.statut };
           majBarreSuivi();
           // Ne repeindre que si l'ecran de suivi est effectivement
@@ -1957,7 +1961,7 @@
           // Commande close : plus rien a suivre, et on oublie la
           // commande pour ne pas rouvrir ce suivi au prochain passage.
           if (d.statut === 'recuperee' || d.statut === 'refusee') {
-            clearInterval(suiviId);
+            clearTimeout(suiviId);
             commandeEnCours = null;
             majBarreSuivi();
             try { localStorage.removeItem('ksm_commande'); } catch (e) {}
@@ -1966,11 +1970,17 @@
         .catch(function () { /* reseau coupe : on reessaie au tour suivant */ });
     }
 
-    suiviId = setInterval(voir, 15000);
+    /* Toutes les 5 secondes tant que la cuisine n'a pas repondu : c'est
+       l'attente qui inquiete, la reponse doit tomber aussitot. Ensuite
+       toutes les 15 secondes suffisent. */
+    function tour() {
+      voir();
+      suiviId = setTimeout(tour, commandeEnCours && commandeEnCours.statut === 'recue' ? 5000 : 15000);
+    }
     document.addEventListener('visibilitychange', function () {
       if (!document.hidden) voir();
     });
-    voir();
+    tour();
   }
 
   /* Au chargement du site, une commande encore en cours rouvre son

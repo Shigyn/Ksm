@@ -934,7 +934,7 @@ a { color: inherit }
    que la cuisine avance. C'est le seul endroit du site ou le client
    revient apres avoir commande : il doit y lire, sans chercher, ou en
    est son repas et a quelle heure venir. */
-.ok-rond[data-s="recue"]          { background: var(--surface); color: var(--encre) }
+.ok-rond[data-s="recue"]          { background: var(--surface); color: var(--encre); display: flex; justify-content: center; align-items: center }
 .ok-rond[data-s="acceptee"] { background: var(--or); color: var(--noir) }
 .ok-rond[data-s="prete"]          { background: #2f8f5b }
 .ok-rond[data-s="refusee"]        { background: var(--surface); color: var(--gris) }
@@ -961,6 +961,9 @@ a { color: inherit }
   font-size: 12px; text-transform: uppercase; letter-spacing: .07em;
   color: var(--gris); margin-bottom: 3px;
 }
+.ok-bloc[data-s="acceptee"] h2 { font-size: 32px }
+.ok-bloc[data-s="acceptee"] .ok-heure { font-size: 34px; padding: 14px 30px; background: var(--or); color: var(--noir); border-color: var(--or) }
+.ok-bloc[data-s="acceptee"] .ok-heure small { color: var(--noir); opacity: .7 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto }
@@ -1469,7 +1472,7 @@ a { color: inherit }
      MEME version : les deux sont toujours d'accord. A incrementer des
      que le HTML produit par le script change de forme. -->
 <script src="contenu-loader.js?v=6" defer></script>
-<script src="carte.js?v=18" defer></script>
+<script src="carte.js?v=19" defer></script>
 <script src="mesure.js?v=6" defer></script>
 
 </body>
