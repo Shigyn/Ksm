@@ -1291,9 +1291,9 @@
     if (!ficheEtat) return;
     var n = $('#fiche-n');
     var btn = $('#fiche-ajouter');
-    if (!n || !btn) return;
-
-    n.textContent = ficheEtat.quantite;
+    if (!btn) return;
+    // Plat personnalisable : pas de compteur (un exemplaire a la fois).
+    if (n) n.textContent = ficheEtat.quantite;
 
     var manque = null;
     ficheEtat.groupes.forEach(function (grp, i) {

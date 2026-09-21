@@ -637,7 +637,10 @@ a { color: inherit }
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 152px), 1fr));
 }
 .opt {
-  display: flex; align-items: center; gap: 10px;
+  /* Case a gauche, nom a droite, prix SOUS le nom : dans une tuile de
+     150 px, un prix a cote du nom l'ecrasait jusqu'a le chevaucher
+     (« Steak supplementaire », « Cheddar »). */
+  display: grid; grid-template-columns: 17px minmax(0, 1fr); align-items: center; column-gap: 10px; row-gap: 2px;
   /* 44 px, la cible tactile minimale. Mesure sur un telephone de
      375 px : les tuiles tombaient a 42 px, deux de trop. Un
      `min-height` plutot qu'un calcul de marge interne — il tient
@@ -668,13 +671,13 @@ a { color: inherit }
 .opt:has(input:focus-visible) { outline: 2px solid var(--or-vif); outline-offset: 2px }
 
 .opt input { flex: none; width: 17px; height: 17px; accent-color: var(--or); margin: 0; cursor: pointer }
-.opt > span:not(.opt-prix) { flex: 1; min-width: 0 }
+.opt > span:not(.opt-prix) { min-width: 0; hyphens: auto; overflow-wrap: break-word }
 
 /* Le prix d'un supplement. Il passe sous le nom quand la tuile est
    etroite plutot que de comprimer le nom : « Steak supplementaire »
    coupe en deux se lit mal. */
 .opt-prix {
-  flex: none; font-family: var(--disp); font-weight: 700; font-size: 13px;
+  grid-column: 2; font-family: var(--disp); font-weight: 700; font-size: 13px;
   color: var(--or); font-variant-numeric: tabular-nums;
 }
 
@@ -1472,7 +1475,7 @@ a { color: inherit }
      MEME version : les deux sont toujours d'accord. A incrementer des
      que le HTML produit par le script change de forme. -->
 <script src="contenu-loader.js?v=6" defer></script>
-<script src="carte.js?v=19" defer></script>
+<script src="carte.js?v=20" defer></script>
 <script src="mesure.js?v=6" defer></script>
 
 </body>
