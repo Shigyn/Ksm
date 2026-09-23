@@ -86,13 +86,19 @@
     }
 
     etatPush();
+    chargerHoraires();
     rafraichir();
-    minuteur = setInterval(rafraichir, 10000);
+    relancer();
 
     // Onglet remis au premier plan : on ne fait pas attendre dix
     // secondes de plus quelqu'un qui vient regarder son ecran.
     document.addEventListener('visibilitychange', function () {
       if (!document.hidden) rafraichir();
+    });
+
+    // Un doigt sur l'ecran veut dire « montre-moi maintenant ».
+    document.addEventListener('click', function () {
+      if (cadence() !== SERVICE) rafraichir();
     });
   }
 
@@ -136,6 +142,102 @@
   // -----------------------------------------------------------------
   //  La liste
   // -----------------------------------------------------------------
+  /* ----------------------------------------------------------------
+     La cadence de l'ecran.
+
+     Chaque interrogation du serveur est facturee. Un ecran laisse
+     allume jour et nuit toutes les dix secondes, c'est 260 000 appels
+     par mois pour un seul comptoir — l'essentiel pendant des heures
+     ou personne ne commande.
+
+       - en service (et la demi-heure autour) : 15 s ;
+       - le reste de la journee               : 2 min ;
+       - la nuit (minuit a 7 h)               : rien du tout.
+
+     Rien n'est perdu pour autant : l'ecran se remet a jour des qu'on
+     le regarde (retour au premier plan) ou qu'on le touche, et la
+     notification poussee previent d'une nouvelle commande meme quand
+     l'ecran dort.
+     ---------------------------------------------------------------- */
+  var SERVICE = 15000, JOURNEE = 120000;
+  var plages = null;   // [[debutMin, finMin], ...] pour aujourd'hui
+  var horairesLe = 0;  // jour ou les horaires ont ete lus
+
+  function minutesMaintenant() {
+    var d = new Date();
+    return d.getHours() * 60 + d.getMinutes();
+  }
+
+  function enService() {
+    if (!plages) return true;   // horaires inconnus : on reste reactif
+    var m = minutesMaintenant();
+    return plages.some(function (p) { return m >= p[0] - 30 && m <= p[1] + 30; });
+  }
+
+  function nuit() {
+    var m = minutesMaintenant();
+    return m < 7 * 60 && !enService();
+  }
+
+  function cadence() {
+    if (enService()) return SERVICE;
+    if (nuit()) return 0;       // 0 = en pause jusqu'au matin
+    return JOURNEE;
+  }
+
+  function relancer() {
+    clearTimeout(minuteur);
+    var c = cadence();
+    if (!c) {
+      // Pause de nuit : on se reveille a 7 h, sans rien demander d'ici la.
+      var d = new Date(); d.setHours(7, 0, 0, 0);
+      if (d <= new Date()) d.setDate(d.getDate() + 1);
+      majPause(true);
+      minuteur = setTimeout(function () { rafraichir(); }, d - new Date());
+      return;
+    }
+    majPause(false);
+    minuteur = setTimeout(function () { rafraichir(); }, c);
+  }
+
+  function majPause(dort) {
+    var t = $('#pouls-txt');
+    if (dort && t) t.textContent = 'En veille jusqu’à 7 h';
+  }
+
+  /* Les horaires viennent de la fiche du site : si Kassim les change
+     depuis son espace, le comptoir suit sans qu'on y touche. Relus une
+     fois par jour, ce qui ne pese rien. */
+  function chargerHoraires() {
+    var jour = new Date().getDate();
+    if (plages && horairesLe === jour) return;
+
+    fetch(config.supabaseUrl + '/rest/v1/contenu_site?client_id=eq.'
+        + config.clientId + '&cle_bloc=like.horaires_%25&select=cle_bloc,valeur', {
+      headers: { apikey: config.supabaseAnonKey, Authorization: 'Bearer ' + config.supabaseAnonKey }
+    })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (lignes) {
+        if (!lignes) return;
+        var noms = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+        var cle = 'horaires_' + noms[new Date().getDay()];
+        var l = lignes.filter(function (x) { return x.cle_bloc === cle; })[0];
+        horairesLe = jour;
+        plages = l ? lire(l.valeur) : null;
+      })
+      .catch(function () { /* hors ligne : on garde la cadence courante */ });
+  }
+
+  // « 11h45-13h30 · 18h30-22h » -> [[705, 810], [1110, 1320]]
+  function lire(texte) {
+    if (!texte || /ferm/i.test(texte)) return [];
+    var p = [], m, re = /(\d{1,2})\s*h\s*(\d{2})?\s*[^\d]{1,3}\s*(\d{1,2})\s*h\s*(\d{2})?/g;
+    while ((m = re.exec(texte))) {
+      p.push([Number(m[1]) * 60 + Number(m[2] || 0), Number(m[3]) * 60 + Number(m[4] || 0)]);
+    }
+    return p.length ? p : null;
+  }
+
   function rafraichir() {
     appel('lister_commandes')
       .then(function (d) {
@@ -157,6 +259,10 @@
       el.classList.add('perdu');
       $('#pouls-txt').textContent = 'Connexion perdue';
     }
+    // Apres l'affichage : la mise en veille doit pouvoir ecraser
+    // « A jour » dans le bandeau, pas l'inverse.
+    chargerHoraires();
+    relancer();
   }
 
   function afficher(commandes) {
@@ -184,7 +290,7 @@
 
     if (!commandes.length) {
       zone.innerHTML = '<div class="vide"><b>Aucune commande en cours</b>'
-        + 'Les nouvelles commandes apparaissent ici toutes les dix secondes.</div>';
+        + 'Les nouvelles commandes apparaissent ici toutes seules.</div>';
       return;
     }
 
