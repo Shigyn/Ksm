@@ -876,6 +876,42 @@ a { color: inherit }
 .recap-total { background: var(--surface); font-weight: 700 }
 .recap-total span:last-child { font-family: var(--disp) }
 
+/* --- Le choix de la formule, en tete de fiche ---------------------
+   Deux cartes plutot qu'une case a cocher : la question « seul ou en
+   menu ? » est la premiere du comptoir, elle merite d'etre posee
+   franchement au lieu d'etre noyee dans les supplements. */
+.formules { display: grid; grid-template-columns: 1fr 1fr; gap: 10px }
+.formule {
+  display: flex; flex-direction: column; gap: 3px; text-align: left;
+  padding: 14px 15px; border: 1px solid var(--trait-fort); border-radius: 14px;
+  background: var(--carte); color: inherit; font: inherit; cursor: pointer;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+.formule:hover { border-color: var(--or) }
+.formule-nom { font-family: var(--disp); font-weight: 700; font-size: 17px }
+.formule-desc { color: var(--gris); font-size: 13.5px; line-height: 1.3 }
+.formule-prix { font-family: var(--disp); font-weight: 700; margin-top: 6px }
+.formule-plus { color: var(--or); font-size: 13px; font-weight: 600 }
+
+.formule-rappel {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 14px; margin-bottom: 18px;
+  border: 1px solid var(--or-sourd); border-radius: 12px;
+  background: linear-gradient(rgba(212,175,55,.08), rgba(212,175,55,.08)), var(--carte);
+  font-size: 14.5px;
+}
+.lien-chg {
+  border: 0; background: none; color: var(--or); font: inherit; font-weight: 600;
+  text-decoration: underline; cursor: pointer; padding: 4px;
+}
+
+/* Modifier une ligne de la commande deja passee au recapitulatif. */
+.recap-modif {
+  display: inline-block; margin-top: 4px; padding: 0;
+  border: 0; background: none; color: var(--or); font: inherit; font-size: 13px;
+  font-weight: 600; text-decoration: underline; cursor: pointer;
+}
+
 .champ { margin-bottom: 15px }
 .champ label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px }
 .champ .facultatif { font-weight: 400; color: var(--gris) }
@@ -1475,7 +1511,7 @@ a { color: inherit }
      MEME version : les deux sont toujours d'accord. A incrementer des
      que le HTML produit par le script change de forme. -->
 <script src="contenu-loader.js?v=6" defer></script>
-<script src="carte.js?v=22" defer></script>
+<script src="carte.js?v=23" defer></script>
 <script src="mesure.js?v=6" defer></script>
 
 </body>

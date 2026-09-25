@@ -940,13 +940,17 @@
     tete.appendChild(x);
     boite.appendChild(tete);
 
-    var groupes = groupesOptions(p);
-    groupes.forEach(function (grp, i) { boite.appendChild(blocOption(grp, i)); });
+    var corps = creer('div', 'fiche-corps');
+    corps.id = 'fiche-corps';
+    boite.appendChild(corps);
 
-    if (accepteMenu(p)) boite.appendChild(blocMenu(p));
-    if (accepteSupplements(p)) boite.appendChild(blocSupplements(p));
+    /* Deux cartes avant tout le reste : seul, ou en menu. Le menu
+       etait une case a cocher perdue au milieu des supplements —
+       personne ne la voyait, et la question « frites et boisson ? »
+       est la premiere que pose un comptoir. */
+    if (accepteMenu(p)) corps.appendChild(choixFormule(p));
+    else rendreOptions(p, false);
 
-    boite.appendChild(pied(groupes));
     elFiche.setAttribute('data-ouvert', '1');
     document.body.style.overflow = 'hidden';
     x.focus();
@@ -1033,66 +1037,105 @@
     var cat = (p.categorie || '').toLowerCase();
     // Le KSM Crousty ne se prend plus en menu (2026-09-15).
     if (/crousty/i.test(p.nom || '')) return false;
+    // L'offre du midi comprend deja les frites : pas de menu par-dessus (2026-09-25).
+    if (/midi/i.test(p.nom || '')) return false;
     return /burger|sandwich|tacos/.test(cat);
   }
 
-  function blocMenu(p) {
+  function choixFormule(p) {
     var menu = supplementMenu();
-    var bloc = creer('div', 'groupe-opt menu-bloc');
-    bloc.appendChild(entete('En menu', false));
-    bloc.appendChild(creer('p', 'aide', menu.description || 'Frites et une boisson.'));
+    var bloc = creer('div', 'groupe-opt');
+    bloc.appendChild(entete('Votre formule', false));
 
+    var cartes = creer('div', 'formules');
 
-    var opts = creer('div', 'opts');
-    var label = creer('label', 'opt');
-    var input = document.createElement('input');
-    input.type = 'checkbox';
-    input.value = menu.id;
-    label.appendChild(input);
-    label.appendChild(creer('span', null, 'Ajouter frites et boisson'));
-    label.appendChild(creer('span', 'opt-prix', '+ ' + euros(menu.prix)));
-    opts.appendChild(label);
-    bloc.appendChild(opts);
+    var seul = creer('button', 'formule');
+    seul.type = 'button';
+    seul.appendChild(creer('span', 'formule-nom', 'Seul'));
+    seul.appendChild(creer('span', 'formule-desc', nomSupplement(p.nom)));
+    seul.appendChild(creer('span', 'formule-prix', euros(p.prix)));
+    seul.addEventListener('click', function () { rendreOptions(p, false); });
 
-    /* Le choix de la boisson n'apparait qu'une fois le menu coche.
-       L'afficher d'emblee poserait une question a laquelle la
-       plupart des clients n'ont pas a repondre. */
-    var boissons = boissonsDuMenu();
-    var choixBoisson = null;
-    if (boissons.length) {
-      choixBoisson = creer('div', 'menu-boisson');
-      choixBoisson.hidden = true;
-      choixBoisson.appendChild(creer('h4', 'sup-famille', 'Votre boisson'));
-      var lb = creer('div', 'opts');
-      boissons.forEach(function (nom, i) {
-        var l = creer('label', 'opt');
-        var r = document.createElement('input');
-        r.type = 'radio';
-        r.name = 'menu-boisson';
-        r.value = nom;
-        if (i === 0) { r.checked = true; ficheEtat.menuBoisson = nom; }
-        r.addEventListener('change', function () {
-          if (r.checked) ficheEtat.menuBoisson = nom;
-        });
-        l.appendChild(r);
-        l.appendChild(creer('span', null, nom));
-        lb.appendChild(l);
+    var enMenu = creer('button', 'formule');
+    enMenu.type = 'button';
+    enMenu.appendChild(creer('span', 'formule-nom', 'En menu'));
+    enMenu.appendChild(creer('span', 'formule-desc', menu.description || 'Frites et une boisson'));
+    enMenu.appendChild(creer('span', 'formule-prix', euros(Number(p.prix) + Number(menu.prix))));
+    enMenu.appendChild(creer('span', 'formule-plus', '+ ' + euros(menu.prix)));
+    enMenu.addEventListener('click', function () { rendreOptions(p, true); });
+
+    cartes.appendChild(seul);
+    cartes.appendChild(enMenu);
+    bloc.appendChild(cartes);
+    return bloc;
+  }
+
+  /* La personnalisation, une fois la formule choisie. Elle remplace
+     les deux cartes : on ne redescend pas dans une fiche de trois
+     ecrans pour changer d'avis, un bouton « Changer » suffit. */
+  function rendreOptions(p, enMenu) {
+    var corps = $('#fiche-corps');
+    corps.innerHTML = '';
+
+    var menu = supplementMenu();
+    if (enMenu && menu) ficheEtat.sup[menu.id] = menu;
+    else if (menu) delete ficheEtat.sup[menu.id];
+
+    if (accepteMenu(p)) {
+      var rappel = creer('div', 'formule-rappel');
+      rappel.appendChild(creer('span', null, enMenu ? 'En menu · frites et boisson' : 'Seul'));
+      var chg = creer('button', 'lien-chg', 'Changer');
+      chg.type = 'button';
+      chg.addEventListener('click', function () {
+        corps.innerHTML = '';
+        if (menu) delete ficheEtat.sup[menu.id];
+        ficheEtat.menuBoisson = null;
+        corps.appendChild(choixFormule(p));
       });
-      choixBoisson.appendChild(lb);
-      bloc.appendChild(choixBoisson);
-    } else {
+      rappel.appendChild(chg);
+      corps.appendChild(rappel);
+    }
+
+    if (enMenu) {
+      var b = blocBoissonMenu();
+      if (b) corps.appendChild(b);
+    }
+
+    var groupes = groupesOptions(p);
+    groupes.forEach(function (grp, i) { corps.appendChild(blocOption(grp, i)); });
+    if (accepteSupplements(p)) corps.appendChild(blocSupplements(p));
+    corps.appendChild(pied(groupes));
+    corps.scrollIntoView({ block: 'nearest' });
+  }
+
+  function blocBoissonMenu() {
+    var boissons = boissonsDuMenu();
+    var bloc = creer('div', 'groupe-opt');
+    bloc.appendChild(entete('Votre boisson', false));
+
+    if (!boissons.length) {
       /* Aucune boisson 33cl en base : on ne bloque pas la commande,
          on dit ou le choix se fera. */
       bloc.appendChild(creer('p', 'aide', 'Boisson à choisir au retrait.'));
+      return bloc;
     }
 
-    input.addEventListener('change', function () {
-      if (input.checked) ficheEtat.sup[menu.id] = menu;
-      else delete ficheEtat.sup[menu.id];
-      if (choixBoisson) choixBoisson.hidden = !input.checked;
-      majPied();
+    var lb = creer('div', 'opts');
+    boissons.forEach(function (nom, i) {
+      var l = creer('label', 'opt');
+      var r = document.createElement('input');
+      r.type = 'radio';
+      r.name = 'menu-boisson';
+      r.value = nom;
+      if (i === 0) { r.checked = true; ficheEtat.menuBoisson = nom; }
+      r.addEventListener('change', function () {
+        if (r.checked) ficheEtat.menuBoisson = nom;
+      });
+      l.appendChild(r);
+      l.appendChild(creer('span', null, nom));
+      lb.appendChild(l);
     });
-
+    bloc.appendChild(lb);
     return bloc;
   }
 
@@ -1677,6 +1720,22 @@
     document.body.style.overflow = '';
   }
 
+  /* « Modifier » retire la ligne et rouvre la fiche du plat : les
+     choix se refont, comme a l'ajout. Les supplements poses sur ce
+     plat partent avec lui — sinon le panier garderait un cheddar
+     seul, rattache a un burger qui n'existe plus. */
+  function modifierLigne(ligne) {
+    var nom = ligne.produit.nom;
+    lignesPanier().forEach(function (l) {
+      if (l.cle === ligne.cle) return retirerLigne(l.cle);
+      if ((l.produit.categorie || '').trim() === CAT_SUP && l.options[0] === nom) retirerLigne(l.cle);
+    });
+
+    fermerModale();
+    if (!totaux().n) majBarre();
+    ouvrirFiche(ligne.produit);
+  }
+
   function remplirRecap() {
     var recap = $('#recap');
     recap.innerHTML = '';
@@ -1692,6 +1751,17 @@
         o.style.fontWeight = '400';
         g.appendChild(o);
       }
+
+      /* Se tromper d'une sauce oblige sinon a fermer le formulaire,
+         retrouver le plat dans la carte, le retirer, le reprendre.
+         Le bouton refait exactement ce chemin, en un geste. */
+      if ((l.produit.categorie || '').trim() !== CAT_SUP) {
+        var mod = creer('button', 'recap-modif', 'Modifier');
+        mod.type = 'button';
+        mod.addEventListener('click', function () { modifierLigne(l); });
+        g.appendChild(mod);
+      }
+
       d.appendChild(g);
       d.appendChild(creer('span', null, euros(Number(l.produit.prix) * l.quantite)));
       recap.appendChild(d);
