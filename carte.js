@@ -396,6 +396,7 @@
   var elBarre  = $('#barre');
   var elModale = $('#modale');
   var elFiche  = $('#fiche');
+  var elPanier = $('#panier');
 
   function euros(n) { return Number(n).toFixed(2).replace('.', ',') + ' €'; }
   function texte(el, v) { el.textContent = v; }
@@ -475,9 +476,14 @@
        section. On le reconnait au NOM et non a la categorie, pour que
        la fiche soit juste avant comme apres le changement en base. */
     if (/crousty/.test(nom)) {
+      /* La chili thai n'existe que sur le Crousty : elle vit ici et
+         non en base, ou elle se serait invitee sur les tacos et les
+         burgers avec toutes les autres sauces offertes. */
+      var sc = saucesOffertes().slice();
+      if (!sc.some(function (x) { return /chili/i.test(x); })) sc.push('Chili thaï');
       groupes.push({
         titre: 'Votre sauce en plus', aide: 'Une seule, offerte.',
-        type: 'unique', max: 1, requis: true, choix: saucesOffertes()
+        type: 'unique', max: 1, requis: true, choix: sc.sort(ordreFr)
       });
       return groupes;
     }
@@ -994,9 +1000,13 @@
     var maxi = cat.indexOf('tacos') !== -1 && /maxi|double/i.test(p.nom || '');
     var bowlOuSandwich = cat.indexOf('bowl') !== -1 || cat.indexOf('sandwich') !== -1;
 
+    // L'offre du midi est un prix fixe : pas de viande en plus (2026-09-26).
+    var midi = /midi/i.test(p.nom || '');
+
     var retenus = supplements.filter(function (sup) {
       var n = String(sup.nom).trim();
       if (Number(sup.prix) <= 0) return false;
+      if (midi && familleSup(sup) === 'viande') return false;
       // La formule menu a son propre encadre, en tete de fiche.
       if (MENU_SUP.test(n)) return false;
       // Les supplements de la gaufre passent par ses propres choix.
@@ -1691,6 +1701,96 @@
     $('#f-nom').focus();
   }
 
+  /* Voir son panier ne doit pas obliger a ouvrir le formulaire de
+     commande : on veut souvent juste retirer un plat ajoute en trop.
+     D'ou cet ecran a part, ouvert depuis le total de la barre. */
+  function ouvrirPanier() {
+    if (!totaux().n) return;
+    var boite = $('#panier-boite');
+    boite.innerHTML = '';
+
+    var tete = creer('div', 'modale-tete');
+    tete.appendChild(creer('h2', null, 'Votre panier'));
+    var x = creer('button', 'fermer', '×');
+    x.type = 'button';
+    x.setAttribute('aria-label', 'Fermer');
+    x.addEventListener('click', fermerPanier);
+    tete.appendChild(x);
+    boite.appendChild(tete);
+
+    var liste = creer('div', 'recap');
+    lignesPanier().forEach(function (l) {
+      var d = creer('div', 'recap-l');
+      var g = document.createElement('span');
+      g.appendChild(document.createTextNode(l.quantite + ' × ' + nomSupplement(l.produit.nom)));
+      if (l.options.length) {
+        var o = creer('span', 'ligne-perso', l.options.join(', '));
+        o.style.display = 'block';
+        o.style.color = 'var(--gris)';
+        o.style.fontWeight = '400';
+        g.appendChild(o);
+      }
+
+      var act = creer('span', 'recap-actions');
+      if ((l.produit.categorie || '').trim() !== CAT_SUP) {
+        var mod = creer('button', 'recap-modif', 'Modifier');
+        mod.type = 'button';
+        mod.addEventListener('click', function () { modifierLigne(l); });
+        act.appendChild(mod);
+      }
+      var sup = creer('button', 'recap-modif recap-sup', 'Retirer');
+      sup.type = 'button';
+      sup.addEventListener('click', function () { retirerDuPanier(l); });
+      act.appendChild(sup);
+      g.appendChild(act);
+
+      d.appendChild(g);
+      d.appendChild(creer('span', null, euros(Number(l.produit.prix) * l.quantite)));
+      liste.appendChild(d);
+    });
+
+    var tot = creer('div', 'recap-l recap-total');
+    tot.appendChild(creer('span', null, 'Total'));
+    tot.appendChild(creer('span', null, euros(totaux().somme)));
+    liste.appendChild(tot);
+    boite.appendChild(liste);
+
+    var go = creer('button', 'pill pill-vin', 'Passer commande');
+    go.type = 'button';
+    go.style.width = '100%';
+    go.addEventListener('click', function () { fermerPanier(); ouvrirModale(); });
+    boite.appendChild(go);
+
+    var suite = creer('button', 'lien-chg', 'Continuer ma commande');
+    suite.type = 'button';
+    suite.style.display = 'block';
+    suite.style.margin = '14px auto 0';
+    suite.addEventListener('click', fermerPanier);
+    boite.appendChild(suite);
+
+    elPanier.setAttribute('data-ouvert', '1');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function fermerPanier() {
+    elPanier.removeAttribute('data-ouvert');
+    document.body.style.overflow = '';
+  }
+
+  /* Retirer un plat emporte les supplements poses dessus : garder un
+     cheddar seul rattache a un burger disparu ferait payer une ligne
+     que la cuisine ne saurait pas ou mettre. */
+  function retirerDuPanier(ligne) {
+    var nom = ligne.produit.nom;
+    var plat = (ligne.produit.categorie || '').trim() !== CAT_SUP;
+    lignesPanier().forEach(function (l) {
+      if (l.cle === ligne.cle) return retirerLigne(l.cle);
+      if (plat && (l.produit.categorie || '').trim() === CAT_SUP && l.options[0] === nom) retirerLigne(l.cle);
+    });
+    if (!totaux().n) fermerPanier();
+    else ouvrirPanier();
+  }
+
   function estFerme() {
     var d = creneauxDuJour();
     return !d.inconnu && !d.creneaux.length;
@@ -1732,6 +1832,7 @@
     });
 
     fermerModale();
+    fermerPanier();
     if (!totaux().n) majBarre();
     ouvrirFiche(ligne.produit);
   }
@@ -1756,10 +1857,12 @@
          retrouver le plat dans la carte, le retirer, le reprendre.
          Le bouton refait exactement ce chemin, en un geste. */
       if ((l.produit.categorie || '').trim() !== CAT_SUP) {
+        var act = creer('span', 'recap-actions');
         var mod = creer('button', 'recap-modif', 'Modifier');
         mod.type = 'button';
         mod.addEventListener('click', function () { modifierLigne(l); });
-        g.appendChild(mod);
+        act.appendChild(mod);
+        g.appendChild(act);
       }
 
       d.appendChild(g);
@@ -2272,6 +2375,8 @@
   //  8. Branchements
   // -----------------------------------------------------------------
   $('#barre-btn').addEventListener('click', ouvrirModale);
+  $('#barre-voir').addEventListener('click', ouvrirPanier);
+  elPanier.addEventListener('click', function (e) { if (e.target === elPanier) fermerPanier(); });
   $('#suivi-barre').addEventListener('click', function () {
     if (!commandeEnCours) return;
     ouvrirSuivi(commandeEnCours.id, commandeEnCours.heure, commandeEnCours.statut);

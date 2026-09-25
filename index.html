@@ -841,7 +841,14 @@ a { color: inherit }
   max-width: var(--wrap); margin: 0 auto;
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
 }
-.barre-info { font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums }
+.barre-info {
+  font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums;
+  border: 0; background: none; color: inherit; font-family: inherit;
+  padding: 6px 0; cursor: pointer; text-align: left;
+}
+.barre-voir-fl { color: var(--or); font-size: 17px }
+.recap-actions { display: flex; gap: 14px; margin-top: 5px }
+.recap-sup { color: var(--gris) }
 .barre-info b { font-family: var(--disp); font-weight: 700 }
 .barre .pill { background: var(--noir); color: var(--or) }
 .barre .pill:hover { background: var(--sombre) }
@@ -1439,13 +1446,17 @@ a { color: inherit }
 
 <div class="barre" id="barre" aria-live="polite">
   <div class="barre-in">
-    <span class="barre-info"><b id="barre-n">0</b> <span id="barre-mot">article</span> &middot; <b id="barre-total">0,00&nbsp;&euro;</b></span>
+    <button class="barre-info" type="button" id="barre-voir"><b id="barre-n">0</b> <span id="barre-mot">article</span> &middot; <b id="barre-total">0,00&nbsp;&euro;</b> <span class="barre-voir-fl" aria-hidden="true">&rsaquo;</span></button>
     <button class="pill" type="button" id="barre-btn">Passer commande</button>
   </div>
 </div>
 
 <div class="modale" id="fiche" role="dialog" aria-modal="true" aria-labelledby="fiche-titre">
   <div class="modale-boite" id="fiche-boite"></div>
+</div>
+
+<div class="modale" id="panier" role="dialog" aria-modal="true" aria-label="Votre panier">
+  <div class="modale-boite" id="panier-boite"></div>
 </div>
 
 <div class="modale" id="modale" role="dialog" aria-modal="true" aria-labelledby="modale-titre">
@@ -1511,7 +1522,7 @@ a { color: inherit }
      MEME version : les deux sont toujours d'accord. A incrementer des
      que le HTML produit par le script change de forme. -->
 <script src="contenu-loader.js?v=6" defer></script>
-<script src="carte.js?v=23" defer></script>
+<script src="carte.js?v=24" defer></script>
 <script src="mesure.js?v=6" defer></script>
 
 </body>
