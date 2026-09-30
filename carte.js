@@ -203,7 +203,10 @@
     // Puis ce qui accompagne.
     'Snacking', 'Frites',
     // Puis la fin de repas, dans l'ordre ou on la commande.
-    'Menu Kids', 'Desserts', 'Boissons'
+    'Menu Kids', 'Desserts', 'Boissons',
+    // Les pots de sauce vendus seuls (2026-09-30) : en fin de carte,
+    // c'est ce qu'on ajoute au dernier moment.
+    'Sauces'
   ];
 
   // Ingredients qu'on ne propose pas de retirer : ce qui reste du plat
@@ -475,6 +478,18 @@
        recette, et deux sauces au lieu d'une. Il a desormais sa propre
        section. On le reconnait au NOM et non a la categorie, pour que
        la fiche soit juste avant comme apres le changement en base. */
+    /* LE POT DE SAUCE (2026-09-30) : un seul produit en base, le
+       parfum se choisit ici. Douze vignettes identiques sur la carte
+       n'auraient rien dit de plus et auraient noye la section. Le pot
+       de gruyere a son propre produit : ce n'est pas le meme prix. */
+    if ((p.categorie || '').trim() === 'Sauces' && !/gruy/i.test(nom)) {
+      groupes.push({
+        titre: 'Votre sauce', aide: 'Une seule par pot.',
+        type: 'unique', max: 1, requis: true, choix: saucesOffertes()
+      });
+      return groupes;
+    }
+
     if (/crousty/.test(nom)) {
       /* La chili thai n'existe que sur le Crousty : elle vit ici et
          non en base, ou elle se serait invitee sur les tacos et les
