@@ -1694,6 +1694,8 @@
   // -----------------------------------------------------------------
   var JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
   var PREPARATION = 20;   // minutes annoncees au client
+  // Les commandes en ligne ouvrent 2 h avant chaque service (Nicolas, 2026-10-17).
+  var AVANCE_COMMANDE = 120;
 
   function texteHoraire(jour) {
     var r = document.querySelector('#horaires .hrow[data-jour="' + jour + '"]');
@@ -1761,27 +1763,32 @@
     var tot = maintenant.getHours() * 60 + maintenant.getMinutes() + PREPARATION;
     var depuis = Math.ceil(tot / 15) * 15;
 
-    var creneaux = [], ouvertMaintenant = false;
+    var creneaux = [], ouvertMaintenant = false, ouvreA = null;
     var aMinuit = new Date(maintenant); aMinuit.setHours(0, 0, 0, 0);
     var libre = function (m) { return !fermetureA(new Date(aMinuit.getTime() + m * 60000)); };
+    var minute = maintenant.getHours() * 60 + maintenant.getMinutes();
     (h.plages || []).forEach(function (p) {
+      // Trop tot : ce service n'est pas encore ouvert aux commandes.
+      if (minute < p[0] - AVANCE_COMMANDE) { if (ouvreA == null) ouvreA = p[0] - AVANCE_COMMANDE; return; }
       if (tot >= p[0] && tot <= p[1] && libre(tot)) ouvertMaintenant = true;
       for (var m = Math.max(p[0], depuis); m <= p[1]; m += 15) {
         if (m % 15 === 0 && libre(m)) creneaux.push(m);
       }
     });
-    return { creneaux: creneaux, ouvertMaintenant: ouvertMaintenant, ferme: h.ferme === true };
+    return { creneaux: creneaux, ouvertMaintenant: ouvertMaintenant, ferme: h.ferme === true, ouvreA: creneaux.length ? null : ouvreA };
   }
 
   /* Le prochain moment ou l'on peut venir chercher. Sert a dire
      « nous rouvrons mercredi a 12h » plutot qu'un « ferme » sec. */
   function prochaineOuverture() {
     var maintenant = new Date();
+    var auj = creneauxDuJour();
+    if (auj.ouvreA != null) return { jour: 'aujourd’hui', minute: auj.ouvreA, aujourdhui: true };
     for (var i = 1; i <= 7; i++) {
       var jour = (maintenant.getDay() + i) % 7;
       var h = analyserHoraire(texteHoraire(jour));
       if (h.inconnu || h.ferme || !h.plages.length) continue;
-      return { jour: JOURS[jour], minute: h.plages[0][0] };
+      return { jour: JOURS[jour], minute: Math.max(0, h.plages[0][0] - AVANCE_COMMANDE) };
     }
     return null;
   }
@@ -1819,9 +1826,11 @@
     if (d.inconnu || d.creneaux.length) { el.hidden = true; return; }
 
     var suite = prochaineOuverture();
-    el.innerHTML = suite
+    el.innerHTML = suite && suite.aujourdhui
+      ? '<span>Les commandes en ligne ouvrent <b>à ' + enHeure(suite.minute) + '</b>, 2 h avant le service.</span>'
+      : suite
       ? '<span>Nous ne prenons plus de commande pour aujourd’hui. '
-        + '<b>Réouverture ' + suite.jour + ' à ' + enHeure(suite.minute) + '.</b></span>'
+        + '<b>Commandes en ligne ' + suite.jour + ' dès ' + enHeure(suite.minute) + '.</b></span>'
       : '<span>Nous ne prenons pas de commande en ligne pour le moment. '
         + '<b>Appelez-nous au 09 50 94 88 15.</b></span>';
     el.hidden = false;
@@ -1948,9 +1957,9 @@
         + '<span></span><button class="fermer" type="button" data-fermer aria-label="Fermer">&times;</button></div>'
         + '<div class="ok-bloc">'
         + '<div class="ok-rond" data-s="recue" aria-hidden="true">⏱</div>'
-        + '<h2>Le restaurant est fermé</h2>'
+        + '<h2>' + (suite && suite.aujourdhui ? 'Un peu tôt pour commander' : 'Le restaurant est fermé') + '</h2>'
         + (suite
-            ? '<p>Reprise des commandes <strong>' + suite.jour + ' à ' + enHeure(suite.minute) + '</strong>.</p>'
+            ? '<p>Les commandes en ligne ouvrent <strong>' + suite.jour + ' à ' + enHeure(suite.minute) + '</strong>, 2 h avant le service.</p>'
               + '<p>Votre panier vous attend d’ici là.</p>'
             : '<p>Les commandes en ligne sont momentanément fermées.</p>')
         + '</div>';
