@@ -244,6 +244,48 @@
   }
 
   .vide { text-align: center; color: var(--gris); padding: 60px 20px }
+
+  /* ---- 2026-10-17 : rubriques, plats bien separes, recuperees, epuises, fermetures ---- */
+  .rubriques { display: flex; gap: 6px; padding-top: 12px; overflow-x: auto; scrollbar-width: none }
+  .rub {
+    border: 1px solid var(--trait-fort); background: var(--sombre); color: var(--gris);
+    border-radius: 999px; padding: 9px 18px; font-weight: 600; font-size: 14px; white-space: nowrap;
+  }
+  .rub.on { background: var(--or); border-color: var(--or); color: var(--noir) }
+  .rub:focus-visible, .plat-btn:focus-visible { outline: 2px solid var(--or-vif); outline-offset: 2px }
+  /* Chaque plat dans son cadre : deux versions d'un meme plat se lisent
+     comme deux plats, jamais comme un seul avec des supplements meles. */
+  .cmd-articles { gap: 8px }
+  .art { padding: 10px 12px; border-radius: 11px; background: var(--sombre); border: 1px solid var(--trait); align-items: flex-start }
+  .art-titre { display: flex; align-items: baseline; gap: 8px; font-weight: 700; font-size: 15.5px }
+  .art-num { font-size: 11.5px; font-weight: 700; letter-spacing: .06em; color: var(--noir); background: var(--or-vif); border-radius: 999px; padding: 1px 8px }
+  .art-sup::before, .art-menu::before { content: ''; }
+  .cmd[data-statut="recuperee"] { border-left: 4px solid var(--trait-fort); opacity: .55 }
+  .etat[data-s="recuperee"] { background: var(--surface); color: var(--gris) }
+  .cmd-part { align-self: center; color: var(--gris); font-size: 14px; margin-right: auto }
+  .vue { padding-top: 22px }
+  .vue-aide { color: var(--gris); margin: 0 0 16px; font-size: 14.5px }
+  .vue-titre { font-size: 15px; text-transform: uppercase; letter-spacing: .08em; color: var(--gris); margin: 20px 0 10px }
+  .plats-grille { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)) }
+  .plat-btn {
+    display: grid; gap: 3px; text-align: left; padding: 12px 14px; min-height: 56px;
+    border: 1px solid var(--trait-fort); border-radius: 12px; background: var(--carte); color: var(--encre);
+  }
+  .plat-nom { font-weight: 600 }
+  .plat-etat { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--vert-vif) }
+  .plat-btn[data-epuise] { border-color: #a0414f; background: rgba(160,65,79,.14) }
+  .plat-btn[data-epuise] .plat-etat { color: #ff9aa8 }
+  .plat-btn[data-epuise] .plat-nom { text-decoration: line-through; color: var(--gris) }
+  .ferm-form { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; padding: 16px; border: 1px solid var(--trait); border-radius: var(--r); background: var(--carte); margin-bottom: 18px }
+  .ferm-form label { display: grid; gap: 5px; font-size: 13px; color: var(--gris) }
+  .ferm-form input { padding: 11px 12px; border-radius: 10px; border: 1px solid var(--trait-fort); background: var(--sombre); color: var(--encre); font: inherit; color-scheme: dark }
+  .ferm-motif { grid-column: 1 / -1 }
+  .ferm-form .b { grid-column: 1 / -1; justify-self: start }
+  .ferm-ligne { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1px solid var(--trait); border-radius: 12px; background: var(--carte); margin-bottom: 8px }
+  .ferm-texte { flex: 1; display: grid; gap: 2px }
+  .ferm-texte span { color: var(--gris); font-size: 14px }
+  .ferm-texte .ferm-encours { color: var(--or-vif); font-weight: 600 }
+  @media (max-width: 520px) { .ferm-form { grid-template-columns: 1fr } }
   .vide b { display: block; font-family: var(--disp); font-size: 20px; color: #fff; margin-bottom: 6px }
 
   @media (max-width: 520px) {
@@ -284,9 +326,15 @@
          on se trouve. Vide et masque tant qu'il n'y a rien a dire :
          c'est le script qui le remplit. -->
     <div class="wrap"><p class="note-push" id="note-push" hidden></p></div>
+    <!-- Les trois rubriques du comptoir (2026-10-17). -->
+    <nav class="wrap rubriques" role="tablist" aria-label="Rubriques">
+      <button type="button" class="rub on" role="tab" aria-selected="true" data-rubrique="commandes">Commandes</button>
+      <button type="button" class="rub" role="tab" aria-selected="false" data-rubrique="epuises">Plats épuisés</button>
+      <button type="button" class="rub" role="tab" aria-selected="false" data-rubrique="fermetures">Fermetures</button>
+    </nav>
   </div>
 
-  <div class="wrap">
+  <div class="wrap" data-vue="commandes">
     <div class="compteurs">
       <div class="compteur" id="c-attente"><b>0</b><span>À accepter</span></div>
       <div class="compteur"><b id="n-prep">0</b><span>En préparation</span></div>
@@ -294,6 +342,17 @@
     </div>
 
     <div class="cmds" id="cmds"></div>
+  </div>
+  <div class="wrap vue" data-vue="epuises" hidden><div id="epuises"></div></div>
+  <div class="wrap vue" data-vue="fermetures" hidden>
+    <p class="vue-aide">Pendant une fermeture, le site ne propose aucun créneau et refuse les commandes. Le bandeau du site indique la réouverture.</p>
+    <form id="ferm-form" class="ferm-form">
+      <label>Du <input type="datetime-local" id="ferm-du" required></label>
+      <label>Au <input type="datetime-local" id="ferm-au" required></label>
+      <label class="ferm-motif">Motif <input id="ferm-motif" maxlength="80" placeholder="Congés, imprévu…"></label>
+      <button class="b b-or" type="submit">Ajouter la fermeture</button>
+    </form>
+    <div id="fermetures-liste"></div>
   </div>
 </div>
 
@@ -317,6 +376,6 @@
      Avec le numero, un index.html en cache demande le carte.js de la
      MEME version : les deux sont toujours d'accord. A incrementer des
      que le HTML produit par le script change de forme. -->
-<script src="restaurant.js?v=11" defer></script>
+<script src="restaurant.js?v=12" defer></script>
 </body>
 </html>

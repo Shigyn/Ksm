@@ -27,7 +27,8 @@
   var LIBELLE = {
     recue: 'À accepter',
     acceptee: 'En préparation',
-    prete: 'Prête'
+    prete: 'Prête',
+    recuperee: 'Récupérée'
   };
 
   function euros(n) { return Number(n).toFixed(2).replace('.', ',') + ' €'; }
@@ -77,6 +78,9 @@
   function ouvrir() {
     $('#ecran-code').style.display = 'none';
     $('#ecran-app').style.display = 'block';
+    document.querySelectorAll('[data-rubrique]').forEach(function (b) {
+      b.addEventListener('click', function () { rubrique(b.getAttribute('data-rubrique')); });
+    });
 
     // Empeche le telephone du comptoir de s'eteindre pendant le
     // service. Non supporte partout, et c'est sans consequence : on
@@ -89,6 +93,12 @@
     chargerHoraires();
     rafraichir();
     relancer();
+
+    // Mise a jour toute seule (2026-10-17) : quand LocWeb publie une nouvelle
+    // version de l'ecran, il se recharge — jamais pendant qu'une commande
+    // attend d'etre acceptee, ni pendant une saisie. Les commandes vivent
+    // sur le serveur : un rechargement n'en fait perdre aucune.
+    setInterval(verifierVersion, 5 * 60000);
 
     // Onglet remis au premier plan : on ne fait pas attendre dix
     // secondes de plus quelqu'un qui vient regarder son ecran.
@@ -159,7 +169,7 @@
      notification poussee previent d'une nouvelle commande meme quand
      l'ecran dort.
      ---------------------------------------------------------------- */
-  var SERVICE = 15000, JOURNEE = 120000;
+  var SERVICE = 15000, JOURNEE = 60000;
   var plages = null;   // [[debutMin, finMin], ...] pour aujourd'hui
   var horairesLe = 0;  // jour ou les horaires ont ete lus
 
@@ -242,7 +252,8 @@
     appel('lister_commandes')
       .then(function (d) {
         pouls(true);
-        afficher(d.commandes || []);
+        var l = d.commandes || [];
+        afficher(l.concat(recentes().filter(function (r) { return !l.some(function (c) { return c.id === r.id; }); })));
       })
       .catch(function (err) {
         console.warn(err);
@@ -297,7 +308,7 @@
     /* Les commandes a accepter passent devant, puis celles qui sont
        pretes (quelqu'un attend au comptoir), puis celles en cours.
        L'ordre d'arrivee departage a l'interieur de chaque groupe. */
-    var rang = { recue: 0, prete: 1, acceptee: 2 };
+    var rang = { recue: 0, prete: 1, acceptee: 2, recuperee: 3 };
     commandes.sort(function (a, b) {
       var d = (rang[a.statut] ?? 9) - (rang[b.statut] ?? 9);
       return d !== 0 ? d : new Date(a.date_creation) - new Date(b.date_creation);
@@ -380,16 +391,22 @@
           + Steak supplementaire · + Cheddar
           Menu : Orangina 33 cl */
   function listePlats(articles) {
+    /* Bug du 2026-10-17 : deux maxi tacos differents, et tous les
+       supplements « (Maxi tacos) » allaient sous le PREMIER. Le site
+       envoie maintenant un repere « num 1 », « num 2 » quand un meme plat
+       est commande en plusieurs versions : chaque supplement retrouve
+       SON plat. Le repere ne s'affiche pas, la separation si. */
     var lignes = articles.map(function (a) {
       // Les options sont accolees au nom par le serveur, entre parentheses.
       var m = String(a.nom).match(/^(.*?)\s*\((.+)\)$/);
-      return {
-        a: a,
-        nom: m ? m[1] : String(a.nom),
-        options: m ? m[2].split(', ') : [],
-        ajouts: [],
-        rattachee: false
-      };
+      var options = m ? m[2].split(', ') : [];
+      var num = null;
+      options = options.filter(function (o) {
+        var r = /^num (\d+)$/.exec(o);
+        if (r) { num = r[1]; return false; }
+        return true;
+      });
+      return { a: a, nom: m ? m[1] : String(a.nom), options: options, num: num, ajouts: [], rattachee: false };
     });
 
     lignes.forEach(function (l) {
@@ -397,7 +414,7 @@
       var plat = null;
       for (var i = 0; i < lignes.length; i++) {
         var p = lignes[i];
-        if (p !== l && !p.rattachee && p.nom === l.options[0]) { plat = p; break; }
+        if (p !== l && !p.rattachee && p.nom === l.options[0] && p.num === l.num) { plat = p; break; }
       }
       if (!plat) return;
       plat.ajouts.push(l);
@@ -410,30 +427,135 @@
       var ligne = el('div', 'art');
       ligne.appendChild(el('span', 'art-q', '×' + l.a.quantite));
 
-      var nom = el('span', 'art-n');
-      nom.appendChild(document.createTextNode(l.nom));
+      var nom = el('div', 'art-n');
+      var titre = el('span', 'art-titre', l.nom);
+      if (l.num) titre.appendChild(el('span', 'art-num', 'n°' + l.num));
+      nom.appendChild(titre);
       // « sans oignons » doit se voir, pas se lire.
-      if (l.options.length) nom.appendChild(el('span', 'art-opt', l.options.join(', ')));
+      if (l.options.length) nom.appendChild(el('span', 'art-opt', l.options.join(' · ')));
 
-      var sups = [];
-      var menus = [];
       l.ajouts.forEach(function (s) {
         var qte = s.a.quantite !== l.a.quantite ? s.a.quantite + '× ' : '';
         var precision = s.options.slice(1).join(', ');
         if (/^formule menu$/i.test(s.nom)) {
-          menus.push(qte + 'Menu' + (precision ? ' : ' + precision : ''));
+          nom.appendChild(el('span', 'art-menu', qte + 'Menu' + (precision ? ' : ' + precision : '')));
         } else {
-          sups.push('+ ' + qte + s.nom + (precision ? ' (' + precision + ')' : ''));
+          nom.appendChild(el('span', 'art-sup', '+ ' + qte + s.nom + (precision ? ' (' + precision + ')' : '')));
         }
       });
-      if (sups.length) nom.appendChild(el('span', 'art-sup', sups.join(' · ')));
-      menus.forEach(function (t) { nom.appendChild(el('span', 'art-menu', t)); });
 
       ligne.appendChild(nom);
       arts.appendChild(ligne);
     });
     return arts;
   }
+
+  var VERSION_ECRAN = '12';
+  function verifierVersion() {
+    fetch('version-comptoir.json?t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) {
+        if (!j || !j.v || String(j.v) === VERSION_ECRAN) return;
+        var attend = document.querySelector('.cmd[data-statut="recue"]');
+        var saisie = document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
+        if (!attend && !saisie) location.reload();
+      })
+      .catch(function () {});
+  }
+
+  /* ---------------- les rubriques ---------------- */
+  function rubrique(nom) {
+    document.querySelectorAll('[data-rubrique]').forEach(function (b) {
+      var on = b.getAttribute('data-rubrique') === nom;
+      b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    document.querySelectorAll('[data-vue]').forEach(function (v) { v.hidden = v.getAttribute('data-vue') !== nom; });
+    if (nom === 'epuises') chargerProduits();
+    if (nom === 'fermetures') chargerFermetures();
+  }
+
+  // Plats epuises : un plat touche disparait du site (« epuise ») ; touche a nouveau, il revient.
+  function chargerProduits() {
+    var z = $('#epuises');
+    z.innerHTML = '<p class="vue-aide">Chargement de la carte…</p>';
+    appel('lister_produits').then(function (d) {
+      var cats = {}, ordre = [];
+      (d.produits || []).forEach(function (p) {
+        var c = (p.categorie || 'Autres').trim();
+        if (!cats[c]) { cats[c] = []; ordre.push(c); }
+        cats[c].push(p);
+      });
+      z.innerHTML = '';
+      var nb = (d.produits || []).filter(function (p) { return p.disponible === false; }).length;
+      z.appendChild(el('p', 'vue-aide', nb ? nb + ' plat' + (nb > 1 ? 's' : '') + ' épuisé' + (nb > 1 ? 's' : '') + ' en ce moment. Touchez un plat pour le remettre.'
+        : 'Touchez un plat épuisé : il passe « épuisé » sur le site tout de suite. Touchez-le à nouveau quand il revient.'));
+      ordre.forEach(function (c) {
+        z.appendChild(el('h3', 'vue-titre', c));
+        var g = el('div', 'plats-grille');
+        cats[c].forEach(function (p) {
+          var b = el('button', 'plat-btn');
+          b.type = 'button';
+          if (p.disponible === false) b.setAttribute('data-epuise', '');
+          b.appendChild(el('span', 'plat-nom', p.nom));
+          b.appendChild(el('span', 'plat-etat', p.disponible === false ? 'Épuisé' : 'Disponible'));
+          b.addEventListener('click', function () {
+            var dispo = p.disponible === false;
+            b.disabled = true;
+            appel('maj_disponible', { produit_id: p.id, disponible: dispo })
+              .then(function () { p.disponible = dispo; chargerProduits(); })
+              .catch(function (e) { b.disabled = false; alert('Erreur : ' + e.message); });
+          });
+          g.appendChild(b);
+        });
+        z.appendChild(g);
+      });
+    }).catch(function (e) { z.innerHTML = '<p class="vue-aide">Carte indisponible : ' + e.message + '</p>'; });
+  }
+
+  // Fermetures exceptionnelles : le site ne prend aucune commande pendant ce temps.
+  var fermetures = [];
+  function chargerFermetures() {
+    appel('lire_fermetures').then(function (d) { fermetures = d.fermetures || []; afficherFermetures(); })
+      .catch(function (e) { $('#fermetures-liste').innerHTML = '<p class="vue-aide">Erreur : ' + e.message + '</p>'; });
+  }
+  function dateFr(iso) {
+    return new Date(iso).toLocaleString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  }
+  function afficherFermetures() {
+    var z = $('#fermetures-liste');
+    z.innerHTML = '';
+    var l = fermetures.filter(function (f) { return Date.parse(f.au) > Date.now(); });
+    if (!l.length) { z.appendChild(el('p', 'vue-aide', 'Aucune fermeture prévue.')); return; }
+    l.forEach(function (f) {
+      var r = el('div', 'ferm-ligne');
+      var t = el('div', 'ferm-texte');
+      t.appendChild(el('b', null, 'Du ' + dateFr(f.du) + ' au ' + dateFr(f.au)));
+      if (f.motif) t.appendChild(el('span', null, f.motif));
+      if (Date.now() >= Date.parse(f.du)) t.appendChild(el('span', 'ferm-encours', 'En cours : le site ne prend pas de commande'));
+      r.appendChild(t);
+      var x = el('button', 'b b-refus', 'Supprimer');
+      x.type = 'button';
+      x.addEventListener('click', function () {
+        if (!confirm('Supprimer cette fermeture ?')) return;
+        enregistrerFermetures(fermetures.filter(function (y) { return y !== f; }));
+      });
+      r.appendChild(x);
+      z.appendChild(r);
+    });
+  }
+  function enregistrerFermetures(l) {
+    appel('maj_fermetures', { fermetures: l })
+      .then(function (d) { fermetures = d.fermetures || l; afficherFermetures(); })
+      .catch(function (e) { alert('Erreur : ' + e.message); });
+  }
+  document.addEventListener('submit', function (e) {
+    if (!e.target.matches('#ferm-form')) return;
+    e.preventDefault();
+    var du = $('#ferm-du').value, au = $('#ferm-au').value;
+    if (!du || !au || du >= au) { alert('Indiquez une date de début et une date de fin.'); return; }
+    enregistrerFermetures(fermetures.concat([{ du: new Date(du).toISOString(), au: new Date(au).toISOString(), motif: $('#ferm-motif').value.trim() }]));
+    e.target.reset();
+  });
 
   function heureDe(iso) {
     var t = new Date(iso);
@@ -512,16 +634,45 @@
     if (c.statut === 'prete') {
       var pris = el('button', 'b b-or', 'Récupérée');
       pris.type = 'button';
-      pris.addEventListener('click', function () { majStatut(c.id, 'recuperee', pris); });
+      pris.addEventListener('click', function () { majStatut(c.id, 'recuperee', pris, c); });
       act.appendChild(pris);
+    }
+
+    if (c.statut === 'recuperee') {
+      var reste = Math.max(1, Math.ceil((GARDE - (Date.now() - ((recuperees[c.id] || {}).t || Date.now()))) / 60000));
+      act.appendChild(el('span', 'cmd-part', 'Récupérée · disparaît dans ' + reste + ' min'));
+      var annul = el('button', 'b b-refus', 'Pas encore récupérée');
+      annul.type = 'button';
+      annul.addEventListener('click', function () { majStatut(c.id, 'prete', annul); });
+      act.appendChild(annul);
     }
 
     return act;
   }
 
-  function majStatut(id, statut, bouton) {
+  /* Une commande recuperee reste 5 minutes a l'ecran (grisee, avec « Pas
+     encore recuperee » en cas d'erreur), puis disparait toute seule. */
+  var GARDE = 5 * 60000;
+  var recuperees = (function () { try { return JSON.parse(localStorage.getItem('ksm_recuperees') || '{}'); } catch (e) { return {}; } })();
+  function garderRecuperees() { try { localStorage.setItem('ksm_recuperees', JSON.stringify(recuperees)); } catch (e) {} }
+  function recentes() {
+    var l = [], t = Date.now();
+    Object.keys(recuperees).forEach(function (id) {
+      if (t - recuperees[id].t > GARDE) { delete recuperees[id]; return; }
+      l.push(Object.assign({}, recuperees[id].c, { statut: 'recuperee' }));
+    });
+    garderRecuperees();
+    return l;
+  }
+
+  function majStatut(id, statut, bouton, c) {
     if (bouton) { bouton.disabled = true; bouton.textContent = 'Envoi…'; }
     appel('maj_statut', { commande_id: id, statut: statut })
+      .then(function () {
+        if (statut === 'recuperee' && c) recuperees[id] = { c: c, t: Date.now() };
+        else delete recuperees[id];
+        garderRecuperees();
+      })
       .then(rafraichir)
       .catch(function (e) {
         if (bouton) bouton.disabled = false;

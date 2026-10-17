@@ -671,6 +671,19 @@ a { color: inherit }
 .opt:has(input:focus-visible) { outline: 2px solid var(--or-vif); outline-offset: 2px }
 
 .opt input { flex: none; width: 17px; height: 17px; accent-color: var(--or); margin: 0; cursor: pointer }
+/* Les choix au compteur (deux viandes, deux sauces) : toucher ajoute, « − » retire.
+   La meme tuile que les autres, choisie elle se dore pareil. */
+.opt-compte { grid-template-columns: minmax(0, 1fr) auto; padding: 0; overflow: hidden }
+.opt-compte[data-n] { border-color: var(--or); background: linear-gradient(rgba(212,175,55,.10), rgba(212,175,55,.10)), var(--carte) }
+.opt-ajout { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 12px; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; min-width: 0 }
+.opt-ajout:focus-visible, .opt-moins:focus-visible { outline: 2px solid var(--or-vif); outline-offset: -2px }
+.opt-nom { min-width: 0; overflow-wrap: break-word }
+.opt-n { margin-left: auto; font-family: var(--disp); font-weight: 800; color: var(--or-vif) }
+.opt-moins { display: none; width: 40px; min-height: 44px; border: 0; border-left: 1px solid var(--or-sourd); background: none; color: var(--or-vif); font-size: 20px; cursor: pointer }
+.opt-compte[data-n] .opt-moins { display: block }
+.opt-compte.refus { animation: refus .35s }
+@keyframes refus { 25% { transform: translateX(-3px) } 75% { transform: translateX(3px) } }
+@media (prefers-reduced-motion: reduce) { .opt-compte.refus { animation: none } }
 .opt > span:not(.opt-prix) { min-width: 0; hyphens: auto; overflow-wrap: break-word }
 
 /* Le prix d'un supplement. Il passe sous le nom quand la tuile est
@@ -1522,7 +1535,7 @@ a { color: inherit }
      MEME version : les deux sont toujours d'accord. A incrementer des
      que le HTML produit par le script change de forme. -->
 <script src="contenu-loader.js?v=6" defer></script>
-<script src="carte.js?v=25" defer></script>
+<script src="carte.js?v=26" defer></script>
 <script src="mesure.js?v=6" defer></script>
 
 </body>

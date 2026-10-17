@@ -664,6 +664,31 @@
     return groupes;
   }
 
+  /* Les fermetures exceptionnelles (2026-10-17), saisies par le restaurant
+     depuis son ecran de comptoir : [{du, au, motif}]. Pendant une fermeture,
+     aucun creneau n'est propose et le bandeau dit pourquoi. Le serveur de
+     commande les verifie aussi : ce n'est pas qu'un affichage. */
+  var FERMETURES = [];
+  function chargerFermetures() {
+    fetch(config.supabaseUrl + '/rest/v1/contenu_site?client_id=eq.' + encodeURIComponent(config.clientId)
+        + '&cle_bloc=eq.fermetures_exceptionnelles&select=valeur', {
+      headers: { apikey: config.supabaseAnonKey, Authorization: 'Bearer ' + config.supabaseAnonKey }
+    })
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (l) {
+        try { FERMETURES = l && l[0] ? JSON.parse(l[0].valeur) || [] : []; } catch (e) { FERMETURES = []; }
+        majAvisFermeture();
+      })
+      .catch(function () {});
+  }
+  function fermetureA(t) {
+    var x = t.getTime();
+    for (var i = 0; i < FERMETURES.length; i++) {
+      if (x >= Date.parse(FERMETURES[i].du) && x < Date.parse(FERMETURES[i].au)) return FERMETURES[i];
+    }
+    return null;
+  }
+
   // -----------------------------------------------------------------
   //  2. Charger la carte
   // -----------------------------------------------------------------
@@ -893,9 +918,12 @@
   function retirerUn(p) {
     var derniere = derniereVariante(p.id);
     if (!derniere) return;
-    var k = cle(p, derniere.options);
-    if (panier[k].quantite <= 1) delete panier[k];
-    else panier[k].quantite -= 1;
+    Object.keys(panier).forEach(function (k) {
+      var l = panier[k];
+      if (l !== derniere && !(derniere.groupe && l.groupe === derniere.groupe)) return;
+      if (l.quantite <= 1) delete panier[k];
+      else l.quantite -= 1;
+    });
     majBarre();
     majPas();
   }
@@ -1252,6 +1280,7 @@
 
     var opts = creer('div', 'opts');
     ficheEtat.choisi[index] = [];
+    if (grp.type === 'multi' && grp.max > 1 && !grp.prixSup) return blocCompteur(bloc, opts, grp, index);
 
     grp.choix.forEach(function (valeur) {
       var label = creer('label', 'opt');
@@ -1311,6 +1340,52 @@
       opts.appendChild(label);
     });
 
+    bloc.appendChild(opts);
+    majEtatGroupe(bloc, grp, index);
+    return bloc;
+  }
+
+  /* Une tuile par choix : toucher la tuile en ajoute un, le « − » en retire
+     un. Le total du groupe ne depasse jamais son maximum. */
+  function blocCompteur(bloc, opts, grp, index) {
+    var compte = Object.create(null);
+    grp.choix.forEach(function (valeur) {
+      compte[valeur] = 0;
+      var tuile = creer('div', 'opt opt-compte');
+      var ajout = creer('button', 'opt-ajout');
+      ajout.type = 'button';
+      ajout.appendChild(creer('span', 'opt-nom', valeur));
+      var badge = creer('span', 'opt-n', '');
+      ajout.appendChild(badge);
+      var moins = creer('button', 'opt-moins', '−');
+      moins.type = 'button';
+      moins.setAttribute('aria-label', 'Retirer un ' + valeur);
+      function maj() {
+        var liste = [];
+        grp.choix.forEach(function (v) { for (var i = 0; i < compte[v]; i++) liste.push(v); });
+        ficheEtat.choisi[index] = liste;
+        opts.querySelectorAll('.opt-compte').forEach(function (t) {
+          var n = compte[t.getAttribute('data-v')];
+          if (n) t.setAttribute('data-n', n); else t.removeAttribute('data-n');
+          t.querySelector('.opt-n').textContent = n > 1 ? '×' + n : '';
+        });
+        majEtatGroupe(bloc, grp, index);
+        majPied();
+      }
+      ajout.addEventListener('click', function () {
+        if (ficheEtat.choisi[index].length >= grp.max) {
+          // Deja au maximum : on le montre, sans remplacer un choix en silence.
+          tuile.classList.remove('refus'); void tuile.offsetWidth; tuile.classList.add('refus');
+          return;
+        }
+        compte[valeur]++; maj();
+      });
+      moins.addEventListener('click', function () { if (compte[valeur] > 0) { compte[valeur]--; maj(); } });
+      tuile.setAttribute('data-v', valeur);
+      tuile.appendChild(ajout);
+      tuile.appendChild(moins);
+      opts.appendChild(tuile);
+    });
     bloc.appendChild(opts);
     majEtatGroupe(bloc, grp, index);
     return bloc;
@@ -1389,6 +1464,15 @@
     groupes.forEach(function (grp, i) {
       var choisis = ficheEtat.choisi[i];
       if (!choisis.length) return;
+      if (grp.type === 'multi' && grp.max > 1 && !grp.prixSup) {
+        var vus = [];
+        choisis.forEach(function (v) { if (vus.indexOf(v) === -1) vus.push(v); });
+        vus.forEach(function (v) {
+          var n = choisis.filter(function (x) { return x === v; }).length;
+          options.push(n > 1 ? v + ' x' + n : v);
+        });
+        return;
+      }
       choisis.forEach(function (v) {
         // « Pas de deuxième sauce », « Avec oignons crispy » : rien a dire a la cuisine.
         if (grp.muet && grp.muet.indexOf(v) !== -1) return;
@@ -1403,7 +1487,18 @@
     var qte = ficheEtat.quantite;
     var sup = ficheEtat.sup || {};
 
-    ajouter(plat, qte, options);
+    /* Le groupe : le plat, ses options ET ses supplements (avec leur
+       precision : sauce choisie, boisson du menu). Bug du 2026-10-17 :
+       deux maxi tacos aux memes options mais aux supplements differents
+       se fondaient en « 2 × Maxi tacos », et leurs supplements dans une
+       seule ligne : la cuisine ne savait plus quoi mettre sur lequel. */
+    var signature = Object.keys(sup).sort().map(function (id) {
+      return id + '=' + ((ficheEtat.supNote && ficheEtat.supNote[id]) || '')
+        + (MENU_SUP.test(String(sup[id].nom).trim()) ? '/' + (ficheEtat.menuBoisson || '') : '');
+    }).join(';');
+    var groupe = cle(plat, options) + '#' + signature;
+
+    ajouter(plat, qte, options, groupe);
 
     /* Chaque supplement part comme une LIGNE A PART du panier, avec le
        nom du plat en option.
@@ -1427,7 +1522,7 @@
       if (ficheEtat.supNote && ficheEtat.supNote[id] && SAUCE_EN_PLUS.test(String(sup[id].nom))) {
         notes.push(ficheEtat.supNote[id]);
       }
-      ajouter(sup[id], qte, notes);
+      ajouter(sup[id], qte, notes, groupe);
     });
 
     fermerFiche();
@@ -1451,12 +1546,13 @@
 
   var rang = 0;
 
-  function ajouter(produit, quantite, options) {
-    var k = cle(produit, options);
+  function ajouter(produit, quantite, options, groupe) {
+    var k = groupe ? groupe + '>' + produit.id : cle(produit, options);
     var e = panier[k];
     panier[k] = {
       produit: produit,
       options: options,
+      groupe: groupe || null,
       ordre: ++rang,
       quantite: Math.min(50, (e ? e.quantite : 0) + quantite)
     };
@@ -1470,12 +1566,33 @@
     majPas();
   }
 
+  function lignesEnvoyees() {
+    var lignes = lignesPanier(), versions = {}, num = {};
+    lignes.forEach(function (l) {
+      if (!l.groupe || (l.produit.categorie || '').trim() === CAT_SUP) return;
+      (versions[l.produit.nom] = versions[l.produit.nom] || []).push(l.groupe);
+    });
+    Object.keys(versions).forEach(function (n) {
+      if (versions[n].length > 1) versions[n].forEach(function (g, i) { num[g] = 'num ' + (i + 1); });
+    });
+    return lignes.map(function (l) {
+      var o = l.options.slice();
+      if (l.groupe && num[l.groupe]) {
+        if ((l.produit.categorie || '').trim() === CAT_SUP) o.splice(1, 0, num[l.groupe]); else o.push(num[l.groupe]);
+      }
+      return { produit_id: l.produit.id, quantite: l.quantite, options: o };
+    });
+  }
+
   function lignesPanier() {
     return Object.keys(panier).map(function (k) {
       var l = panier[k];
-      return { cle: k, produit: l.produit, options: l.options, quantite: l.quantite };
+      return { cle: k, produit: l.produit, options: l.options, quantite: l.quantite, groupe: l.groupe };
     });
   }
+
+  // Les lignes d'un meme groupe (le plat et ses supplements).
+  function memeGroupe(a, b) { return !!(a.groupe && a.groupe === b.groupe); }
 
   /* Le compteur d'articles ne compte QUE les plats. Un burger avec
      cheddar et steak en plus, c'est un article et non trois — annoncer
@@ -1645,10 +1762,12 @@
     var depuis = Math.ceil(tot / 15) * 15;
 
     var creneaux = [], ouvertMaintenant = false;
+    var aMinuit = new Date(maintenant); aMinuit.setHours(0, 0, 0, 0);
+    var libre = function (m) { return !fermetureA(new Date(aMinuit.getTime() + m * 60000)); };
     (h.plages || []).forEach(function (p) {
-      if (tot >= p[0] && tot <= p[1]) ouvertMaintenant = true;
+      if (tot >= p[0] && tot <= p[1] && libre(tot)) ouvertMaintenant = true;
       for (var m = Math.max(p[0], depuis); m <= p[1]; m += 15) {
-        if (m % 15 === 0) creneaux.push(m);
+        if (m % 15 === 0 && libre(m)) creneaux.push(m);
       }
     });
     return { creneaux: creneaux, ouvertMaintenant: ouvertMaintenant, ferme: h.ferme === true };
@@ -1686,6 +1805,16 @@
     }
 
     var d = creneauxDuJour();
+
+    var fx = fermetureA(new Date());
+    if (fx && !d.creneaux.length) {
+      var fin = new Date(fx.au);
+      el.innerHTML = '<span><b>Fermeture exceptionnelle' + (fx.motif ? ' : ' + fx.motif.replace(/[<>&]/g, '') : '') + '.</b> '
+        + 'Nous rouvrons le ' + fin.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })
+        + ' à ' + enHeure(fin.getHours() * 60 + fin.getMinutes()) + '.</span>';
+      el.hidden = false;
+      return;
+    }
 
     if (d.inconnu || d.creneaux.length) { el.hidden = true; return; }
 
@@ -1800,7 +1929,8 @@
     var plat = (ligne.produit.categorie || '').trim() !== CAT_SUP;
     lignesPanier().forEach(function (l) {
       if (l.cle === ligne.cle) return retirerLigne(l.cle);
-      if (plat && (l.produit.categorie || '').trim() === CAT_SUP && l.options[0] === nom) retirerLigne(l.cle);
+      if (!plat || (l.produit.categorie || '').trim() !== CAT_SUP) return;
+      if (ligne.groupe ? memeGroupe(l, ligne) : (!l.groupe && l.options[0] === nom)) retirerLigne(l.cle);
     });
     if (!totaux().n) fermerPanier();
     else ouvrirPanier();
@@ -1843,7 +1973,8 @@
     var nom = ligne.produit.nom;
     lignesPanier().forEach(function (l) {
       if (l.cle === ligne.cle) return retirerLigne(l.cle);
-      if ((l.produit.categorie || '').trim() === CAT_SUP && l.options[0] === nom) retirerLigne(l.cle);
+      if ((l.produit.categorie || '').trim() !== CAT_SUP) return;
+      if (ligne.groupe ? memeGroupe(l, ligne) : (!l.groupe && l.options[0] === nom)) retirerLigne(l.cle);
     });
 
     fermerModale();
@@ -1994,9 +2125,7 @@
         telephone_client: tel,
         heure_retrait: heure,
         commentaire: commentaire,
-        panier: lignesPanier().map(function (l) {
-          return { produit_id: l.produit.id, quantite: l.quantite, options: l.options };
-        })
+        panier: lignesEnvoyees()
       })
     })
       .then(function (r) {
@@ -2426,5 +2555,6 @@
 
   heros();
   chargerCarte();
+  chargerFermetures();
   reprendreSuivi();
 })();
