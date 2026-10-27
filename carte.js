@@ -206,8 +206,13 @@
     'Menu Kids', 'Desserts', 'Boissons',
     // Les pots de sauce vendus seuls (2026-09-30) : en fin de carte,
     // c'est ce qu'on ajoute au dernier moment.
-    'Sauces'
+    'Sauces',
+    // La promo du moment (2026-10-27), juste apres, avec un bouton rouge.
+    'Promotions'
   ];
+  var CAT_PROMO = 'Promotions';
+  // La semaine du burger : jusqu'au 31/10 inclus, puis la rubrique disparait.
+  var FIN_PROMOTIONS = Date.parse('2026-11-01T00:00:00+01:00');
 
   // Ingredients qu'on ne propose pas de retirer : ce qui reste du plat
   // sans eux n'est plus le plat. Un burger sans steak n'est pas une
@@ -653,7 +658,7 @@
     }
 
     var sans = retirables(p);
-    if (sans.length && /burger|sandwich/.test(cat)) {
+    if (sans.length && /burger|sandwich|promotions/.test(cat)) {
       groupes.push({
         titre: 'Retirer un ingrédient',
         aide: 'Facultatif, sans supplément.',
@@ -764,8 +769,11 @@
       if (!String(p.categorie || '').trim()) return;
       var cat = p.categorie.trim();
       if (cat === CAT_SUP) return;
+      if (cat === CAT_PROMO && Date.now() >= FIN_PROMOTIONS) return;
       (groupes[cat] || (groupes[cat] = [])).push(p);
     });
+    // Les promos dans l'ordre du flyer : du moins cher au plus cher.
+    if (groupes[CAT_PROMO]) groupes[CAT_PROMO].sort(function (a, b) { return Number(a.prix) - Number(b.prix); });
 
     var noms = Object.keys(groupes).sort(function (a, b) {
       var ia = ORDRE.indexOf(a), ib = ORDRE.indexOf(b);
@@ -784,6 +792,7 @@
       var bouton = creer('button', null, nom);
       bouton.type = 'button';
       bouton.setAttribute('data-ancre', ancre);
+      if (nom === CAT_PROMO) bouton.className = 'cat-promo';
       if (i === 0) bouton.setAttribute('aria-current', 'true');
       elCats.appendChild(bouton);
 
