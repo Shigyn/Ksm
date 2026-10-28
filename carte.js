@@ -212,8 +212,21 @@
     'Sauces'
   ];
   var CAT_PROMO = 'Promotions';
-  // La semaine du burger : jusqu'au 31/10 inclus, puis la rubrique disparait.
-  var FIN_PROMOTIONS = Date.parse('2026-11-01T00:00:00+01:00');
+  /* Les promos sont gerees par le restaurant depuis son comptoir (onglet
+     Promotions, 2026-10-28) : plus de date de fin dans le code, la rubrique
+     vit tant qu'il y a une promo. Une promo retiree change de categorie. */
+  var CAT_PROMO_RETIREE = 'Promotions retirées';
+
+  /* Une promo creee au comptoir garde son plat d'origine (promo_de) : pour
+     les choix (viande, sauces, menu, supplements, ingredients a retirer)
+     et la photo, la fiche lit le plat d'origine. Seuls le nom et le prix
+     sont ceux de la promo. */
+  var parId = Object.create(null);
+  function modele(p) {
+    var o = p && p.promo_de && parId[p.promo_de];
+    if (!o) return p;
+    return { id: p.id, nom: o.nom, prix: p.prix, categorie: o.categorie, description: o.description, image_url: p.image_url || o.image_url, disponible: p.disponible };
+  }
 
   // Ingredients qu'on ne propose pas de retirer : ce qui reste du plat
   // sans eux n'est plus le plat. Un burger sans steak n'est pas une
@@ -418,6 +431,7 @@
   }
 
   function photoDe(p) {
+    p = modele(p);
     if (p.image_url && String(p.image_url).trim()) return String(p.image_url).trim();
     for (var i = 0; i < PHOTOS.length; i++) {
       if (PHOTOS[i][0].test(p.nom)) return PHOTOS[i][1];
@@ -434,6 +448,7 @@
      cinq lignes, et que le jour ou Kassim change sa recette depuis
      son espace, les options suivent sans que personne y touche. */
   function retirables(p) {
+    p = modele(p);
     if (!p.description) return [];
     /* Les descriptions redigees en phrases (« genereusement garnis de
        cheddar fondant, de salade fraiche, de confit d'oignons et de
@@ -472,6 +487,7 @@
      ce ne sont pas les memes gestes, et ils ne se rangent pas dans le
      meme type de commande. */
   function groupesOptions(p) {
+    p = modele(p);
     var cat = (p.categorie || '').toLowerCase();
     var nom = (p.nom || '').toLowerCase();
     var groupes = [];
@@ -701,7 +717,7 @@
   function chargerCarte() {
     var url = config.supabaseUrl + '/rest/v1/produits'
       + '?client_id=eq.' + encodeURIComponent(config.clientId)
-      + '&select=id,nom,prix,categorie,description,disponible,image_url'
+      + '&select=id,nom,prix,categorie,description,disponible,image_url,promo_de'
       + '&order=nom';
 
     fetch(url, {
@@ -756,6 +772,8 @@
 
   function afficher(produits) {
     tousProduits = produits;
+    parId = Object.create(null);
+    produits.forEach(function (p) { parId[p.id] = p; });
     supplements = produits
       .filter(function (p) { return (p.categorie || '').trim() === CAT_SUP && p.disponible !== false; })
       .sort(function (x, y) { return Number(y.prix) - Number(x.prix); });   // la viande d'abord
@@ -770,7 +788,7 @@
       if (!String(p.categorie || '').trim()) return;
       var cat = p.categorie.trim();
       if (cat === CAT_SUP) return;
-      if (cat === CAT_PROMO && Date.now() >= FIN_PROMOTIONS) return;
+      if (cat === CAT_PROMO_RETIREE) return;
       (groupes[cat] || (groupes[cat] = [])).push(p);
     });
     // Les promos dans l'ordre du flyer : du moins cher au plus cher.
@@ -1019,6 +1037,7 @@
      sur un tiramisu n'a pas de sens, et proposer partout revient a ne
      rien proposer : le client cesse de lire. */
   function accepteSupplements(p) {
+    p = modele(p);
     if (!supplements.length) return false;
     var cat = (p.categorie || '').toLowerCase();
     /* Le KSM Crousty garde ses supplements en sortant des tacos :
@@ -1047,6 +1066,7 @@
         la merguez, le cordon bleu, l'escalope, les nuggets, les
         tenders et la viande hachee sont les garnitures du TACOS. */
   function supplementsPour(p) {
+    p = modele(p);
     var cat = (p.categorie || '').toLowerCase();
     var burger = cat.indexOf('burger') !== -1 || cat.indexOf('sandwich') !== -1;
     var crousty = /crousty/i.test(p.nom || '');
@@ -1096,6 +1116,7 @@
      un dessert, pas a une canette — un menu sur une canette n'est
      pas une offre, c'est une faute de saisie. */
   function accepteMenu(p) {
+    p = modele(p);
     if (!supplementMenu()) return false;
     var cat = (p.categorie || '').toLowerCase();
     // Le KSM Crousty ne se prend plus en menu (2026-09-15).
