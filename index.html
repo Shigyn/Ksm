@@ -422,6 +422,14 @@ a { color: inherit }
 .cats button.cat-promo { background: #d62828; border-color: #d62828; color: #fff }
 .cats button.cat-promo:hover { background: #b91f1f; border-color: #b91f1f }
 .cats button.cat-promo[aria-current="true"] { background: #d62828; border-color: #fff; box-shadow: 0 0 0 1px #fff }
+/* Sur ordinateur, on ne fait pas glisser une barre a la souris : sur un
+   portable, Promotions sortait de l'ecran sans que rien ne le montre
+   (2026-10-28). Au-dela de 760 px, les boutons passent a la ligne ; le
+   telephone garde sa barre qui glisse au doigt. */
+@media (min-width: 761px) {
+  .cats { flex-wrap: wrap; overflow-x: visible }
+  .groupe { scroll-margin-top: 176px }
+}
 
 .groupe { margin-top: 40px; scroll-margin-top: 122px }
 .groupe > h3 { font-size: 22px; margin-bottom: 14px }
