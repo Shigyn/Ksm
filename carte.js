@@ -196,7 +196,10 @@
   // que de disparaitre — le restaurateur peut en creer depuis son
   // espace sans que personne ait a toucher au code.
   var ORDRE = [
-    // Les plats d'abord, du plus commande au moins. Le KSM Crousty a
+    // La promo du moment en tete (2026-10-28, demande de Nicolas) : c'est
+    // ce qu'on veut voir commander cette semaine. Bouton rouge.
+    'Promotions',
+    // Puis les plats, du plus commande au moins. Le KSM Crousty a
     // sa propre section depuis le 2026-09-12, juste apres les burgers :
     // c'est le plat qui porte le nom de la maison.
     'Burgers', 'KSM Crousty', 'Tacos', 'Sandwichs', 'Bowls', 'Salades',
@@ -206,9 +209,7 @@
     'Menu Kids', 'Desserts', 'Boissons',
     // Les pots de sauce vendus seuls (2026-09-30) : en fin de carte,
     // c'est ce qu'on ajoute au dernier moment.
-    'Sauces',
-    // La promo du moment (2026-10-27), juste apres, avec un bouton rouge.
-    'Promotions'
+    'Sauces'
   ];
   var CAT_PROMO = 'Promotions';
   // La semaine du burger : jusqu'au 31/10 inclus, puis la rubrique disparait.
