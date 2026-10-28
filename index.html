@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>KSM Burger — Commander à emporter à Fleurie (69820)</title>
+<title>KSM Burger Fleurie — Burgers, tacos et snack à emporter (69820)</title>
   <!-- Le premier clip est ce qu'on voit en arrivant : le precharger
        evite que le heros reste noir une seconde. -->
   <link rel="preload" as="video" href="videos/0-table.mp4" type="video/mp4">
-<meta name="description" content="Burgers faits maison à Fleurie, en plein Beaujolais. Commandez en ligne et récupérez sur place. 10 rue du Beaujolais, 69820 Fleurie — 09 50 94 88 15.">
+<meta name="description" content="Burgers faits maison, tacos et snack à Fleurie (69820), en plein Beaujolais. Commandez en ligne et récupérez sur place : 10 rue du Beaujolais, 09 50 94 88 15.">
 <link rel="canonical" href="https://ksmburger.fr/">
 <meta name="theme-color" content="#121212">
 
@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
 <meta property="og:type" content="restaurant.restaurant">
-<meta property="og:title" content="KSM Burger — Commander à emporter à Fleurie">
+<meta property="og:title" content="KSM Burger Fleurie — Burgers, tacos et snack à emporter">
 <meta property="og:description" content="Burgers faits maison nommés d'après les crus du Beaujolais. Commande en ligne, retrait sur place.">
 <meta property="og:url" content="https://ksmburger.fr/">
 <meta property="og:image" content="https://ksmburger.fr/videos/0-table.jpg">
@@ -41,7 +41,10 @@
   "url": "https://ksmburger.fr/",
   "image": "https://ksmburger.fr/videos/0-table.jpg",
   "telephone": "+33950948815",
-  "servesCuisine": ["Burger", "Fast-food", "Tacos"],
+  "alternateName": ["KSM Fleurie", "KSM Burger Fleurie"],
+  "description": "Burgers faits maison, tacos et snack à emporter à Fleurie, dans le Beaujolais. Commande en ligne et retrait sur place.",
+  "servesCuisine": ["Burger", "Snack", "Fast-food", "Tacos"],
+  "areaServed": ["Fleurie", "Chiroubles", "Villié-Morgon", "Lancié", "Romanèche-Thorins", "Chénas", "Juliénas", "Belleville-en-Beaujolais"],
   "priceRange": "€€",
   "currenciesAccepted": "EUR",
   "paymentAccepted": "Espèces, Carte bancaire, Carte titre-restaurant (titres papier non acceptés)",
@@ -169,6 +172,8 @@ a { color: inherit }
 }
 /* Sur le noir du hero, c'est l'inverse : il faut eclaircir. */
 .hero .eyebrow { color: rgba(255,255,255,.62) }
+/* Le surtitre loge dans le H1 (SEO, 2026-10-28) : il garde son allure. */
+.h1-lieu { display: block; margin-bottom: 14px; font-family: var(--texte); letter-spacing: .09em }
 
 /* --- La pastille : toute chose cliquable en porte la forme -------- */
 .pill {
@@ -794,6 +799,7 @@ a { color: inherit }
   letter-spacing: -.01em;
 }
 .adresse .ville { color: var(--or) }
+.venir-alentours { margin: 10px 0 0; max-width: 42ch; color: var(--gris); font-size: 15px }
 
 .venir-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px }
 .venir-note {
@@ -1239,8 +1245,11 @@ a { color: inherit }
     </div>
     <div class="hero-voile" aria-hidden="true"></div>
     <div class="wrap">
-      <p class="eyebrow">Fleurie &middot; Beaujolais</p>
-      <h1><span data-editable-zone="hero_titre_ligne1">Commandez en ligne,</span> <span data-editable-zone="hero_titre_accent">récupérez sur place.</span></h1>
+      <!-- SEO (2026-10-28) : le surtitre fait partie du H1. C'est le texte que
+           Google lit en premier, et il ne disait ni burger, ni snack, ni
+           Fleurie. Les deux lignes modifiables de Kassim restent dessous ;
+           leur texte par defaut suit ce qu'il a mis dans l'editeur. -->
+      <h1><span class="eyebrow h1-lieu">Burgers, tacos &amp; snack à Fleurie &middot; Beaujolais</span> <span data-editable-zone="hero_titre_ligne1">KSM Burger</span> <span data-editable-zone="hero_titre_accent">Venez pour l&rsquo;envie, revenez pour le goût</span></h1>
       <p class="hero-sub" data-editable-zone="hero_sous_titre">Viande hachée fraîche, frites coupées sur place, burgers nommés d&rsquo;après les crus du Beaujolais. Vous commandez, on prépare, vous passez la chercher.</p>
 
       <div class="hero-cta">
@@ -1278,7 +1287,9 @@ a { color: inherit }
       <p class="avis-ferme" id="avis-ferme" hidden></p>
 
       <nav class="cats" id="cats" aria-label="Catégories de la carte"></nav>
-      <div id="carte-liste"><p class="carte-vide">Chargement de la carte&hellip;</p></div>
+      <!-- Avant que la carte arrive (et pour Google, s'il ne l'attend pas) :
+           ce qu'on trouve chez KSM, en clair. Le script le remplace par la carte. -->
+      <div id="carte-liste"><p class="carte-vide">Chargement de la carte&hellip; Burgers faits maison aux noms des crus du Beaujolais (le Fleurie, le Morgon, le Juliénas, le Chiroubles, le Chénas, le Beaujolais), smash burger, tacos et maxi tacos, KSM Crousty, sandwichs, bowls, salades, frites maison, tenders et nuggets, menus enfant, desserts et boissons, à emporter à Fleurie.</p></div>
     </div>
   </section>
 
@@ -1291,6 +1302,7 @@ a { color: inherit }
       <div class="venir-grid">
         <div>
           <p class="adresse">10 rue du Beaujolais<br><span class="ville">69820 Fleurie</span></p>
+          <p class="venir-alentours">À quelques minutes de Chiroubles, Villié-Morgon, Lancié, Chénas et Romanèche-Thorins : commandez en ligne, c&rsquo;est prêt à votre arrivée.</p>
           <!-- UN SEUL bouton dore : l'itineraire. C'est l'action que
                vient chercher quelqu'un qui lit cette section. Deux
                boutons dores cote a cote, c'est deux fois aucun. -->
